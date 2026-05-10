@@ -1,21 +1,26 @@
 import mysql from 'mysql2';
-import env from 'env';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const db = mysql.createPool({
-    host: env.DB_HOST,
-    user: env.DB_USER,
-    password: env.DB_PASSWORD,
-    database: env.DB_NAME
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
+// Test connection
 db.getConnection((err, connection) => {
     if (err) {
-        console.log('Database connection failed');
-        console.log(err);
+        console.error('Database connection failed:', err.message);
     } else {
-        console.log('MySQL Connected');
+        console.log('✅ MySQL Connected successfully');
         connection.release();
     }
 });
 
-export default db;
+export default db.promise(); // Optional: use promise version for async/await
