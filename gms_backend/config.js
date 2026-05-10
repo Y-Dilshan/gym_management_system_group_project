@@ -18,9 +18,9 @@ db.getConnection((err, connection) => {
     if (err) {
         console.error('Database connection failed:', err.message);
     } else {
-        console.log('✅ MySQL Connected successfully');
+        console.log('Database connected successfully');
         connection.release();
     }
 });
 
-export default db.promise(); // Optional: use promise version for async/await
+export default db.promise();
