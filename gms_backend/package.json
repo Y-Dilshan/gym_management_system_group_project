@@ -4,21 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
-    "test": "echo \"Error: no test specified\" && exit 1"
-=======
+
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
->>>>>>> 65264386274e9810e82d57d55f3a805bbed96d09
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-<<<<<<< HEAD
-  "type": "commonjs",
-  "dependencies": {
-    "express": "^5.2.1",
-=======
+
   "type": "module",
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -27,7 +20,6 @@
     "jsonwebtoken": "^9.0.3",
     "mysql2": "^3.22.3",
     "node": "^26.1.0",
->>>>>>> 65264386274e9810e82d57d55f3a805bbed96d09
     "nodemon": "^3.1.14"
   }
 }
