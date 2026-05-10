@@ -23,6 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+<<<<<<< HEAD
 .env
+=======
+
+>>>>>>> 65264386274e9810e82d57d55f3a805bbed96d09
 .node_modules
 .package-lock.json
