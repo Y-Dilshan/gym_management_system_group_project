@@ -18,6 +18,16 @@ export const createUser = (req, res) => {
             res.status(201).json({message: 'User created successfully', userId: result.insertId});
         }
     });
+
+    if(user.role !== 'admin'){
+        return res.json({
+            message : "Only admins can create users"
+        })
+    } else {
+        return res.json({
+            message : "User created successfully"
+        })
+     }
 };
 
 export const getUsers = (req, res) => {

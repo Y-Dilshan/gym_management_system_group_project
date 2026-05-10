@@ -22,6 +22,16 @@ export const createProduct = (req, res) =>{
             }
         });
     }
+
+    if(user.role !== 'admin'){
+        return re.json({
+            message : "Only admins can create products"
+        })
+    } else {
+        return res.json({
+            message : "Product created successfully"
+        })
+    }
 }
 
 export const getProducts = (req, res) =>{
@@ -64,7 +74,7 @@ export const getProductById = (req, res) =>{
 const updateProduct = (req, res) =>{
     const id =req.params.id;
     const sql = 'UPDATE products SET? WHERE product_id = ?';
-    db.query(sql, [req.body.id, id], (err, results => {
+    db.query(sql, [req.body, id], (err, results) => {
         if(err){
             return res.json({
                 message : "Failed to update product"
@@ -78,5 +88,45 @@ const updateProduct = (req, res) =>{
                 message : "Product updated successfully"
             })
         }
-    }))
+    })
+
+    if(user.role !== 'admin'){
+        return res.json({
+            message : "Only admins can update products"
+        })
+    } else {
+        return res.json({
+            message : "Product updated successfully"
+        })
+    }
+}
+
+export const deleteProduct = (req, res) =>{
+    const id = req.params.id;
+    const sql = 'DELETE FROM products WHERE product_id = ?';        
+    db.query(sql, [id], (err, results) =>{
+        if(err){
+            return res.json({
+                message : "Failed to delete product"
+            })
+        } else if(results.affectedRows == 0){
+            return res.json({
+                message : "Product not found"
+            })
+        } else {
+            return res.json({
+                message : "Product deleted successfully"
+            })
+        }
+    })
+
+    if(user.role !== 'admin'){
+        return res.json({
+            message : "Only admins can delete products"
+        })
+    } else {
+        return res.json({
+            message : "Product deleted successfully"
+        })
+     }
 }
