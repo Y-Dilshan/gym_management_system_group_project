@@ -1,33 +1,40 @@
 import db from '../config.js';
+import bcrypt from 'bcrypt';
+
+const SALT_ROUNDS = 10;
 
 export const createUser = (req, res) => {
-    const {user_id, full_name, email, password, phone, role, status, profile_picture, created_at} = req.body; 
+    const user = req.user; // Get from auth middleware
     
-    // Add validation
+    if (!user || user.role !== 'admin') {
+        return res.status(403).json({
+            message: "Only admins can create users"
+        });
+    }
+    
+    const {user_id, full_name, email, password, phone, role, status, profile_picture, created_at} = req.body;
+    
     if (!full_name || !email || !password) {
         return res.status(400).json({error: 'Missing required fields'});
     }
-    
-    const sql = 'INSERT INTO users (user_id, full_name, email, password, phone, role, status, profile_picture, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-    
-    db.query(sql, [user_id, full_name, email, password, phone, role, status, profile_picture, created_at], (err, result) => {
-        if(err){
-            console.error('Error creating user: ', err);
-            res.status(500).json({error: 'Failed to create user'});
-        } else {
-            res.status(201).json({message: 'User created successfully', userId: result.insertId});
-        }
-    });
 
-    if(user.role !== 'admin'){
-        return res.json({
-            message : "Only admins can create users"
-        })
-    } else {
-        return res.json({
-            message : "User created successfully"
-        })
-     }
+    bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
+        if (err) {
+            console.error('Error hashing password: ', err);
+            return res.status(500).json({error: 'Failed to process password'});
+        }
+        
+        const sql = 'INSERT INTO users (user_id, full_name, email, password, phone, role, status, profile_picture, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        
+        db.query(sql, [user_id, full_name, email, hashedPassword, phone, role, status, profile_picture, created_at], (err, result) => {
+            if(err){
+                console.error('Error creating user: ', err);
+                res.status(500).json({error: 'Failed to create user'});
+            } else {
+                res.status(201).json({message: 'User created successfully', userId: result.insertId});
+            }
+        });
+    });
 };
 
 export const getUsers = (req, res) => {
@@ -37,7 +44,12 @@ export const getUsers = (req, res) => {
             console.error('Error fetching users: ', err);
             res.status(500).json({error: 'Failed to fetch users'});
         } else {
-            res.status(200).json({users: results});
+            // Remove password from response
+            const usersWithoutPassword = results.map(user => {
+                const {password, ...userWithoutPassword} = user;
+                return userWithoutPassword;
+            });
+            res.status(200).json({users: usersWithoutPassword});
         }
     });
 };
@@ -52,7 +64,9 @@ export const getUserById = (req, res) => {
         } else if (results.length === 0) {
             res.status(404).json({error: 'User not found'});
         } else {
-            res.status(200).json({user: results[0]});
+            // Remove password from response
+            const {password, ...userWithoutPassword} = results[0];
+            res.status(200).json({user: userWithoutPassword});
         }   
     });
 }
@@ -60,20 +74,51 @@ export const getUserById = (req, res) => {
 export const updateUser = (req, res) => {
     const {id} = req.params;
     const {full_name, email, password, phone, role, status, profile_picture} = req.body;
-    const sql = 'UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?';
-    db.query(sql, [full_name, email, password, phone, role, status, profile_picture, id], (err, result) => {
-        if (err) {
-            console.error('Error updating user: ', err);
-            res.status(500).json({error: 'Failed to update user'});
-        } else if (result.affectedRows === 0) {
-            res.status(404).json({error: 'User not found'});
-        } else {
-            res.status(200).json({message: 'User updated successfully'});
-        }
-    });
+    
+    // If password is being updated, hash it first
+    if (password) {
+        bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
+            if (err) {
+                console.error('Error hashing password: ', err);
+                return res.status(500).json({error: 'Failed to process password'});
+            }
+            
+            const sql = 'UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?';
+            db.query(sql, [full_name, email, hashedPassword, phone, role, status, profile_picture, id], (err, result) => {
+                if (err) {
+                    console.error('Error updating user: ', err);
+                    res.status(500).json({error: 'Failed to update user'});
+                } else if (result.affectedRows === 0) {
+                    res.status(404).json({error: 'User not found'});
+                } else {
+                    res.status(200).json({message: 'User updated successfully'});
+                }
+            });
+        });
+    } else {
+        const sql = 'UPDATE users SET full_name = ?, email = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?';
+        db.query(sql, [full_name, email, phone, role, status, profile_picture, id], (err, result) => {
+            if (err) {
+                console.error('Error updating user: ', err);
+                res.status(500).json({error: 'Failed to update user'});
+            } else if (result.affectedRows === 0) {
+                res.status(404).json({error: 'User not found'});
+            } else {
+                res.status(200).json({message: 'User updated successfully'});
+            }
+        });
+    }
 }   
 
 export const deleteUser = (req, res) => {
+    const user = req.user; // Get from auth middleware
+    
+    if (!user || user.role !== 'admin') {
+        return res.status(403).json({
+            message: "Only admins can delete users"
+        });
+    }
+    
     const {id} = req.params;
     const sql = 'DELETE FROM users WHERE user_id = ?';
     db.query(sql, [id], (err, result) => {

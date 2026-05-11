@@ -1,132 +1,132 @@
-const db = require('../config.js');
+import db from '../config.js';
 
-export const createProduct = (req, res) =>{
+export const createProduct = (req, res) => {
+    // Add user role check FIRST (assuming user is attached via auth middleware)
+    const user = req.user; // You need authentication middleware
+    
+    if (!user || user.role !== 'admin') {
+        return res.status(403).json({
+            message: "Only admins can create products"
+        });
+    }
+    
     const {product_id, product_name, category, description, price, stock_quantity, image_url, status} = req.body;
     
     if(!product_name || !category || !price){
-        return res.json({
-            message : "Missing required fields"
-        })
-    } else {
-        const sql = 'INSERT INTO products (product_id, product_name, category, description, price, stock_quantity, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-        db.query(sql, [product_id, product_name, category, description, price, stock_quantity, image_url, status], (err, result) => {
-            if(err){
-                return res.json({
-                    message : "Failed to create product"
-                });
-            } else{
-                return res.json({
-                    message : "Product created successfully",
-                    productId : result.insertId
-                })
-            }
+        return res.status(400).json({
+            message: "Missing required fields"
         });
     }
-
-    if(user.role !== 'admin'){
-        return re.json({
-            message : "Only admins can create products"
-        })
-    } else {
-        return res.json({
-            message : "Product created successfully"
-        })
-    }
+    
+    const sql = 'INSERT INTO products (product_id, product_name, category, description, price, stock_quantity, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    db.query(sql, [product_id, product_name, category, description, price, stock_quantity, image_url, status], (err, result) => {
+        if(err){
+            console.error('Error creating product:', err);
+            return res.status(500).json({
+                message: "Failed to create product"
+            });
+        } else{
+            return res.status(201).json({
+                message: "Product created successfully",
+                productId: result.insertId
+            });
+        }
+    });
 }
 
-export const getProducts = (req, res) =>{
+export const getProducts = (req, res) => {
     const sql = 'SELECT * FROM products';
     db.query(sql, (err, results)=>{
         if(err){
-            res.json({
-                message : "Failed to found products"
-            })
+            console.error('Error fetching products:', err);
+            res.status(500).json({
+                message: "Failed to fetch products"
+            });
         } else{
-            res.json({
-                message : "Products found successfully",
-                products : results
-            })
+            res.status(200).json({
+                message: "Products fetched successfully",
+                products: results
+            });
         } 
-    })
+    });
 }
 
-export const getProductById = (req, res) =>{
+export const getProductById = (req, res) => {
     const id = req.params.id;
     const sql = 'SELECT * FROM products WHERE product_id = ?';
     db.query(sql, [id], (err, results) =>{
         if(err){
-            return res.json({
-                message : 'Failed to found product'
-            }) 
+            console.error('Error fetching product:', err);
+            return res.status(500).json({
+                message: 'Failed to fetch product'
+            }); 
         } else if(results.length == 0){
-            return res.json({
-                message : 'Product not found'
-            })
+            return res.status(404).json({
+                message: 'Product not found'
+            });
         } else {
-            return res.json({
-                message : 'Product found successfully',
-                product : results[0]
-            })
+            return res.status(200).json({
+                message: 'Product found successfully',
+                product: results[0]
+            });
         }
-    })
+    });
 }
 
-const updateProduct = (req, res) =>{
-    const id =req.params.id;
-    const sql = 'UPDATE products SET? WHERE product_id = ?';
+export const updateProduct = (req, res) => {
+    const user = req.user; // Get from auth middleware
+    
+    if (!user || user.role !== 'admin') {
+        return res.status(403).json({
+            message: "Only admins can update products"
+        });
+    }
+    
+    const id = req.params.id;
+    const sql = 'UPDATE products SET ? WHERE product_id = ?';
     db.query(sql, [req.body, id], (err, results) => {
         if(err){
-            return res.json({
-                message : "Failed to update product"
-            })
+            console.error('Error updating product:', err);
+            return res.status(500).json({
+                message: "Failed to update product"
+            });
         } else if(results.affectedRows == 0){
-            return res.json({
-                message : "Product not found"
-            })
+            return res.status(404).json({
+                message: "Product not found"
+            });
         } else {
-            return res.json({
-                message : "Product updated successfully"
-            })
+            return res.status(200).json({
+                message: "Product updated successfully"
+            });
         }
-    })
-
-    if(user.role !== 'admin'){
-        return res.json({
-            message : "Only admins can update products"
-        })
-    } else {
-        return res.json({
-            message : "Product updated successfully"
-        })
-    }
+    });
 }
 
-export const deleteProduct = (req, res) =>{
+export const deleteProduct = (req, res) => {
+    const user = req.user; // Get from auth middleware
+    
+    if (!user || user.role !== 'admin') {
+        return res.status(403).json({
+            message: "Only admins can delete products"
+        });
+    }
+    
     const id = req.params.id;
     const sql = 'DELETE FROM products WHERE product_id = ?';        
     db.query(sql, [id], (err, results) =>{
         if(err){
-            return res.json({
-                message : "Failed to delete product"
-            })
+            console.error('Error deleting product:', err);
+            return res.status(500).json({
+                message: "Failed to delete product"
+            });
         } else if(results.affectedRows == 0){
-            return res.json({
-                message : "Product not found"
-            })
+            return res.status(404).json({
+                message: "Product not found"
+            });
         } else {
-            return res.json({
-                message : "Product deleted successfully"
-            })
+            return res.status(200).json({
+                message: "Product deleted successfully"
+            });
         }
-    })
-
-    if(user.role !== 'admin'){
-        return res.json({
-            message : "Only admins can delete products"
-        })
-    } else {
-        return res.json({
-            message : "Product deleted successfully"
-        })
-     }
+    });
 }
