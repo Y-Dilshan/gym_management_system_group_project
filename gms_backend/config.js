@@ -13,7 +13,6 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Test connection
 db.getConnection((err, connection) => {
     if (err) {
         console.error('Database connection failed:', err.message);
@@ -23,4 +22,4 @@ db.getConnection((err, connection) => {
     }
 });
 
-export default db.promise();
+export default db; 

@@ -1,7 +1,9 @@
 import express from 'express';
-import userRoutes from './routes/userRoutes.js';
 import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes.js';
+import productRoutes from './routes/productRoutes.js';
 
+dotenv.config();
 
 const app = express();
 
@@ -11,6 +13,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -18,8 +21,8 @@ app.use((err, req, res, next) => {
     res.status(500).json({error: 'Something went wrong!'});
 });
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server running on port 3000`);
+    console.log(`Server running on port ${PORT}`); 
 });
