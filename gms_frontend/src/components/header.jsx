@@ -4,7 +4,7 @@ import { SlUserFollowing } from "react-icons/sl";
 
 export default function Header() {
     return(
-        <nav className="bg-[#333333] h-[80px] px-[100px]">
+        <nav className="bg-[#333333] h-[80px] px-[100px] shadow-md">
             <div className="flex items-center justify-between h-full">
                 <div>
                     <img src="logo.jpeg" alt="logo" className="w-[75px] h-[75px]"/>
@@ -28,5 +28,7 @@ export default function Header() {
             </div>
 
         </nav>
+
+        
     )
 }
