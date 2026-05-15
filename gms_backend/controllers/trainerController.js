@@ -52,15 +52,52 @@ export const createTrainer = (req, res) => {
         if (userErr) {
           console.error("Error creating user for trainer:", userErr);
 
-          return res.status(500).json({error: "Failed to create trainer account"})
+          return res
+            .status(500)
+            .json({ error: "Failed to create trainer account" });
         }
 
         const newUserId = userResult.insertId;
 
         // trainer table linked to the new user
 
-        const trainerSql = "INSERT INTO trainers (user_id, )"
+        const trainerSql =
+          "INSERT INTO trainers (user_id, specification, bio, experience_years) VALUES (?, ?, ?, ?)";
+
+        db.query(
+          trainerSql,
+          [newUserId, specification, bio || null, experience_years || null],
+          (trainerErr, trainerResult) => {
+            if (trainerErr) {
+              console.error("Error creating trainer profile.", trainerErr);
+
+              //delete the user we just created
+              db.query("DELETE FROM users WHERE user_id = ?", [newUserId]);
+
+              return res
+                .status(500)
+                .json({ error: "failed to create trainer profile" });
+            }
+            res.status(201).json({
+              message: "trainer created successfuly",
+              trainerid: trainerResult.insertId,
+              userId: newUserId,
+            });
+          },
+        );
       },
     );
   });
+};
+
+// Trainer Login
+
+export const trainerLogin = (req, res) => {
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({
+      error: "Email and Password are required",
+    });
+  }
 };
