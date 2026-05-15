@@ -42,8 +42,7 @@ export const createTrainer = (req, res) => {
     });
 
     //Insert into users table with role = trainer
-    const userSql =
-      "INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())";
+    const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())`;
 
     db.query(
       userSql,
@@ -100,4 +99,47 @@ export const trainerLogin = (req, res) => {
       error: "Email and Password are required",
     });
   }
+
+  // Join users + trainers to get trainer info
+
+  const sql = `SELECT u.user_id, u.full_name, u.email, u.password, u.phone, u.status, u.created_at, t.trainer_id, t.specification, t.bio, t.experience_years FROM users u JOIN trainers t ON u.user_id = t.user_id WHERE u.email = ? AND u.role = "trainer" `;
+
+  db.query(sql, [email], (err, results) => {
+    if (err) {
+      console.error("Error during trainer login:", err);
+      return res.status(500).json({ error: "Login failed" });
+    }
+    if (results.length === 0) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+
+    const trainer = results[0];
+
+    if (trainer.status === "inactive") {
+      return res.status(403).json({
+        error: "Account is inactive",
+      });
+    }
+
+    bcrypt.compare(password, trainer.password, (campareErr, isMatch) => {
+      if (campareErr) {
+        console.error("Error comparing password", campareErr);
+        return res.status(500).json({
+          error: "Login failed",
+        });
+      }
+      if (!isMatch) {
+        return res.status(401).json({
+          error: "Invalid email or password",
+        });
+      }
+      // Return trainer info  excluding password
+
+      const { password: _, ...trainerData } = trainer;
+      res.status(200).json({
+        message: "Login successful",
+        trainer: trainerData,
+      });
+    });
+  });
 };
