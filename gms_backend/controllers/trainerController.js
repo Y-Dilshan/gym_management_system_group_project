@@ -26,7 +26,7 @@ export const createTrainer = (req, res) => {
   db.query(checksql, [email], (checkErr, checkResults) => {
     if (checkErr) {
       console.log("Error Checking Email", checkErr);
-      return res.json(500).json({ error: "failed to validate email" });
+      return res.status(500).json({ error: "failed to validate email" });
     }
 
     if (checkResults.length > 0) {
@@ -41,8 +41,9 @@ export const createTrainer = (req, res) => {
       }
     });
 
+    //Insert into users table with role = trainer
     const userSql =
-      "INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ? 'trainer', 'active', NOW())";
+      "INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())";
 
     db.query(
       userSql,
@@ -54,7 +55,11 @@ export const createTrainer = (req, res) => {
           return res.status(500).json({error: "Failed to create trainer account"})
         }
 
-        const 
+        const newUserId = userResult.insertId;
+
+        // trainer table linked to the new user
+
+        const trainerSql = "INSERT INTO trainers (user_id, )"
       },
     );
   });
