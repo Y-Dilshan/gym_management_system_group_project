@@ -143,3 +143,23 @@ export const trainerLogin = (req, res) => {
     });
   });
 };
+
+// Get Trainers
+
+export const getTrainers = (req, res) => {
+  const sql = `
+    SELECT u.user_id, u.full_name, u.email, u.phone, u.status, u.created_at, t.trainer_id, t.specification, t.bio, t.experience_years FROM users u JOIN trainers t ON u.user_id = t.user_id WHERE u.role = "trainer"
+    `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error("Error fatching trainers:", err);
+      return res.status(500).json({ error: "failed to fetch trainers" });
+    }
+    res.status(200).json({
+      trainers: results,
+    });
+
+  });
+};
+// ─── GET TRAINER BY ID ────────────────────────────────────────────────────────
