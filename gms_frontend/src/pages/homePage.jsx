@@ -6,7 +6,7 @@ export default function HomePage() {
         <div className=" bg-[#333333]">
             <Header />
 
-            // home
+            {/*home*/}
             <div className = "w-full px-[100px]">
                     <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
                     <img src="homepage.jpg" alt="homepage" className="w-[1320px] h-[650px] blur-sm object-cover"/>
