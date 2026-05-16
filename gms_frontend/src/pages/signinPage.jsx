@@ -1,10 +1,22 @@
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
+import {useNavigate} from "react-router-dom"
+
 
 export default function SigninPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate('/')
+  }
+
+  const handleSignup = () => {
+    navigate('/signup')
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -13,6 +25,8 @@ export default function SigninPage() {
     console.log("Password:", password);
   };
 
+  
+
   return (
     <div className = "bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center">
        <div className="w-[500px] h-[500px] bg-[#333333] shadow-2xl shadow-gray-600 pt-10 relative rounded-xl w-[400px]">
@@ -20,7 +34,7 @@ export default function SigninPage() {
         {/* Back Button */}
             <button className="flex items-center gap-2 text-white hover:text-[#D4AF37] transition duration-300 absolute left-10 top-10">
                 <GoArrowLeft className="text-[20px]" />
-                <span>Back</span>
+                <span onClick = {handleBack}>Back</span>
             </button>
 
         {/* Title */}
@@ -43,12 +57,12 @@ export default function SigninPage() {
             </div>
 
             <div className = "text-white text-center text-[20px] pt-[30px]">
-                <button className = " border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl hover:bg-[#D4AF37] hover:outline-[#333333] hover:text-black">Sign in</button>
+                <button className = " border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-black">Sign in</button>
             </div>
 
             <div className = "pt-[30px] flex pl-[50px] text-white gap-2">
                 <span>You already haven’t an account?</span> 
-                <button>Sign Up</button>
+                <button onClick = {handleSignup}>Sign Up</button>
             </div>
 
             <div className = "pt-[30px] flex pl-[50px] text-white gap-2 justify-end pr-[50px]">
