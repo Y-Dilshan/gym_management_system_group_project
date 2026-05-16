@@ -17,7 +17,7 @@ export default function Header() {
         <nav className="bg-black h-[80px] px-[100px] shadow-md">
             <div className="flex items-center justify-between h-full">
                 <div>
-                    <img src="logo.jpeg" alt="logo" className="w-[75px] h-[75px]"/>
+                    <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
                 </div>
                 <div className="flex items-center gap-10 text-xl text-white">
                     <Link to="/">Home</Link>
