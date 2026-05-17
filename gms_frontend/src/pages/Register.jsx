@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-
+import logo from "../assets/logo.jpeg";
 function Register() {
   return (
     <div style={styles.container}>
@@ -14,10 +14,17 @@ function Register() {
 
         <div style={styles.leftContent}>
           {/* Logo */}
-          <div style={styles.logoRow}>
-            <div style={styles.logoBox}>POWER ZONE</div>
-            <h1 style={styles.logoText}>Power Zone</h1>
-          </div>
+      <div style={styles.logoRow}>
+        <img
+          src={logo}
+          alt="Power Zone Logo"
+          style={styles.logo}
+      />
+
+  <h1 style={styles.logoText}>
+    Power Zone
+  </h1>
+</div>
 
           {/* Text Content */}
           <div style={styles.textContent}>
@@ -183,16 +190,19 @@ const styles = {
     marginBottom: "50px",
   },
 
-  logoBox: {
-    backgroundColor: "#111",
-    color: "#E5B93E",
-    padding: "14px 12px",
-    borderRadius: "8px",
-    fontWeight: "700",
-    fontSize: "14px",
-    lineHeight: "1.2",
-    textAlign: "center",
-  },
+  logoRow:{
+    display:"flex",
+    alignItems:"center",
+    gap:"20px",
+    marginBottom:"50px"
+},
+logo:{
+    width:"90px",
+    height:"90px",
+    borderRadius:"12px",
+    objectFit:"cover",
+    boxShadow:"0 0 20px rgba(229,185,62,0.4)"
+},
 
   logoText: {
     color: "white",
