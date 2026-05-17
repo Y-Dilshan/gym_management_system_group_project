@@ -2,6 +2,9 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
 import HomePage from './pages/homePage.jsx';
+import SigninPage from './pages/signinPage.jsx';
+import SignUpPage from './pages/signUpPage.jsx';
+
 function App() {
   return (
     <>
@@ -10,6 +13,8 @@ function App() {
         <div>
           <Routes>
             <Route path="/*" element={<HomePage />} />
+            <Route path="/signin" element={<SigninPage />} />
+            <Route path="/signup" element={<SignUpPage />} />
           </Routes>
         </div>
 
@@ -19,3 +24,5 @@ function App() {
 }
 
 export default App;
+
+
