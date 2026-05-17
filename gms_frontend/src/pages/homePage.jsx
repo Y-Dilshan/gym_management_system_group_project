@@ -1,5 +1,6 @@
 // import Header from "../components/Header.jsx";
 import Header from "../components/header.jsx";
+import Footer from "../components/footer.jsx";
 
 export default function HomePage() {
     return(
@@ -9,7 +10,7 @@ export default function HomePage() {
             {/*home*/}
             <div className = "w-full px-[100px]">
                     <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
-                    <img src="homepage.jpg" alt="homepage" className="w-[1320px] h-[650px] blur-sm object-cover"/>
+                    <img src="homepage.jpg" alt="homepage" className="w-[1320px] h-[650px] blur-[2px] object-cover"/>
                 </div>
             <div>
                 <h1 className = "text-4xl font-bold text-center text-[#D4AF37] pt-[50px]">Unleash Your Potential</h1>
@@ -172,6 +173,13 @@ export default function HomePage() {
                 </div>
             </div>
         </div>
+
+        {/* Footer */}
+
+        <div className = "pt-[20px]">
+            <Footer/>
+        </div>
+        
         </div>
     )
 }
