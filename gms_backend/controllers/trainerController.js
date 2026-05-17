@@ -265,18 +265,179 @@ export const deleteTrainer = (req, res) => {
 
       //Delete trainer and then users
 
-      db.query("DELETE FROM trainers WHERE trainer_id = ?", [id], (trainerErr) => {
-        if (trainerErr) {
-          console.error("Error deleting trainer profile:", trainerErr);
-          return res.status(500).json({ error: "Failed to delete trainer" });
-        }
-        db.query("DELETE FROM users WHERE user_id = ?", [userID], (userErr) => {
-          if (userErr) {
-            console.error("Error deleting user account:", userErr);
+      db.query(
+        "DELETE FROM trainers WHERE trainer_id = ?",
+        [id],
+        (trainerErr) => {
+          if (trainerErr) {
+            console.error("Error deleting trainer profile:", trainerErr);
             return res.status(500).json({ error: "Failed to delete trainer" });
           }
-          res.status(200).json({ message: "Trainer deleted successfully" });
-        });
-      } );
-     }  );
-}
+          db.query(
+            "DELETE FROM users WHERE user_id = ?",
+            [userID],
+            (userErr) => {
+              if (userErr) {
+                console.error("Error deleting user account:", userErr);
+                return res
+                  .status(500)
+                  .json({ error: "Failed to delete trainer" });
+              }
+              res.status(200).json({ message: "Trainer deleted successfully" });
+            },
+          );
+        },
+      );
+    },
+  );
+};
+
+//GET ASSIGNED MEMBERS FOR A TRAINER
+export const getAssignedMembers = (req, res) => {
+  const { id } = req.params; // trainer_id
+  const sql = `
+        SELECT u.user_id, u.full_name, u.email, u.phone, u.status
+        FROM users u
+        WHERE u.trainer_id = ? AND u.role = 'member'
+    `;
+  db.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error("Error fetching assigned members:", err);
+      return res
+        .status(500)
+        .json({ error: "Failed to fetch assigned members" });
+    }
+    res.status(200).json({ members: results });
+  });
+};
+
+//UPDATE TRAINER PROFILE
+
+export const updateTrainerProfile = (req, res) => {
+  const { id } = req.params;
+  db.query(
+    "SELECT * FROM trainers WHERE trainer_id = ?",
+    [id],
+    (findErr, findResults) => {
+      if (findErr) {
+        console.error("Error finding trainer:", findErr);
+        if (newPicturePath) fs.unlinkSync(newPicturePath); // remove uploaded file on error
+        return res.status(500).json({ error: "Failed to update profile" });
+      }
+      if (findResults.length === 0) {
+        if (newPicturePath) fs.unlinkSync(newPicturePath);
+        return res.status(404).json({ error: "Trainer not found" });
+      }
+
+      const trainerRow = findResults[0];
+      const userId = trainerRow.user_id;
+
+      //  Get current user row to access old picture path and current password
+      db.query(
+        "SELECT * FROM users WHERE user_id = ?",
+        [userId],
+        (userFindErr, userResults) => {
+          if (userFindErr) {
+            console.error("Error finding trainer user:", userFindErr);
+            if (newPicturePath) fs.unlinkSync(newPicturePath);
+            return res.status(500).json({ error: "Failed to update profile" });
+          }
+
+          const currentUser = userResults[0];
+
+          // Use new picture if uploaded, otherwise keep existing one
+          const profilePicture = newPicturePath || currentUser.profile_picture;
+
+          // Step 3: Hash new password if provided, else keep existing hash
+          const doUpdate = (hashedPassword) => {
+            // Update users table
+            const userSql = `
+ UPDATE users 
+ SET full_name = ?, phone = ?, password = ?, profile_picture = ?
+  WHERE user_id = ?
+ `;
+            db.query(
+              userSql,
+              [
+                full_name || currentUser.full_name,
+                phone || currentUser.phone,
+                hashedPassword,
+                profilePicture,
+                userId,
+              ],
+              (userUpdateErr) => {
+                if (userUpdateErr) {
+                  console.error("Error updating trainer user:", userUpdateErr);
+                  return res
+                    .status(500)
+                    .json({ error: "Failed to update profile" });
+                }
+
+                // Update trainers table
+                const trainerSql = `UPDATE trainers SET specialization = ?, bio = ?, experience_years = ? WHERE trainer_id = ?
+ `;
+                db.query(
+                  trainerSql,
+                  [
+                    specialization || trainerRow.specialization,
+                    bio || trainerRow.bio,
+                    experience_years !== undefined
+                      ? experience_years
+                      : trainerRow.experience_years,
+                    id,
+                  ],
+                  (trainerUpdateErr) => {
+                    if (trainerUpdateErr) {
+                      console.error(
+                        "Error updating trainer profile:",
+                        trainerUpdateErr,
+                      );
+                      return res
+                        .status(500)
+                        .json({ error: "Failed to update trainer profile" });
+                    }
+
+                    // Delete old picture from disk only after successful DB update
+                    if (newPicturePath && currentUser.profile_picture) {
+                      import("fs").then(({ default: fs }) => {
+                        if (fs.existsSync(currentUser.profile_picture)) {
+                          fs.unlink(currentUser.profile_picture, (err) => {
+                            if (err)
+                              console.error(
+                                "Could not delete old picture:",
+                                err,
+                              );
+                          });
+                        }
+                      });
+                    }
+
+                    res.status(200).json({
+                      message: "Profile updated successfully",
+                      profile_picture: profilePicture,
+                    });
+                  },
+                );
+              },
+            );
+          };
+
+          if (password) {
+            bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+              if (hashErr) {
+                if (newPicturePath) fs.unlinkSync(newPicturePath);
+                return res
+                  .status(500)
+                  .json({ error: "Failed to process password" });
+              }
+              doUpdate(hashedPassword);
+            });
+          } else {
+            // No password change — keep the existing hashed password
+            doUpdate(currentUser.password);
+          }
+        },
+      );
+    },
+  );
+};
