@@ -162,4 +162,32 @@ export const getTrainers = (req, res) => {
 
   });
 };
-// ─── GET TRAINER BY ID ────────────────────────────────────────────────────────
+//  GET TRAINER BY ID 
+export const getTrainerById = (req, res) => {
+    const { id } = req.params;  // trainer_id
+    const sql = `
+        SELECT u.user_id, u.full_name, u.email, u.phone, u.status, u.created_at,
+               t.trainer_id, t.specialization, t.bio, t.experience_years
+        FROM users u
+        JOIN trainers t ON u.user_id = t.user_id
+        WHERE t.trainer_id = ?
+    `;
+    db.query(sql, [id], (err, results) => {
+        if (err) {
+            console.error('Error fetching trainer:', err);
+            return res.status(500).json({ error: 'Failed to fetch trainer' });
+        }
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Trainer not found' });
+        }
+        res.status(200).json({ trainer: results[0] });
+    });
+};
+
+//  UPDATE TRAINER
+export const updateTrainer = (req, res) => {
+  const { id } = req.params; // trainer Id
+  const { full_name, email, phone, status, specification, bio, experience_years } = req.body;
+
+  
+}
