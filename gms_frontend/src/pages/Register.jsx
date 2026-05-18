@@ -205,7 +205,7 @@ logo:{
 },
 
   logoText: {
-    color: "white",
+    color: "#E5B93E",
     fontSize: "56px",
     margin: 0,
     fontWeight: "700",
@@ -214,7 +214,8 @@ logo:{
   textContent: {
     display: "flex",
     flexDirection: "column",
-    gap: "20px",
+    textShadow:"0 0 10px rgba(229,185,62,0.5)"
+    
   },
 
   smallText: {
