@@ -1,9 +1,10 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import './App.css';
-import { Toaster } from 'react-hot-toast';
-import HomePage from './pages/homePage.jsx';
-import SigninPage from './pages/signinPage.jsx';
-import SignUpPage from './pages/signUpPage.jsx';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import "./App.css";
+import { Toaster } from "react-hot-toast";
+import HomePage from "./pages/homePage.jsx";
+import SigninPage from "./pages/signinPage.jsx";
+import SignUpPage from "./pages/signUpPage.jsx";
+import ApplyAsTrainer from "./pages/Applyastrainer.jsx";
 
 function App() {
   return (
@@ -15,14 +16,12 @@ function App() {
             <Route path="/*" element={<HomePage />} />
             <Route path="/signin" element={<SigninPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
           </Routes>
         </div>
-
       </BrowserRouter>
     </>
-  )
+  );
 }
 
 export default App;
-
-
