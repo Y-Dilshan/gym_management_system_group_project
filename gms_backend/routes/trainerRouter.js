@@ -1,6 +1,5 @@
 import express from "express";
 import {
-  createTrainer,
   trainerLogin,
   getTrainers,
   getTrainerById,
@@ -15,7 +14,7 @@ const router = express.Router();
 
 router.post("/login", trainerLogin);
 
-router.post("/", createTrainer);
+// router.post("/", createTrainer);
 router.get("/", getTrainers);
 router.get("/:id", getTrainerById);
 router.put("/:id", updateTrainer);
