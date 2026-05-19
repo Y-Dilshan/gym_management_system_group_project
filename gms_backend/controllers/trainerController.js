@@ -351,3 +351,5 @@ export const updateTrainerProfile = (req, res) => {
     },
   );
 };
+
+

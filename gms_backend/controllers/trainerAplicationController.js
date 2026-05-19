@@ -35,7 +35,6 @@ export const applyAsTrainer = (req, res) => {
             "Your application was already approved. Contact admin for login credentials.",
         });
       }
-      // If rejected → allow to re-apply, update the existing row
       const reApplySql = `
                 UPDATE trainer_applications 
                 SET full_name = ?, phone = ?, specialization = ?, bio = ?, 
@@ -90,11 +89,221 @@ export const applyAsTrainer = (req, res) => {
             .json({ error: "Failed to submit application" });
         }
         res.status(201).json({
-          message:
-            "Application submitted successfully! Please wait for admin review.",
+          message: "Application submitted successfully!",
           applicationId: result.insertId,
         });
       },
     );
   });
 };
+///////Get Application
+
+export const getApplications = (req, res) => {
+  const { status } = req.query;
+
+  let sql = "SELECT * FROM trainer_applications";
+  const params = [];
+
+  if (status) {
+    sql += " WHERE status = ?";
+    params.push(status);
+  }
+
+  sql += " ORDER BY applied_at DESC";
+
+  db.query(sql, params, (err, results) => {
+    if (err) {
+      console.error("Error fetching applications:", err);
+      return res.status(500).json({ error: "Failed to fetch applications" });
+    }
+    res.status(200).json({ applications: results });
+  });
+};
+
+///////Get Application by Id
+
+export const getApplicationById = (req, res) => {
+  const { id } = req.params;
+
+  db.query(
+    "SELECT * FROM trainer_applications WHERE application_id = ?",
+    [id],
+    (err, results) => {
+      if (err) {
+        console.error("Error fetching application:", err);
+        return res.status(500).json({ error: "Failed to fetch application" });
+      }
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Application not found" });
+      }
+      res.status(200).json({ application: results[0] });
+    },
+  );
+};
+
+/////// Approve application and create trainer account
+
+export const approveApplication = (req, res) => {
+  const { id } = req.params;
+  const { password } = req.body;
+
+  if (!password) {
+    return res
+      .status(400)
+      .json({ error: "Password is required to create trainer account" });
+  }
+
+  db.query(
+    "SELECT * FROM trainer_applications WHERE application_id = ?",
+    [id],
+    (findErr, findResults) => {
+      if (findErr) {
+        console.error("Error finding application:", findErr);
+        return res.status(500).json({ error: "Failed to approve application" });
+      }
+      if (findResults.length === 0) {
+        return res.status(404).json({ error: "Application not found" });
+      }
+
+      const app = findResults[0];
+
+      if (app.status === "approved") {
+        return res.status(409).json({ error: "Application already approved" });
+      }
+
+      db.query(
+        "SELECT user_id FROM users WHERE email = ?",
+        [app.email],
+        (emailErr, emailResults) => {
+          if (emailErr) {
+            console.error("Error checking email:", emailErr);
+            return res
+              .status(500)
+              .json({ error: "Failed to approve application" });
+          }
+          if (emailResults.length > 0) {
+            return res
+              .status(409)
+              .json({ error: "A user with this email already exists" });
+          }
+
+          bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+            if (hashErr) {
+              console.error("Error hashing password:", hashErr);
+              return res
+                .status(500)
+                .json({ error: "Failed to process password" });
+            }
+
+            const userSql = `
+                    INSERT INTO users (full_name, email, password, phone, role, status, created_at)
+                    VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())
+                `;
+            db.query(
+              userSql,
+              [app.full_name, app.email, hashedPassword, app.phone],
+              (userErr, userResult) => {
+                if (userErr) {
+                  console.error("Error creating user:", userErr);
+                  return res
+                    .status(500)
+                    .json({ error: "Failed to create trainer account" });
+                }
+
+                const newUserId = userResult.insertId;
+
+                const trainerSql = `
+                        INSERT INTO trainers (user_id, specialization, bio, experience_years)
+                        VALUES (?, ?, ?, ?)
+                    `;
+                db.query(
+                  trainerSql,
+                  [
+                    newUserId,
+                    app.specialization,
+                    app.bio,
+                    app.experience_years,
+                  ],
+                  (trainerErr, trainerResult) => {
+                    if (trainerErr) {
+                      console.error(
+                        "Error creating trainer profile:",
+                        trainerErr,
+                      );
+
+                      db.query("DELETE FROM users WHERE user_id = ?", [
+                        newUserId,
+                      ]);
+                      return res
+                        .status(500)
+                        .json({ error: "Failed to create trainer profile" });
+                    }
+
+                    db.query(
+                      `UPDATE trainer_applications 
+                                 SET status = 'approved', reviewed_at = NOW() 
+                                 WHERE application_id = ?`,
+                      [id],
+                      (updateErr) => {
+                        if (updateErr)
+                          console.error(
+                            "Error updating application status:",
+                            updateErr,
+                          );
+                      },
+                    );
+
+                    res.status(201).json({
+                      message:
+                        "Application approved. Trainer account created successfully.",
+                      trainerId: trainerResult.insertId,
+                      userId: newUserId,
+                      credentials: {
+                        email: app.email,
+                        password: password,
+                      },
+                    });
+                  },
+                );
+              },
+            );
+          });
+        },
+      );
+    },
+  );
+};
+
+////////Reject application
+
+export const rejectApplication = (req, res) => {
+    const { id } = req.params;
+    const { admin_note } = req.body;
+ 
+    db.query('SELECT * FROM trainer_applications WHERE application_id = ?', [id], (findErr, findResults) => {
+        if (findErr) {
+            console.error('Error finding application:', findErr);
+            return res.status(500).json({ error: 'Failed to reject application' });
+        }
+        if (findResults.length === 0) {
+            return res.status(404).json({ error: 'Application not found' });
+        }
+        if (findResults[0].status === 'approved') {
+            return res.status(409).json({ error: 'Cannot reject an already approved application' });
+        }
+ 
+        const sql = `
+            UPDATE trainer_applications 
+            SET status = 'rejected', reviewed_at = NOW(), admin_note = ?
+            WHERE application_id = ?
+        `;
+        db.query(sql, [admin_note || null, id], (err) => {
+            if (err) {
+                console.error('Error rejecting application:', err);
+                return res.status(500).json({ error: 'Failed to reject application' });
+            }
+            res.status(200).json({ message: 'Application rejected.' });
+        });
+    });
+};
+ 
