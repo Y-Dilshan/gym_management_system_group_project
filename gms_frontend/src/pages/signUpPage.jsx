@@ -120,7 +120,7 @@ export default function SignUpPage() {
                 className=" border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#D4AF37] hover:text-black"
                 onClick={handleTrainerSignup}
               >
-                Trainer?
+                Apply As a Trainer
               </button>
             </div>
             {/* Trainer Button */}

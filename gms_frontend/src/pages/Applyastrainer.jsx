@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 
 const API = "http://localhost:3000/api";
 
@@ -13,11 +12,15 @@ export default function ApplyAsTrainer() {
     bio: "",
     experience_years: "",
   });
-  const [status, setStatus] = useState(null); 
+  const [status, setStatus] = useState(null);
   const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSignin = () => {
+    navigate("/signin");
   };
 
   const handleSubmit = async (e) => {
@@ -276,12 +279,13 @@ export default function ApplyAsTrainer() {
 
           <p className="text-center text-zinc-600 text-xs">
             Already have an account?{" "}
-            <a
-              href="/trainer/login"
+            <Link
+              to="/trainer/login"
               className="text-orange-500 hover:text-orange-400"
+              onClick={handleSignin}
             >
               Sign in here
-            </a>
+            </Link>
           </p>
         </form>
       </div>
@@ -289,7 +293,7 @@ export default function ApplyAsTrainer() {
   );
 }
 
-// ─── Reusable field wrapper ───────────────────────────────────────────────────
+//  Reusable field wrapper
 function Field({ label, required, children }) {
   return (
     <div className="space-y-1.5">
