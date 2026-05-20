@@ -1,22 +1,27 @@
-// import Header from "../components/Header.jsx";
 import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
+import { useNavigate } from "react-router-dom";
 
 export default function HomePage() {
+
+    const navigate = useNavigate();
+
+    const handleProduct = () => {
+        navigate('/products');
+    }
     return(
         <div className=" bg-[#333333]">
             <Header />
 
             {/*home*/}
             <div className = "w-full px-[100px]">
-                    <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
-                    <img src="homepage.jpg" alt="homepage" className="w-[1320px] h-[650px] blur-[2px] object-cover"/>
+                <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
+                <img src="homepage.jpg" alt="homepage" className="w-[1320px] h-[650px] blur-[2px] object-cover"/>
                 </div>
             <div>
                 <h1 className = "text-4xl font-bold text-center text-[#D4AF37] pt-[50px]">Unleash Your Potential</h1>
                 <p className = "text-center text-lg text-white mt-4 px-4 max-w-[800px] mx-auto">
-                    Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods.
-                </p>
+                    Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods.</p>
 
             <div className = "flex items-center justify-center py-[50px]">
                 <button className="bg-[#333333] text-white  rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[20px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
@@ -27,15 +32,9 @@ export default function HomePage() {
 
             {/*about*/} 
             <div >
-                    <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">About Us</h1>
-                <div className = "flex items-center justify-center mt-[30px] gap-10">
-
-                    <p className = "text-center text-lg text-white mt-4 px-4 max-w-[800px] ml-[100px]">
-                        Welcome to our fitness gym, where we help people of all levels achieve their health and fitness goals. With modern equipment, expert trainers, and personalized programs, we create a supportive and motivating environment for everyone.
-
-                        We believe fitness is more than just exercise it’s about building confidence, discipline, and a healthier lifestyle. Join us and start your journey toward a stronger, better you.
-                    </p>
-
+            <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">About Us</h1>
+            <div className = "flex items-center justify-center mt-[30px] gap-10">
+                <p className = "text-center text-lg text-white mt-4 px-4 max-w-[800px] ml-[100px]">Welcome to our fitness gym, where we help people of all levels achieve their health and fitness goals. With modern equipment, expert trainers, and personalized programs, we create a supportive and motivating environment for everyone. We believe fitness is more than just exercise it’s about building confidence, discipline, and a healthier lifestyle. Join us and start your journey toward a stronger, better you.</p>
                 <img src = "about.jpg " alt = "about us" className="w-[480px] h-[280px] object-cover mt-[30px] mr-[100px]"/>
             </div>
             </div>
@@ -49,35 +48,35 @@ export default function HomePage() {
            <div className="px-[100px] py-[50px]">
 
            <div className="grid grid-cols-3 gap-4 ">
-               <div className="p-6 flex items-center justify-center shadow  shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="p-6 flex items-center justify-center shadow  shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Schedules</h3>
                 <p className = "py-[10px]">Flexible workout schedules designed to fit your daily routine and keep you consistent.</p>
-               </div>
+               </button>
 
-               <div className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Trainers</h3>
                 <p className = "py-[10px]">Certified and experienced trainers who guide and motivate you to reach your fitness goals.</p>
-               </div>
+               </button>
 
-               <div className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button onClick = {handleProduct} className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Supplements</h3>
                 <p className = "py-[10px]">High-quality supplements to support performance, recovery, and overall health.</p>
-               </div>
+               </button>
 
-               <div className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Diet Plans</h3>
                 <p className = "py-[10px]">Customized diet plans to help you maintain a balanced and healthy lifestyle.</p>
-               </div>
+               </button>
 
-               <div className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Personal Training</h3>
                 <p className = "py-[10px]">One-on-one training sessions tailored to your specific fitness needs and goals.</p>
-               </div>
+               </button>
 
-               <div className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Modern gym equipment</h3>
                 <p className = "py-[10px]">State-of-the-art gym equipment for effective and safe workouts.</p>
-               </div>
+               </button>
            </div>
 
         </div>
@@ -154,11 +153,11 @@ export default function HomePage() {
                         </div>
 
                         <div className = "text-white text-center text-[20px] pt-[30px]">
-                            <button className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl text-black bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-white">Calculate</button>
+                            <button type = "submit" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl text-black bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-white">Calculate</button>
                         </div>
 
                         <div className = "text-white text-center text-[20px] pt-[30px]">
-                            <button className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl bg-[#333333] hover:bg-[#D4AF37] hover:outline-[#D4AF37] hover:text-black">Clear</button>
+                            <button type = "reset" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl bg-[#333333] hover:bg-[#D4AF37] hover:outline-[#D4AF37] hover:text-black">Clear</button>
                         </div>
 
                         <div className = "text-white text-[25px] pt-[20px] text-center">Result</div>

@@ -37,6 +37,33 @@ export const createUser = (req, res) => {
     });
 };
 
+export const login = (req, res) => {
+    const {email, password} = req.body;
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    db.query(sql, [email], (err, results) => {
+        if (err) {
+            console.error('Error fetching user: ', err);
+            res.status(500).json({error: 'Failed to fetch user'});
+        } else if (results.length === 0) {
+            res.status(401).json({error: 'Invalid email or password'});
+        } else {
+            const user = results[0];
+            bcrypt.compare(password, user.password, (err, isMatch) => {
+                if (err) {
+                    console.error('Error comparing passwords: ', err);
+                    res.status(500).json({error: 'Failed to process password'});
+                } else if (!isMatch) {
+                    res.status(401).json({error: 'Invalid email or password'});
+                } else {
+                    // Remove password from response
+                    const {password, ...userWithoutPassword} = user;
+                    res.status(200).json({message: 'Login successful', user: userWithoutPassword});
+                }
+            });
+        }
+    });
+};
+
 export const getUsers = (req, res) => {
     const sql = 'SELECT * FROM users';
     db.query(sql, (err, results) => {
