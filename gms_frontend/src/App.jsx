@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Toaster } from 'react-hot-toast';
@@ -11,6 +12,8 @@ import ManageTrainers from './pages/admin/manageTrainers.jsx';
 import ManageBookings from "./pages/admin/manageBooking.jsx";
 import ManageProducts from './pages/admin/manageProducts.jsx';
 import ReportsAnalytics from './pages/admin/reportAnalytics.jsx';
+import ApplyAsTrainer from "./pages/Applyastrainer.jsx";
+
 
 function App() {
   return (
@@ -22,6 +25,8 @@ function App() {
             <Route path="/*" element={<HomePage />} />
             <Route path="/signin" element={<SigninPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
+            <Route path="/trainer/login" element={<SigninPage />} />
             <Route path="/products" element={<ProductPage />} />
             
 
@@ -33,12 +38,9 @@ function App() {
             <Route path="/admin/reports" element={<ReportsAnalytics />} />
           </Routes>
         </div>
-
       </BrowserRouter>
     </div>
   )
 }
 
 export default App;
-
-
