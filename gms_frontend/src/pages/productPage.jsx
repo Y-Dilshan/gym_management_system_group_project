@@ -20,7 +20,7 @@ export default function ProductPage() {
         </p>
       </div>
       {/* buttons */}
-      <div className="flex  h-[50px] justify-center items-center gap-3 overflow-x-auto px-4 bg-[#262626]">
+      <div className="flex  h-[80px] justify-center items-center gap-3 overflow-x-auto px-4 bg-[#262626]">
         <button className="rounded-xl bg-[#d4af37] px-5 py-2 text-sm font-semibold text-black transition-colors">
           All
         </button>
