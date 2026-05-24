@@ -9,6 +9,10 @@ export default function HomePage() {
     const handleProduct = () => {
         navigate('/products');
     }
+
+    const handleGetStarted = () =>{
+        navigate('/signup');
+    }
     return(
         <div className=" bg-[#333333]">
             <Header />
@@ -24,7 +28,7 @@ export default function HomePage() {
                     Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods.</p>
 
             <div className = "flex items-center justify-center py-[50px]">
-                <button className="bg-[#333333] text-white  rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[20px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
+                <button onClick={handleGetStarted} className="bg-[#333333] text-white  rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[20px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
             </div>
               
             </div>
