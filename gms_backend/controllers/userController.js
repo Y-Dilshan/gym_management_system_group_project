@@ -10,12 +10,6 @@ const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
 export const createUserByAdmin = (req, res) => {
   const user = req.user; // Get from auth middleware
 
-  //   if (!user || user.role !== "admin") {
-  //     return res.status(403).json({
-  //       message: "Only admins can create users",
-  //     });
-  //   }
-
   //////////////////////ADMIN -> admin ///////////////////
 
   if (!isAdmin(user)) {
@@ -42,13 +36,112 @@ export const createUserByAdmin = (req, res) => {
   }
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
-    if (err) {
-      console.error("Error hashing password: ", err);
-      return res.status(500).json({ error: "Failed to process password" });
-    }
 
-    const sql =
-      "INSERT INTO users (user_id, full_name, email, password, phone, role, status, profile_picture, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  if (err) {
+    console.error("Error hashing password: ", err);
+
+    return res.status(500).json({
+      error: "Failed to process password",
+    });
+  }
+
+  // =========================
+  // IF ROLE IS TRAINER
+  // =========================
+
+  if (role === "TRAINER") {
+
+    const trainerSql = `
+      INSERT INTO trainers ()
+      VALUES ()
+    `;
+
+    db.query(trainerSql, (err, trainerResult) => {
+
+      if (err) {
+        console.error("Error creating trainer:", err);
+
+        return res.status(500).json({
+          error: "Failed to create trainer",
+        });
+      }
+
+      // Get trainer_id
+      const trainer_id = trainerResult.insertId;
+
+      // Insert user WITH trainer_id
+      const userSql = `
+        INSERT INTO users
+        (
+          user_id,
+          full_name,
+          email,
+          password,
+          phone,
+          role,
+          status,
+          profile_picture,
+          created_at,
+          trainer_id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `;
+
+      db.query(
+        userSql,
+        [
+          user_id,
+          full_name,
+          email,
+          hashedPassword,
+          phone,
+          role,
+          status,
+          profile_picture,
+          created_at,
+          trainer_id,
+        ],
+        (err, result) => {
+
+          if (err) {
+            console.error("Error creating trainer user:", err);
+
+            return res.status(500).json({
+              error: "Failed to create trainer user",
+            });
+          }
+
+          return res.status(201).json({
+            message: "Trainer created successfully",
+            userId: result.insertId,
+            trainer_id,
+          });
+        }
+      );
+    });
+
+  }
+
+  // =========================
+  // NORMAL USER CREATION
+  // =========================
+  else {
+
+    const sql = `
+      INSERT INTO users
+      (
+        user_id,
+        full_name,
+        email,
+        password,
+        phone,
+        role,
+        status,
+        profile_picture,
+        created_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
     db.query(
       sql,
@@ -64,19 +157,24 @@ export const createUserByAdmin = (req, res) => {
         created_at,
       ],
       (err, result) => {
+
         if (err) {
           console.error("Error creating user: ", err);
-          res.status(500).json({ error: "Failed to create user" });
-        } else {
-          res.status(201).json({
-            message: "User created successfully",
-            userId: result.insertId,
+
+          return res.status(500).json({
+            error: "Failed to create user",
           });
         }
-      },
+
+        return res.status(201).json({
+          message: "User created successfully",
+          userId: result.insertId,
+        });
+      }
     );
-  });
-};
+  }
+});
+}
 //////////////////////////////////////////////
 export const register = (req, res) => {
   const { full_name, email, password, phone } = req.body;
