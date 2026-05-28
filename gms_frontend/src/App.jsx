@@ -7,6 +7,9 @@ import SigninPage from './pages/signinPage.jsx';
 import SignUpPage from './pages/signUpPage.jsx';
 import ProductPage from './pages/productPage.jsx';
 import AdminDashboard from './pages/adminDashboard.jsx';
+import AdminAddProduct from './pages/admin/adminAddProduct.jsx';
+import AdminUsers from './pages/admin/adminUsersPage.jsx';
+import AdminOrdersPage from './pages/admin/adminOrdersPage.jsx';
 import ApplyAsTrainer from './pages/applyAsTrainer.jsx';
 
 
@@ -26,6 +29,9 @@ function App() {
             
 
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/add-product" element={<AdminAddProduct />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/orders" element={<AdminOrdersPage />} />
             
           </Routes>
         </div>
