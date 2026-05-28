@@ -72,7 +72,7 @@ export default function Footer() {
     <>
       {/* Google Font import */}
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&display=swap');
+        @import url('logo.png');
         .pz-footer * { font-family: 'Barlow', sans-serif; }
         .pz-logo { font-family: 'Bebas Neue', sans-serif !important; }
         .pz-heading { font-family: 'Bebas Neue', sans-serif !important; }
