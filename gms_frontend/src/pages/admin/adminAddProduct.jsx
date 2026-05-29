@@ -51,6 +51,18 @@ export default function AdminAddProduct() {
                         <input id="category" type="text" placeholder="Enter category" className="w-full border rounded-lg py-3 px-4 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                     </div>
 
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category" > Product Category </label>
+
+                        <input id="category" type="text" placeholder="Enter category" className="w-full border rounded-lg py-3 px-4 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                    </div>
+
+                    <div>
+                        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category" > Product Category </label>
+
+                        <input id="category" type="text" placeholder="Enter category" className="w-full border rounded-lg py-3 px-4 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                    </div>
+
                     {/* Buttons */}
                     <div className="md:col-span-2 flex justify-center gap-6 mt-6">
 
