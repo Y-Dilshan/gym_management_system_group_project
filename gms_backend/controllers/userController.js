@@ -3,27 +3,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const SALT_ROUNDS = 10;
-//////////////////////ADMIN -> admin ///////////////////
 const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
-//////////////////////ADMIN -> admin ///////////////////
 
 export const createUserByAdmin = (req, res) => {
-  const user = req.user; // Get from auth middleware
+  const user = req.user; ///////////// Get from auth middleware
 
-  //   if (!user || user.role !== "admin") {
-  //     return res.status(403).json({
-  //       message: "Only admins can create users",
-  //     });
-  //   }
-
-  //////////////////////ADMIN -> admin ///////////////////
 
   if (!isAdmin(user)) {
     return res.status(403).json({
       message: "Only admins can create users",
     });
   }
-  //////////////////////ADMIN -> admin ///////////////////
 
   const {
     user_id,
@@ -35,6 +25,7 @@ export const createUserByAdmin = (req, res) => {
     status,
     profile_picture,
     created_at,
+    position,
   } = req.body;
 
   if (!full_name || !email || !password) {
@@ -42,13 +33,185 @@ export const createUserByAdmin = (req, res) => {
   }
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
-    if (err) {
-      console.error("Error hashing password: ", err);
-      return res.status(500).json({ error: "Failed to process password" });
-    }
 
-    const sql =
-      "INSERT INTO users (user_id, full_name, email, password, phone, role, status, profile_picture, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+  if (err) {
+    console.error("Error hashing password: ", err);
+
+    return res.status(500).json({
+      error: "Failed to process password",
+    });
+  }
+
+if (role === "ADMIN") {
+
+  const userSql = `
+    INSERT INTO users
+    (
+      user_id,
+      full_name,
+      email,
+      password,
+      phone,
+      role,
+      status,
+      profile_picture,
+      created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    userSql,
+    [
+      user_id,
+      full_name,
+      email,
+      hashedPassword,
+      phone,
+      role,
+      status,
+      profile_picture,
+      created_at,
+    ],
+    (err, result) => {
+
+      if (err) {
+        console.error("Error creating admin user:", err);
+
+        return res.status(500).json({
+          error: "Failed to create admin user",
+        });
+      }
+
+      // Insert into admins table AFTER user exists
+      const adminSql = `
+        INSERT INTO admins
+        (
+          user_id,
+          position
+        )
+        VALUES (?, ?)
+      `;
+
+      db.query(
+        adminSql,
+        [result.insertId, "Manager"],
+        (err, adminResult) => {
+
+          if (err) {
+            console.error("Error creating admin:", err);
+
+            return res.status(500).json({
+              error: "Failed to create admin",
+            });
+          }
+
+          return res.status(201).json({
+            message: "Admin created successfully",
+            userId: result.insertId,
+            admin_id: adminResult.insertId,
+          });
+        }
+      );
+    }
+  );
+
+}
+
+  else if (role === "TRAINER") {
+
+  // FIRST create user
+  const userSql = `
+    INSERT INTO users
+    (
+      user_id,
+      full_name,
+      email,
+      password,
+      phone,
+      role,
+      status,
+      profile_picture,
+      created_at
+    )
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+
+  db.query(
+    userSql,
+    [
+      user_id,
+      full_name,
+      email,
+      hashedPassword,
+      phone,
+      role,
+      status,
+      profile_picture,
+      created_at,
+    ],
+    (err, userResult) => {
+
+      if (err) {
+
+        console.error("Error creating trainer user:", err);
+
+        return res.status(500).json({
+          error: "Failed to create trainer user",
+        });
+      }
+
+      // GET created user_id
+      const createdUserId = userResult.insertId;
+
+      // NOW create trainer
+      const trainerSql = `
+        INSERT INTO trainers (user_id)
+        VALUES (?)
+      `;
+
+      db.query(
+        trainerSql,
+        [createdUserId],
+        (err, trainerResult) => {
+
+          if (err) {
+
+            console.error("Error creating trainer:", err);
+
+            return res.status(500).json({
+              error: "Failed to create trainer",
+            });
+          }
+
+          return res.status(201).json({
+            message: "Trainer created successfully",
+            userId: createdUserId,
+            trainerId: trainerResult.insertId,
+          });
+        }
+      );
+    }
+  );
+}
+
+  else {
+
+    const sql = `
+      INSERT INTO users
+      (
+        user_id,
+        full_name,
+        email,
+        password,
+        phone,
+        role,
+        status,
+        profile_picture,
+        created_at
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
     db.query(
       sql,
@@ -64,19 +227,24 @@ export const createUserByAdmin = (req, res) => {
         created_at,
       ],
       (err, result) => {
+
         if (err) {
           console.error("Error creating user: ", err);
-          res.status(500).json({ error: "Failed to create user" });
-        } else {
-          res.status(201).json({
-            message: "User created successfully",
-            userId: result.insertId,
+
+          return res.status(500).json({
+            error: "Failed to create user",
           });
         }
-      },
+
+        return res.status(201).json({
+          message: "User created successfully",
+          userId: result.insertId,
+        });
+      }
     );
-  });
-};
+  }
+});
+}
 //////////////////////////////////////////////
 export const register = (req, res) => {
   const { full_name, email, password, phone } = req.body;
@@ -200,7 +368,6 @@ export const updateUser = (req, res) => {
   const { full_name, email, password, phone, role, status, profile_picture } =
     req.body;
 
-  // If password is being updated, hash it first
   if (password) {
     bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
       if (err) {
