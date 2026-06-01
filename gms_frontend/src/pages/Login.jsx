@@ -66,7 +66,7 @@ const styles = {
 
   card: {
     position: "relative",
-    width: "520px",
+    width: "530px",
     backgroundColor: "#2f2f2f",
     borderRadius: "20px",
     padding: "40px 50px",
@@ -77,7 +77,7 @@ const styles = {
   back: {
     color: "white",
     textDecoration: "none",
-    fontSize: "24px",
+    fontSize: "25px",
     fontWeight: "500",
   },
 
