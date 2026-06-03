@@ -2,9 +2,17 @@ import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
+
+  //conect to backend
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  //connect to backend
 
   const handleBack = () => {
     navigate("/");
@@ -20,6 +28,30 @@ export default function SignUpPage() {
   const handleTrainerSignup = () => {
     navigate("/Applyastrainer");
   };
+
+  //////////////
+  const handleRegister = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/users/register",
+        {
+          full_name: fullName,
+          email: email,
+          password: password,
+          phone: phone,
+        },
+      );
+
+      alert(response.data.message);
+
+      navigate("/signin");
+    } catch (error) {
+      console.error(error);
+
+      alert(error.response?.data?.error || "Registration failed");
+    }
+  };
+  ///////////////////
 
   return (
     <div className="flex">
@@ -62,8 +94,10 @@ export default function SignUpPage() {
                   Full name{" "}
                 </label>
                 <input
-                  type="email"
-                  placeholder="Enter your email"
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                   className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
                 />
               </div>
@@ -73,6 +107,8 @@ export default function SignUpPage() {
                 <input
                   type="email"
                   placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
                 />
               </div>
@@ -83,8 +119,10 @@ export default function SignUpPage() {
                   Mobile number{" "}
                 </label>
                 <input
-                  type="email"
-                  placeholder="Enter your email"
+                  type="text"
+                  placeholder="Enter your mobile number"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
                   className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
                 />
               </div>
@@ -95,16 +133,16 @@ export default function SignUpPage() {
                   Password{" "}
                 </label>
                 <input
-                  type="email"
+                  type="password"
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
                 />
               </div>
             </div>
             <div className="text-white text-center text-[20px] pt-[30px]">
-              <button className=" border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#D4AF37] hover:text-black">
-                Sign in
-              </button>
+              <button onClick={handleRegister}>Sign Up</button>
             </div>
             <div className=" flex px-[50px] text-white pt-[20px] flex-col gap-2">
               <span className="text-center">or sign up with</span>

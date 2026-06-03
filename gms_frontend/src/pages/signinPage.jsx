@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +17,34 @@ export default function SigninPage() {
     navigate("/signup");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/users/login",
+        {
+          email,
+          password,
+        },
+      );
+
+      // Save JWT token
+      localStorage.setItem("token", response.data.token);
+
+      // Save user info
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      alert("Login successful!");
+
+      console.log(response.data);
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+
+      alert(error.response?.data?.error || "Login failed");
+    }
   };
 
   return (
@@ -29,7 +53,9 @@ export default function SigninPage() {
         {/* Back Button */}
         <button className="flex items-center gap-2 text-white hover:text-[#D4AF37] transition duration-300 absolute left-10 top-10">
           <GoArrowLeft className="text-[20px]" />
-          <span onClick={handleBack} className="cursor-pointer">Back</span>
+          <span onClick={handleBack} className="cursor-pointer">
+            Back
+          </span>
         </button>
 
         {/* Title */}
@@ -43,6 +69,8 @@ export default function SigninPage() {
             <input
               type="email"
               placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
@@ -50,16 +78,21 @@ export default function SigninPage() {
           <div className="w-[400px] flex flex-col pt-[20px]">
             <label className="text-white mb-2 text-[16px]"> Password </label>
             <input
-              type="email"
+              type="password"
               placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
         </div>
 
         <div className="text-white text-center text-[20px] pt-[30px]">
-          <button className=" cursor-pointer border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-black">
-            Sign in
+          <button
+            onClick={handleSubmit}
+            className="cursor-pointer border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-black"
+          >
+            Sign In
           </button>
         </div>
 
