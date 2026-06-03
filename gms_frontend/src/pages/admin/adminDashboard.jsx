@@ -1,5 +1,5 @@
 import { useState } from "react";
-import {useNavigate} from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import {
   Users,
   Calendar,
@@ -122,7 +122,13 @@ const months = [
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", active: true },
-  { icon: Users, label: "Members", onClick: () => {handleMembers} },
+  {
+    icon: Users,
+    label: "Members",
+    onClick: () => {
+      handleMembers;
+    },
+  },
   { icon: Dumbbell, label: "Trainers" },
   { icon: Calendar, label: "Bookings" },
   { icon: Package, label: "Products" },
@@ -131,21 +137,18 @@ const navItems = [
 ];
 
 const statusColor = {
-  confirmed:
-    "text-green-500 bg-green-500/10",
-  pending:
-    "text-yellow-500 bg-yellow-500/10",
-  cancelled:
-    "text-red-500 bg-red-500/10",
+  confirmed: "text-green-500 bg-green-500/10",
+  pending: "text-yellow-500 bg-yellow-500/10",
+  cancelled: "text-red-500 bg-red-500/10",
 };
 
 export default function AdminDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const navigate = useNavigate();
-  const handleMembers = () =>{
-    navigate('/admin/members');
-  }
+  const handleMembers = () => {
+    navigate("/admin/members");
+  };
 
   return (
     <div className="flex min-h-screen bg-[#1a1a14] text-[#e8e0cc] font-sans">
@@ -166,9 +169,7 @@ export default function AdminDashboard() {
               <h1 className="text-lg font-bold tracking-wider text-yellow-500">
                 FITNESS
               </h1>
-              <p className="text-[10px] tracking-[3px] text-gray-500">
-                FORCE
-              </p>
+              <p className="text-[10px] tracking-[3px] text-gray-500">FORCE</p>
             </div>
           )}
         </div>
@@ -186,11 +187,7 @@ export default function AdminDashboard() {
             >
               <item.icon
                 size={18}
-                className={
-                  item.active
-                    ? "text-yellow-500"
-                    : "text-gray-500"
-                }
+                className={item.active ? "text-yellow-500" : "text-gray-500"}
               />
 
               {sidebarOpen && (
@@ -214,9 +211,7 @@ export default function AdminDashboard() {
             <LogOut size={18} className="text-gray-500" />
 
             {sidebarOpen && (
-              <span className="text-sm text-gray-400">
-                Logout
-              </span>
+              <span className="text-sm text-gray-400">Logout</span>
             )}
           </div>
         </div>
@@ -228,31 +223,22 @@ export default function AdminDashboard() {
         <header className="sticky top-0 z-10 flex items-center justify-between border-b border-[#3a3a2a] bg-[#16160f] px-7 py-4">
           <div className="flex items-center gap-4">
             <button
-              onClick={() =>
-                setSidebarOpen(!sidebarOpen)
-              }
+              onClick={() => setSidebarOpen(!sidebarOpen)}
               className="text-gray-500"
             >
               <Menu size={20} />
             </button>
 
             <div>
-              <h1 className="text-2xl font-bold">
-                Admin Dashboard
-              </h1>
-              <p className="text-sm text-gray-500">
-                Tuesday, 19 May 2026
-              </p>
+              <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+              <p className="text-sm text-gray-500">Tuesday, 19 May 2026</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4">
             {/* Search */}
             <div className="flex items-center gap-2 rounded-lg border border-[#3a3a2a] bg-[#22221a] px-4 py-2">
-              <Search
-                size={14}
-                className="text-gray-500"
-              />
+              <Search size={14} className="text-gray-500" />
 
               <input
                 type="text"
@@ -263,10 +249,7 @@ export default function AdminDashboard() {
 
             {/* Notification */}
             <div className="relative cursor-pointer">
-              <Bell
-                size={20}
-                className="text-gray-500"
-              />
+              <Bell size={20} className="text-gray-500" />
 
               <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-yellow-500"></span>
             </div>
@@ -290,17 +273,12 @@ export default function AdminDashboard() {
                   <div
                     className={`flex h-11 w-11 items-center justify-center rounded-xl ${s.bg}`}
                   >
-                    <s.icon
-                      size={20}
-                      className={s.color}
-                    />
+                    <s.icon size={20} className={s.color} />
                   </div>
 
                   <span
                     className={`flex items-center gap-1 text-sm font-semibold ${
-                      s.up
-                        ? "text-green-500"
-                        : "text-red-500"
+                      s.up ? "text-green-500" : "text-red-500"
                     }`}
                   >
                     {s.up ? (
@@ -316,9 +294,7 @@ export default function AdminDashboard() {
                   {s.value}
                 </h2>
 
-                <p className="text-sm text-gray-500">
-                  {s.label}
-                </p>
+                <p className="text-sm text-gray-500">{s.label}</p>
               </div>
             ))}
           </div>
@@ -329,18 +305,12 @@ export default function AdminDashboard() {
             <div className="rounded-xl border border-[#3a3a2a] bg-[#22221a] p-6">
               <div className="mb-6 flex items-center justify-between">
                 <div>
-                  <h2 className="text-lg font-bold">
-                    Revenue Overview
-                  </h2>
+                  <h2 className="text-lg font-bold">Revenue Overview</h2>
 
-                  <p className="text-sm text-gray-500">
-                    Monthly earnings 2026
-                  </p>
+                  <p className="text-sm text-gray-500">Monthly earnings 2026</p>
                 </div>
 
-                <h2 className="text-3xl font-bold text-yellow-500">
-                  $24,560
-                </h2>
+                <h2 className="text-3xl font-bold text-yellow-500">$24,560</h2>
               </div>
 
               <div className="flex h-40 items-end gap-2">
@@ -368,30 +338,21 @@ export default function AdminDashboard() {
 
             {/* Trainers */}
             <div className="rounded-xl border border-[#3a3a2a] bg-[#22221a] p-6">
-              <h2 className="mb-5 text-lg font-bold">
-                Top Trainers
-              </h2>
+              <h2 className="mb-5 text-lg font-bold">Top Trainers</h2>
 
               {topTrainers.map((t) => (
-                <div
-                  key={t.name}
-                  className="mb-5 flex items-center gap-4"
-                >
+                <div key={t.name} className="mb-5 flex items-center gap-4">
                   <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-yellow-500/70 to-yellow-700 text-sm font-bold">
                     {t.img}
                   </div>
 
                   <div className="flex-1">
-                    <h3 className="mb-1 text-sm font-semibold">
-                      {t.name}
-                    </h3>
+                    <h3 className="mb-1 text-sm font-semibold">{t.name}</h3>
 
                     <div className="h-1 rounded bg-[#2a2a1e]">
                       <div
                         style={{
-                          width: `${
-                            (t.classes / 50) * 100
-                          }%`,
+                          width: `${(t.classes / 50) * 100}%`,
                         }}
                         className="h-full rounded bg-gradient-to-r from-yellow-500 to-yellow-700"
                       ></div>
@@ -403,9 +364,7 @@ export default function AdminDashboard() {
                       ★ {t.rating}
                     </p>
 
-                    <p className="text-xs text-gray-500">
-                      {t.classes} cls
-                    </p>
+                    <p className="text-xs text-gray-500">{t.classes} cls</p>
                   </div>
                 </div>
               ))}
@@ -422,19 +381,10 @@ export default function AdminDashboard() {
                     ["Standard", 35, "text-green-500"],
                     ["Basic", 20, "text-blue-500"],
                   ].map(([label, value, color]) => (
-                    <div
-                      key={label}
-                      className="flex-1 text-center"
-                    >
-                      <h2
-                        className={`text-xl font-bold ${color}`}
-                      >
-                        {value}%
-                      </h2>
+                    <div key={label} className="flex-1 text-center">
+                      <h2 className={`text-xl font-bold ${color}`}>{value}%</h2>
 
-                      <p className="text-xs text-gray-500">
-                        {label}
-                      </p>
+                      <p className="text-xs text-gray-500">{label}</p>
                     </div>
                   ))}
                 </div>
@@ -445,9 +395,7 @@ export default function AdminDashboard() {
           {/* Recent Bookings */}
           <div className="rounded-xl border border-[#3a3a2a] bg-[#22221a] p-6 overflow-x-auto">
             <div className="mb-5 flex items-center justify-between">
-              <h2 className="text-lg font-bold">
-                Recent Bookings
-              </h2>
+              <h2 className="text-lg font-bold">Recent Bookings</h2>
 
               <button className="flex items-center gap-1 rounded-md border border-yellow-500/30 px-4 py-2 text-sm text-yellow-500">
                 View All
@@ -488,9 +436,7 @@ export default function AdminDashboard() {
                           {b.name.charAt(0)}
                         </div>
 
-                        <span className="text-sm font-medium">
-                          {b.name}
-                        </span>
+                        <span className="text-sm font-medium">{b.name}</span>
                       </div>
                     </td>
 
@@ -498,9 +444,7 @@ export default function AdminDashboard() {
                       {b.trainer}
                     </td>
 
-                    <td className="px-3 py-4 text-sm">
-                      {b.class}
-                    </td>
+                    <td className="px-3 py-4 text-sm">{b.class}</td>
 
                     <td className="px-3 py-4">
                       <div className="flex items-center gap-1 text-sm text-gray-400">
