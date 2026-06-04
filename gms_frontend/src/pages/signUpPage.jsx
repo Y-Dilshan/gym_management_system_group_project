@@ -29,7 +29,6 @@ export default function SignUpPage() {
     navigate("/Applyastrainer");
   };
 
-  /////////
   const handleRegister = async () => {
     try {
       const response = await axios.post(
@@ -51,7 +50,6 @@ export default function SignUpPage() {
       alert(error.response?.data?.error || "Registration failed");
     }
   };
-  ////////////
 
   return (
     <div className="flex">
