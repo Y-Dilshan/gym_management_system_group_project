@@ -75,7 +75,6 @@ export default function ApplyAsTrainer() {
 
   return (
     <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 py-16 font-sans">
-      {/* Background texture */}
       <div className="fixed inset-0 bg-zinc-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(234,88,12,0.15),rgba(255,255,255,0))] pointer-events-none" />
 
       <div className="relative w-full max-w-2xl">
