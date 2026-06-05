@@ -4,14 +4,13 @@ import { Toaster } from "react-hot-toast";
 import HomePage from "./pages/homePage.jsx";
 import SigninPage from "./pages/signinPage.jsx";
 import SignUpPage from "./pages/signUpPage.jsx";
-// import ProductPage from "./pages/productsPage.jsx";
 import ProductsPage from "./pages/productsPage.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
-import AdminUsers from "./pages/admin/adminUsersPage.jsx";
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/applyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
+import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
 
 function App() {
   return (
@@ -30,7 +29,7 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
 
             <Route path="/admin/add-product" element={<AdminAddProduct />} />
-            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/orders" element={<AdminOrdersPage />} />
             <Route path="/admin/trainer-applications" element={<TrainerApplicationsPage />} />
           </Routes>

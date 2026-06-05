@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
 
 const API = "http://localhost:3000/api";
 
@@ -33,7 +34,7 @@ export default function TrainerApplicationsPage() {
         body: JSON.stringify({ password }),
       });
       const data = await res.json();
-      alert(data.message);
+      toast.success(data.message);
       loadApplications();
     } catch (err) {
       console.error(err);
@@ -53,11 +54,11 @@ export default function TrainerApplicationsPage() {
       console.log(data);
 
       if (!res.ok) {
-        alert(data.error || data.message);
+        toast.error(data.error || data.message);
         return;
       }
 
-      alert(data.message);
+      toast.success(data.message);
       loadApplications();
     } catch (err) {
       console.error(err);
@@ -69,10 +70,10 @@ export default function TrainerApplicationsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white p-10">
-      <h1 className="text-3xl font-bold mb-8">Trainer Applications</h1>
-
-      <div className="overflow-x-auto">
+    <div className="min-h-screen bg-[#333333] text-white py-5 px-25">
+      <h1 className="text-3xl font-bold mb-8 text-[#D4AF37]">Trainer Applications</h1>
+      
+      <div className="overflow-x-auto shadow-lg bg-white">
         <table className="w-full border border-zinc-700">
           <thead>
             <tr className="bg-zinc-800">
@@ -89,31 +90,16 @@ export default function TrainerApplicationsPage() {
             {applications.map((app) => (
               <tr key={app.application_id} className="border-t border-zinc-700">
                 <td className="p-3">{app.full_name}</td>
-
                 <td className="p-3">{app.email}</td>
-
                 <td className="p-3">{app.specialization}</td>
-
                 <td className="p-3">{app.experience_years} yrs</td>
-
                 <td className="p-3">{app.status}</td>
 
                 <td className="p-3 flex gap-2">
                   {app.status === "pending" && (
                     <>
-                      <button
-                        onClick={() => approveApplication(app.application_id)}
-                        className="bg-green-600 px-3 py-1 rounded"
-                      >
-                        Approve
-                      </button>
-
-                      <button
-                        onClick={() => rejectApplication(app.application_id)}
-                        className="bg-red-600 px-3 py-1 rounded"
-                      >
-                        Reject
-                      </button>
+                      <button onClick={() => approveApplication(app.application_id)} className="bg-green-600 px-3 py-1 rounded">Approve </button>
+                      <button onClick={() => rejectApplication(app.application_id)} className="bg-red-600 px-3 py-1 rounded" >Reject </button>
                     </>
                   )}
                 </td>
