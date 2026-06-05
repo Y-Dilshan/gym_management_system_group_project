@@ -3,6 +3,7 @@ import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -38,13 +39,12 @@ export default function SignUpPage() {
         },
       );
 
-      alert(response.data.message);
-
+      toast.success(response.data.message);
       navigate("/signin");
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.error || "Registration failed");
+      toast.error(error.response?.data?.error || "Registration failed");
     }
   };
 
