@@ -11,11 +11,11 @@ import { IoIosSettings } from "react-icons/io";
 
 export default function AdminDashboard() {
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-[#333333]">
             <div className="w-[280px] bg-[#333333] text-white p-6 shadow-2xl">
                 <div className="flex gap-8 items-center mb-4">
                     <img src="/logo.png" alt="Logo" className="w-24 h-24 object-contain" />
-                    <h2 className="text-[#D4AF37] text-3xl font-bold mt-2"> Admin Panel </h2>
+                    <h2 className="text-[#D4AF37] text-3xl font-bold mt-2"> POWER ZONE </h2>
                 </div>
 
                 {/* Overview */}
@@ -58,15 +58,15 @@ export default function AdminDashboard() {
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 p-8">
+            <div className="flex-1 p-8 bg-white rounded-lg shadow-2xl m-4">
 
-                <div className="flex justify-between items-center mb-4">
-                    <h1 className="text-4xl font-bold text-black"> Dashboard </h1>
+                <div className="flex justify-between items-center mb-4 bg-[#333333] p-4 rounded-lg shadow-lg">
+                    <h1 className="text-4xl font-bold text-white"> Admin Dashboard </h1>
 
                     <Link to="/admin/add-product" className="bg-[#D4AF37] hover:bg-[#333333] text-white px-5 py-3 rounded-lg shadow-lg transition" > + Add Product </Link>
                 </div>
 
-                <div className="bg-white rounded-2xl shadow-lg p-6 min-h-[80vh]"> <Outlet /> </div>
+                
 
             </div>
         </div>
