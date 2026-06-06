@@ -3,16 +3,15 @@ import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import toast from "react-hot-toast";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
 
-  /////////////bakend connection states///////////
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  ///////////////////////////////////////////////////////
 
   const handleBack = () => {
     navigate("/");
@@ -31,8 +30,7 @@ export default function SignUpPage() {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users/register",
+      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/register",
         {
           full_name: fullName,
           email: email,
@@ -41,13 +39,12 @@ export default function SignUpPage() {
         },
       );
 
-      alert(response.data.message);
-
+      toast.success(response.data.message);
       navigate("/signin");
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.error || "Registration failed");
+      toast.error(error.response?.data?.error || "Registration failed");
     }
   };
 
@@ -55,11 +52,7 @@ export default function SignUpPage() {
     <div className="flex">
       {/* Left Side */}
       <div className="flex h-screen w-[50%] overflow-hidden relative">
-        <img
-          src="/register_page.jpg"
-          lt="Gym"
-          className="w-full h-full object-cover blur"
-        />
+        <img src="/register_page.jpg" alt="Gym" className="w-full h-full object-cover blur" />
 
         <div className="">
           {/* Back Button */}
@@ -77,10 +70,7 @@ export default function SignUpPage() {
         <div className="bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center">
           <div className="w-[500px] h-[700px] bg-[#333333] shadow-2xl shadow-gray-600 pt-6 relative rounded-xl w-[400px]">
             {/* Title */}
-            <h1 className="text-[32px] text-[#D4AF37] text-center font-semibold">
-              {" "}
-              Create your account
-            </h1>
+            <h1 className="text-[32px] text-[#D4AF37] text-center font-semibold"> {" "}Create your account </h1>
             <div className="gap-10 text-white text-center">
               <h3>
                 You already have an account?{" "}

@@ -21,8 +21,7 @@ export default function SigninPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/users/login",
+      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/login",
         {
           email,
           password,
@@ -74,6 +73,7 @@ export default function SigninPage() {
               className="w-[400px] h-[40px] border border-[#D4AF37] rounded-2xl bg-white px-5 outline-none focus:ring-2 focus:ring-[#D4AF37]"
             />
           </div>
+
 
           <div className="w-[400px] flex flex-col pt-[20px]">
             <label className="text-white mb-2 text-[16px]"> Password </label>
