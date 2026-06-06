@@ -12,6 +12,7 @@ import AdminUsers from "./pages/admin/adminUsersPage.jsx";
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/applyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
+import AdminProductsPage from "./pages/admin/AdminProductsPage";
 
 function App() {
   return (
@@ -32,7 +33,11 @@ function App() {
             <Route path="/admin/add-product" element={<AdminAddProduct />} />
             <Route path="/admin/users" element={<AdminUsers />} />
             <Route path="/admin/orders" element={<AdminOrdersPage />} />
-            <Route path="/admin/trainer-applications" element={<TrainerApplicationsPage />} />
+            <Route
+              path="/admin/trainer-applications"
+              element={<TrainerApplicationsPage />}
+            />
+            <Route path="/admin/products" element={<AdminProductsPage />} />
           </Routes>
         </div>
       </BrowserRouter>
