@@ -8,7 +8,7 @@ import ProductsPage from "./pages/productsPage.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
-import ApplyAsTrainer from "./pages/applyAsTrainer.jsx";
+import ApplyAsTrainer from "./pages/ApplyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
 import AdminProductPage from "./pages/admin/adminProductPage.jsx"

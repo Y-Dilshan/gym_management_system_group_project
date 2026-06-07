@@ -1,4 +1,4 @@
-import { Link, Routes, Route, Outlet } from "react-router-dom";
+import { Link, Routes, Route, Outlet, useLocation } from "react-router-dom";
 import { LuUsers } from "react-icons/lu";
 import { FaClipboardList } from "react-icons/fa";
 import { LiaThListSolid } from "react-icons/lia";
@@ -14,6 +14,9 @@ import AdminOrdersPage from './admin/adminOrdersPage.jsx';
 import AdminUsersPage from './admin/adminUsersPage.jsx';
 
 export default function AdminDashboard() {
+    const location = useLocation();
+    const isDashboard = location.pathname === "/admin" || location.pathname === "/admin/dashboard";
+
     return (
         <div className="flex min-h-screen bg-[#333333]">
             {/* Left Sidebar - Fixed */}
@@ -64,10 +67,13 @@ export default function AdminDashboard() {
 
             {/* Main Content Area with Routing */}
             <div className="w-[calc(100%-280px)] flex-1 p-8 bg-white rounded-lg shadow-2xl m-4">
-                <div className="flex justify-between items-center mb-4 bg-[#333333] p-4 rounded-lg shadow-lg">
-                    <h1 className="text-4xl font-bold text-white"> Admin Dashboard </h1>
-                    <Link to="/admin/add-product" className="bg-[#D4AF37] hover:bg-[#333333] text-white px-5 py-3 rounded-lg shadow-lg transition" > + Add Product </Link>
-                </div>
+                {/* Only show header on dashboard page */}
+                {isDashboard && (
+                    <div className="flex justify-between items-center mb-4 bg-[#333333] p-4 rounded-lg shadow-lg">
+                        <h1 className="text-4xl font-bold text-white"> Admin Dashboard </h1>
+                        <Link to="/admin/add-product" className="bg-[#D4AF37] hover:bg-[#333333] text-white px-5 py-3 rounded-lg shadow-lg transition" > + Add Product </Link>
+                    </div>
+                )}
 
                 {/* This is where the nested routes will render */}
                 <Outlet />
