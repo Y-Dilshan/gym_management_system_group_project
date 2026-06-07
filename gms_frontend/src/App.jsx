@@ -30,18 +30,23 @@ function App() {
             <Route path="/trainer/login" element={<SigninPage />} />
             <Route path="/products" element={<ProductsPage />} />
 
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/products" element={<AdminProductPage />} />
-            <Route path="/admin/add-product" element={<AdminAddProduct />} />
-            <Route path="/admin/users" element={<AdminUsersPage />} />
-            <Route path="/admin/orders" element={<AdminOrdersPage />} />
-            <Route path="/admin/trainer-applications" element={<TrainerApplicationsPage />} />
-            <Route path="/admin/trainers" element={<AdminTrainers />} />
-            <Route path="/admin/schedules" element={<AdminSchedules />} />
-            <Route path="/admin/memberships" element={<AdminMemberships />} />
+             
+            <Route path="/admin" element={<AdminDashboard />}>
+                <Route index element={<AdminOrdersPage />} />
+                <Route path="dashboard" element={<h1>Dashboard Overview</h1>} />
+                <Route path="products" element={<AdminProductPage />} />
+                <Route path="add-product" element={<AdminAddProduct />} />
+                <Route path="users" element={<AdminUsersPage />} />
+                <Route path="orders" element={<AdminOrdersPage />} />
+                <Route path="memberships" element={<h1>Memberships Page</h1>} />
+                <Route path="trainers" element={<h1>Trainers Page</h1>} />
+                <Route path="schedules" element={<h1>Schedules Page</h1>} />
+                <Route path="revenue" element={<h1>Revenue Page</h1>} />
+                <Route path="settings" element={<h1>Settings Page</h1>} />
+            </Route>
+        </Routes>
             
-          </Routes>
+        
         </div>
       </BrowserRouter>
     </div>
