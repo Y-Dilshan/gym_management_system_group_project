@@ -1,4 +1,4 @@
-export default function AdminUsersPage(){
+export default function AdminProductPage(){
 
     return(
         <div className="w-full h-full flex items-center justify-center">
