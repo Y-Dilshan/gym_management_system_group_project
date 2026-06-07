@@ -14,7 +14,7 @@ export default function ApplyAsTrainer() {
   });
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState("");
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
