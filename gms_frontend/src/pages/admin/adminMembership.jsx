@@ -1,7 +1,7 @@
 export default function AdminMemberships(){
     return(
         <div>
-            <h1>TMemberships</h1>
+            <h1>Memberships</h1>
         </div>
     )
 }

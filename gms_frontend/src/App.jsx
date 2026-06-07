@@ -39,8 +39,8 @@ function App() {
                 <Route path="users" element={<AdminUsersPage />} />
                 <Route path="orders" element={<AdminOrdersPage />} />
                 <Route path="memberships" element={<h1>Memberships Page</h1>} />
-                <Route path="trainers" element={<h1>Trainers Page</h1>} />
-                <Route path="schedules" element={<h1>Schedules Page</h1>} />
+                <Route path="trainers" element={<AdminTrainers />} />
+                <Route path="schedules" element={<AdminSchedules />} />
                 <Route path="revenue" element={<h1>Revenue Page</h1>} />
                 <Route path="settings" element={<h1>Settings Page</h1>} />
             </Route>
