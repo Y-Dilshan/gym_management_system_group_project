@@ -1,10 +1,10 @@
-export default function AdminOrdersPage() {
+export default function AdminSchedules() {
   return (
     <div className="w-full h-full p-8 bg-[#E5E5E5]">
 
       {/* Header */}
       <div className="bg-[#2F2F2F] rounded-2xl shadow-lg px-8 py-5 mb-8">
-        <h1 className="text-4xl font-bold text-white"> Orders Management </h1>
+        <h1 className="text-4xl font-bold text-white">Schedules Management </h1>
       </div>
 
       {/* Table Container */}

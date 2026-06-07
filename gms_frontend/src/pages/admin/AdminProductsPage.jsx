@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 const API = "http://localhost:3000/api/products";
 
-export default function AdminProductsPage() {
+export default function AdminProductPage() {
   const [products, setProducts] = useState([]);
 
   const [form, setForm] = useState({

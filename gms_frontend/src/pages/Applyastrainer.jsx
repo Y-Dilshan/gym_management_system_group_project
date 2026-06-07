@@ -12,15 +12,14 @@ export default function ApplyAsTrainer() {
     bio: "",
     experience_years: "",
   });
+
   const [status, setStatus] = useState(null);
   const [message, setMessage] = useState("");
+
   const navigate = useNavigate();
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  const handleSignin = () => {
-    navigate("/signin");
   };
 
   const handleSubmit = async (e) => {
@@ -31,7 +30,9 @@ export default function ApplyAsTrainer() {
     try {
       const res = await fetch(`${API}/trainer-applications`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           ...form,
           experience_years: form.experience_years
@@ -39,6 +40,7 @@ export default function ApplyAsTrainer() {
             : null,
         }),
       });
+
       const data = await res.json();
 
       if (!res.ok) {
@@ -47,6 +49,7 @@ export default function ApplyAsTrainer() {
       } else {
         setStatus("success");
         setMessage(data.message);
+
         setForm({
           full_name: "",
           email: "",
@@ -74,232 +77,97 @@ export default function ApplyAsTrainer() {
   ];
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex items-center justify-center px-4 py-16 font-sans">
-      <div className="fixed inset-0 bg-zinc-950 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(234,88,12,0.15),rgba(255,255,255,0))] pointer-events-none" />
-
-      <div className="relative w-full max-w-2xl">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-orange-500 flex items-center justify-center">
-              <svg
-                className="w-5 h-5 text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <span className="text-orange-500 text-sm font-semibold tracking-widest uppercase">
-              PowerZone
-            </span>
-          </div>
-          <h1 className="text-4xl font-black text-white leading-tight">
-            Apply as a<br />
-            <span className="text-orange-500">Trainer</span>
-          </h1>
-          <p className="mt-3 text-zinc-400 text-sm leading-relaxed">
-            Submit your application and our admin team will review it. Once
-            approved, you'll receive your login credentials.
-          </p>
-        </div>
-
-        {/* Success State */}
-        {status === "success" && (
-          <div className="mb-6 bg-green-500/10 border border-green-500/30 rounded-xl p-5 flex gap-3">
-            <svg
-              className="w-5 h-5 text-green-400 mt-0.5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <div>
-              <p className="text-green-400 font-semibold text-sm">
-                Application Submitted!
-              </p>
-              <p className="text-green-300/70 text-sm mt-0.5">{message}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {status === "error" && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/30 rounded-xl p-5 flex gap-3">
-            <svg
-              className="w-5 h-5 text-red-400 mt-0.5 shrink-0"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <p className="text-red-400 text-sm">{message}</p>
-          </div>
-        )}
-
-        {/* Form Card */}
-        <form
-          onSubmit={handleSubmit}
-          className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 space-y-5"
-        >
-          {/* Row: Name + Email */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Field label="Full Name" required>
-              <input
-                name="full_name"
-                value={form.full_name}
-                onChange={handleChange}
-                placeholder="John Silva"
-                className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors"
-                required
-              />
-            </Field>
-            <Field label="Email Address" required>
-              <input
-                name="email"
-                type="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="john@email.com"
-                className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors"
-                required
-              />
-            </Field>
-          </div>
-
-          {/* Row: Phone + Experience */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <Field label="Phone Number">
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="077 123 4567"
-                className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors"
-              />
-            </Field>
-            <Field label="Years of Experience">
-              <input
-                name="experience_years"
-                type="number"
-                min="0"
-                max="50"
-                value={form.experience_years}
-                onChange={handleChange}
-                placeholder="e.g. 3"
-                className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors"
-              />
-            </Field>
-          </div>
-
-          {/* Specialization */}
-          <Field label="Specialization" required>
-            <select
-              name="specialization"
-              value={form.specialization}
-              onChange={handleChange}
-              className="w-full bg-zinc-800 border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors appearance-none cursor-pointer"
-              required
-            >
-              <option value="" disabled className="text-zinc-500">
-                Select your specialization
-              </option>
-              {specializations.map((s) => (
-                <option key={s} value={s}>
-                  {s}
-                </option>
-              ))}
-            </select>
-          </Field>
-
-          {/* Bio */}
-          <Field label="About You">
-            <textarea
-              name="bio"
-              value={form.bio}
-              onChange={handleChange}
-              placeholder="Tell us about your fitness background, certifications, and coaching philosophy..."
-              rows={4}
-              className="w-full bg-zinc-800 border border-zinc-700 text-white placeholder-zinc-500 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors resize-none"
-            />
-          </Field>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            disabled={status === "loading"}
-            className="w-full bg-orange-500 hover:bg-orange-400 disabled:bg-orange-500/50 disabled:cursor-not-allowed text-white font-bold py-3.5 rounded-lg transition-colors text-sm tracking-wide flex items-center justify-center gap-2"
-          >
-            {status === "loading" ? (
-              <>
-                <svg
-                  className="w-4 h-4 animate-spin"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8v8z"
-                  />
-                </svg>
-                Submitting...
-              </>
-            ) : (
-              "Submit Application"
-            )}
-          </button>
-
-          <p className="text-center text-zinc-600 text-xs">
-            Already have an account?{" "}
-            <Link
-              to="/trainer/login"
-              className="text-orange-500 hover:text-orange-400"
-              onClick={handleSignin}
-            >
-              Sign in here
-            </Link>
-          </p>
-        </form>
+    <div className="min-h-screen bg-gradient-to-br from-[#1E1E1E] via-[#252525] to-[#1E1E1E] text-white flex">
+      {/* Golden Glow */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[400px] bg-[#D4AF37] opacity-10 blur-[180px]" />
       </div>
-    </div>
-  );
-}
 
-//  Reusable field wrapper
-function Field({ label, required, children }) {
-  return (
-    <div className="space-y-1.5">
-      <label className="block text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-        {label} {required && <span className="text-orange-500">*</span>}
-      </label>
-      {children}
+      {/* Left Section - Hero */}
+      <div className="w-2/5 h-screen flex items-center justify-center">
+        <section className="py-20 px-6">
+          <div className="max-w-6xl mx-auto text-center">
+            <h1 className="text-5xl md:text-7xl font-black leading-tight"> APPLY AS A <br /> <span className="text-[#D4AF37]">TRAINER</span> </h1>
+            <div className="w-28 h-1 bg-[#D4AF37] mx-auto mt-6 rounded-full" />
+
+            <p className="text-gray-400 text-lg max-w-3xl mx-auto mt-6"> Join the Power Zone family and inspire people to achieve their fitness goals. Share your expertise, motivate members, and grow your professional fitness career with us. </p>
+          </div>
+        </section>
+      </div>
+
+      {/* Right Section - Form */}
+      <div className="w-3/5 h-screen overflow-y-auto">
+        <section className="relative pb-24 px-6">
+          <div className="max-w-4xl mx-auto">
+            {/* Heading */}
+            <div className="text-center mb-10">
+              <h2 className="text-4xl font-bold text-[#D4AF37]"> Become Part of Our Team </h2>
+
+              <p className="text-gray-400 mt-3"> Complete the application below and our team will review your profile. </p>
+            </div>
+
+            {/* Form Card */}
+            <div className="bg-[#2A2A2A]/90 backdrop-blur-md border border-[#D4AF37]/20 rounded-3xl p-8 md:p-10 shadow-2xl">
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Full Name */}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Full Name * </label>
+
+                  <input type="text" name="full_name" value={form.full_name} onChange={handleChange} required placeholder="Enter your full name" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                </div>
+
+                {/* Email & Phone */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Email Address * </label>
+
+                    <input type="email" name="email" value={form.email} onChange={handleChange} required placeholder="you@example.com" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                  </div>
+
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Phone Number </label>
+                    <input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+94 77 123 4567" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                  </div>
+                </div>
+
+                {/* Specialization & Experience */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Specialization * </label>
+                    <select name="specialization" value={form.specialization} onChange={handleChange} required className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" >
+                      <option value="">Select Specialization</option>
+
+                      {specializations.map((item) => (
+                        <option key={item} value={item}> {item} </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Experience (Years) </label>
+
+                    <input type="number" min="0" max="50" name="experience_years" value={form.experience_years} onChange={handleChange} placeholder="Years of experience" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                  </div>
+                </div>
+
+                {/* Bio */}
+                <div>
+                  <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> About You </label>
+
+                  <textarea rows={6} name="bio" value={form.bio} onChange={handleChange} placeholder="Tell us about your certifications, achievements, coaching style, and fitness experience..."  className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 resize-none focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                </div>
+
+                {/* Submit Button */}
+                <button type="submit" disabled={status === "loading"} className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-black font-bold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-yellow-500/20 hover:scale-[1.02] disabled:opacity-50" > {status === "loading" ? "SUBMITTING..." : "SUBMIT APPLICATION"} </button>
+
+                {/* Login Link */}
+                <p className="text-center text-gray-400"> Already have an account?{" "} <Link to="/trainer/login" onClick={() => navigate("/signin")} className="text-[#D4AF37] hover:text-[#B8860B] font-semibold" > Sign in here </Link></p>
+              </form>
+            </div>
+            
+          </div>
+        </section>
+      </div>
     </div>
   );
 }
