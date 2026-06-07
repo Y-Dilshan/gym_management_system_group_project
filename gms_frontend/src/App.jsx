@@ -12,6 +12,9 @@ import ApplyAsTrainer from "./pages/applyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
 import AdminProductPage from "./pages/admin/adminProductPage.jsx"
+import AdminTrainers from "./pages/admin/adminTrainers.jsx";
+import AdminSchedules from "./pages/admin/adminSchedules.jsx";
+import AdminMemberships from "./pages/admin/adminMembership.jsx";
 
 function App() {
   return (
@@ -28,12 +31,16 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
 
             <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/products" element={<AdminProductPage />} />
             <Route path="/admin/add-product" element={<AdminAddProduct />} />
             <Route path="/admin/users" element={<AdminUsersPage />} />
             <Route path="/admin/orders" element={<AdminOrdersPage />} />
             <Route path="/admin/trainer-applications" element={<TrainerApplicationsPage />} />
-            <Route path="/admin/users" element={<AdminUsersPage />} />
+            <Route path="/admin/trainers" element={<AdminTrainers />} />
+            <Route path="/admin/schedules" element={<AdminSchedules />} />
+            <Route path="/admin/memberships" element={<AdminMemberships />} />
+            
           </Routes>
         </div>
       </BrowserRouter>

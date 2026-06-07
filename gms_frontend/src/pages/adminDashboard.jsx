@@ -32,7 +32,7 @@ export default function AdminDashboard() {
                         <Link to="/admin/products" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition" > <FaClipboardList size={22} /> Products </Link>
                         <Link to="/admin/users" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition" > <LuUsers size={22} /> Users </Link>
                         <Link to="/admin/orders" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition" > <LiaThListSolid size={22} /> Orders </Link>
-                        <Link to="/admin/payments" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition" > <MdPayments size={22} /> Memberships </Link>
+                        <Link to="/admin/memberships" className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-700 transition" > <MdPayments size={22} /> Memberships </Link>
                     </div>
                 </div>
 
