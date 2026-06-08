@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { GoVerified } from "react-icons/go";
 
@@ -32,7 +31,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-6 bg-[#333333] min-h-screen">
+    <div className="p-6 bg-[#333333] min-h-screen px-25">
       <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
         
         {/* Header */}
@@ -93,8 +92,7 @@ export default function AdminUsersPage() {
                         item.isBlocked
                           ? "bg-green-100 text-green-700 hover:bg-green-200"
                           : "bg-red-100 text-red-700 hover:bg-red-200"
-                      }`}
-                    >
+                      }`}>
                       {item.isBlocked ? "Unblock" : "Block"}
                     </button>
                   </td>
