@@ -18,6 +18,7 @@ import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
 import AdminUsers from "./pages/admin/adminUsersPage.jsx";
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/applyAsTrainer.jsx";
+import MemberDashboard from './pages/MemberDashboard.jsx';
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/cart" element={<Cart />} />
-
+        <Route path="/dashboard" element={<MemberDashboard />} />
         {/* Team pages */}
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/signin" element={<SigninPage />} />
