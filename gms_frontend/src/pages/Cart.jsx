@@ -1,6 +1,10 @@
 import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
 import whey from "../assets/supplements/whey.jpg";
 import nitrotech from "../assets/supplements/nitrotech.jpeg";
+import c4 from "../assets/supplements/c4.webp";
+import bcaa from "../assets/supplements/bcaa.webp";
+
+
 
 function Cart() {
 
@@ -18,12 +22,12 @@ const products = [
   {
     name: "C4 Original Pre Workout",
     price: "Rs. 6,500.00",
-    image: "https://m.media-amazon.com/images/I/71fT7P4L5VL.jpg"
+    image: c4,
   },
   {
     name: "BCAA Energy",
     price: "Rs. 5,999.00",
-    image: "https://m.media-amazon.com/images/I/71D8m8nB4XL.jpg"
+    image: bcaa,
   },
   {
     name: "Mass Gainer",
