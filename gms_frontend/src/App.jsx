@@ -11,8 +11,8 @@ import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/ApplyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
-// import AdminProductPage from "./pages/admin/adminProductPage.jsx"
-import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
+import AdminProductPage from "./pages/admin/adminProductPage.jsx"
+// import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
 import AdminTrainers from "./pages/admin/adminTrainers.jsx";
 import AdminSchedules from "./pages/admin/adminSchedules.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
@@ -34,8 +34,8 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />}>
               <Route index element={<AdminOrdersPage />} />
               <Route path="dashboard" element={<h1>Dashboard Overview</h1>} />
-              {/* <Route path="products" element={<AdminProductPage />} /> */}
-              <Route path="products" element={<AdminProductsPage />} />
+              <Route path="products" element={<AdminProductPage />} />
+              {/* <Route path="products" element={<AdminProductsPage />} /> */}
               <Route path="add-product" element={<AdminAddProduct />} />
               <Route path="users" element={<AdminUsersPage />} />
               <Route path="orders" element={<AdminOrdersPage />} />
