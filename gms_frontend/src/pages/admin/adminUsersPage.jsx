@@ -1,7 +1,5 @@
 import { useState } from "react";
-import axios from "axios";
 import toast from "react-hot-toast";
-import { GoVerified } from "react-icons/go";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
@@ -43,6 +41,7 @@ export default function AdminUsersPage() {
       <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-2xl font-semibold text-[#2F2F2F]"> Users</h2>
+
         </div>
 
         <div className="overflow-x-auto">
@@ -71,6 +70,7 @@ export default function AdminUsersPage() {
                     </div>
                 </td>
              </tr>
+
             </tbody>
         </table>
         </div>
