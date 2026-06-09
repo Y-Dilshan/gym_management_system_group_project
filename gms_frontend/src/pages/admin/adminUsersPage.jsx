@@ -32,84 +32,51 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="p-6 bg-[#333333] min-h-screen">
-      <div className="bg-white shadow-lg rounded-2xl overflow-hidden">
-        
-        {/* Header */}
-        <div className="px-6 py-4 border-b border-gray-300 flex justify-between items-center">
-          <h2 className="text-2xl font-bold text-gray-800"> Users Details </h2>
+   <div className="w-full h-full p-8 bg-[#E5E5E5]">
+
+      {/* Header */}
+      <div className="bg-[#2F2F2F] rounded-2xl shadow-lg px-8 py-5 mb-8">
+        <h1 className="text-4xl font-bold text-white">Users Management </h1>
+      </div>
+
+      {/* Table Container */}
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-200">
+          <h2 className="text-2xl font-semibold text-[#2F2F2F]"> Users</h2>
         </div>
 
-        {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 text-gray-600 uppercase text-xs tracking-wider">
+          <table className="w-full">
+            <thead className="w-full bg-[#D4AF37] text-white">
               <tr>
-                <th className="px-6 py-4">Image</th>
-                <th className="px-6 py-4">Email</th>
-                <th className="px-6 py-4">First Name</th>
-                <th className="px-6 py-4">Last Name</th>
-                <th className="px-6 py-4">Role</th>
-                <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4">Actions</th>
+                <th className="px-6 py-4 text-left">Image</th>
+                <th className="px-6 py-4 text-left">User ID</th>
+                <th className="px-6 py-4 text-left">FUll Name</th>
+                <th className="px-6 py-4 text-left">Role</th>
+                <th className="px-6 py-4 text-left">Actions</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-gray-300">
-              {users.map((item, index) => (
-                <tr key={item._id || index} className="hover:bg-gray-50 transition">
-                  <td className="px-6 py-4">
-                    <img src={item.image} alt={item.firstName} className="w-10 h-10 rounded-full object-cover" />
-                  </td>
+            <tbody>
+              <tr className="border-b hover:bg-gray-50 transition">
+                <td className="px-6 py-4"><img src="https://via.placeholder.com/50" alt="Product" className="w-14 h-14 rounded-lg object-cover border" /></td>
+                <td className="px-6 py-4 font-medium text-gray-700"> #12345 </td>
+                <td className="px-6 py-4"> John Doe </td>
+                <td className="px-6 py-4"> User </td>
 
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-1">
-                      {item.email}
-                      {item.isEmailVerified && (
-                        <GoVerified className="text-blue-500" />
-                      )}
+                <td className="px-6 py-4">
+                    <div className="flex gap-2">
+                        <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"> View </button>
+                        <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"> Delete </button>
                     </div>
-                  </td>
-
-                  <td className="px-6 py-4">{item.firstName}</td>
-                  <td className="px-6 py-4">{item.lastName}</td>
-                  <td className="px-6 py-4">{item.role}</td>
-
-                  <td className="px-6 py-4">
-                    <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                        item.isBlocked
-                          ? "text-red-500 bg-red-100"
-                          : "text-green-500 bg-green-100"
-                      }`} >
-                      {item.isBlocked ? "Blocked" : "Active"} </span>
-                  </td>
-
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() =>
-                        toggleBlockStatus(item._id, item.isBlocked)
-                      }
-                      className={`px-4 py-2 rounded-lg text-sm font-semibold transition duration-300 shadow-sm ${
-                        item.isBlocked
-                          ? "bg-green-100 text-green-700 hover:bg-green-200"
-                          : "bg-red-100 text-red-700 hover:bg-red-200"
-                      }`}
-                    >
-                      {item.isBlocked ? "Unblock" : "Block"}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-              {users.length === 0 && (
-                <tr>
-                  <td colSpan="7" className="text-center py-8 text-gray-500" > No users found </td>
-                </tr>
-              )}
+                </td>
+             </tr>
             </tbody>
-          </table>
+        </table>
         </div>
+
       </div>
+
     </div>
   );
 }
