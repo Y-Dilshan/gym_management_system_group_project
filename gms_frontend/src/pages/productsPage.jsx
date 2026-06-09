@@ -2,62 +2,7 @@ import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { IoMdCart } from "react-icons/io";
 import { useState, useEffect } from "react";
-// const products = [
-//   {
-//     id: 1,
-//     category: "protein",
-//     badge: "Isolate",
-//     name: "Premium Whey Protein Isolated",
-//     description: "Forge Athletics fast-absorbing isolate — low fat, low carb, designed for maximum post-workout muscle recovery. Chocolate Silk, 5 lb.",
-//     price: "Rs. 35,000.00",
-//     image: "s1.png",
-//   },
-//   {
-//     id: 2,
-//     category: "pre-workout",
-//     badge: "Pre-Workout",
-//     name: "explosive Pre-Workout Formula",
-//     description: "High-stimulant formula with beta-alanine and caffeine for explosive energy, focus, and endurance during intense training sessions.",
-//     price: "Rs. 12,000.00",
-//     image: "s1.png",
-//   },
-//   {
-//     id: 3,
-//     category: "health",
-//     badge: "Health",
-//     name: "Daily Multivitamin Complex",
-//     description: "Complete daily multivitamin with essential minerals and antioxidants to support overall health, immunity, and well-being.",
-//     price: "Rs. 8,500.00",
-//     image: "s1.png",
-//   },
-//   {
-//     id: 4,
-//     category: "performance",
-//     badge: "Performance",
-//     name: "Creatine Monohydrate",
-//     description: "Pure micronized creatine monohydrate for increased strength, power output, and enhanced athletic performance.",
-//     price: "Rs. 9,000.00",
-//     image: "s1.png",
-//   },
-//   {
-//     id: 5,
-//     category: "recovery",
-//     badge: "Recovery",
-//     name: "BCAA Recovery Blend",
-//     description: "Essential branched-chain amino acids to reduce muscle soreness, accelerate recovery, and preserve lean muscle mass.",
-//     price: "Rs. 11,000.00",
-//     image: "s1.png",
-//   },
-//   {
-//     id: 6,
-//     category: "protein",
-//     badge: "Mass Gainer",
-//     name: "Mass Gainer 5000",
-//     description: "High-calorie mass gainer with complex carbs and protein blend to support serious muscle and weight gain goals.",
-//     price: "Rs. 28,000.00",
-//     image: "s1.png",
-//   },
-// ];
+
 
 const categories = [
   { label: "All", value: "all" },
@@ -68,13 +13,7 @@ const categories = [
   { label: "Protein", value: "protein" },
 ];
 
-// export default function ProductPage() {
-//   const [activeCategory, setActiveCategory] = useState("all");
 
-//   const filteredProducts =
-//     activeCategory === "all"
-//       ? products
-//       : products.filter((p) => p.category === activeCategory);
 
 export default function ProductPage() {
   const [activeCategory, setActiveCategory] = useState("all");
