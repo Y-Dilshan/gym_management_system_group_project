@@ -1,7 +1,10 @@
+import Header from './header.jsx'
+
 export default function DeleteForm(){
     return(
+        <div>
+        <div className = "w-full "><Header /></div>
        <div className="w-[450px] bg-white rounded-3xl shadow-2xl p-8 relative">
-    
     {/* Close Button */}
     <button
         className="absolute top-4 right-4 text-gray-500 hover:text-red-600 text-3xl font-bold transition duration-300"
@@ -31,6 +34,7 @@ export default function DeleteForm(){
             Delete
         </button>
     </div>
+</div>
 </div>
     )
 }

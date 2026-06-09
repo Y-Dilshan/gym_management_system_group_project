@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { GoSignIn } from "react-icons/go";
 import { SlUserFollowing } from "react-icons/sl";
+import { FaCartShopping } from "react-icons/fa6";
 
 export default function Header() {
 
@@ -14,7 +15,7 @@ export default function Header() {
         navigate('/signup');
     }
     return(
-        <nav className="bg-black h-[80px] px-[100px] shadow-md">
+        <nav className="bg-black h-[100px] px-[100px] shadow-md">
             <div className="flex items-center justify-between h-full">
                 <div>
                     <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
@@ -25,20 +26,11 @@ export default function Header() {
                     <Link to="/our_services">Our Services</Link>
                     <Link to="/contacts">Contacts</Link>
                 </div>
-
-                <div className="flex gap-5">
-                    <Link to = "/signin">
-                    <button onClick = {handleSignin} className="bg-[#333333] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300">
-                        Sign in <GoSignIn />
-                    </button>
-                    </Link>
-                    
-                    <Link to = "/signup">
-                    <button onClick = {handleSignUp} className="bg-[#D4AF37] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#333333] hover:text-white transition duration-300">
-                        Sign Up <SlUserFollowing />
-                    </button>
-                    </Link>
-                </div>
+ 
+               <div className = "flex items-center justify-center gap-10">
+                <button className = "cursor-pointer"><FaCartShopping size = {40} className = "text-white" /></button>
+                <div className = "w-[80px] h-[80px] rounded-full bg-white"></div>
+               </div>
             </div>
 
         </nav>

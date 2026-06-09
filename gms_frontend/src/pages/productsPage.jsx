@@ -104,9 +104,7 @@ export default function ProductPage() {
   //////////////////////////////////////////////
   return (
     <div className="bg-[#333333]">
-      <div>
-        <Header />
-      </div>
+      <Header />
 
       <div className="flex flex-col h-[100px] justify-center items-center">
         <h1 className="font-['Roboto'] font-bold text-3xl tracking-wide text-zinc-900 dark:text-white mb-2 leading-tight">
