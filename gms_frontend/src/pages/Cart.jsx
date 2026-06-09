@@ -1,12 +1,56 @@
 import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
+import whey from "../assets/supplements/whey.jpg";
+import nitrotech from "../assets/supplements/nitrotech.jpeg";
 
 function Cart() {
 
-const products = Array(9).fill({
-name:"Gold Standard 100% Whey Protein",
-price:"Rs. 8,999.00",
-image:"https://m.media-amazon.com/images/I/71W8P9T0mXL.jpg"
-})
+const products = [
+  {
+    name: "Gold Standard 100% Whey Protein",
+    price: "Rs. 8,999.00",
+    image: whey,
+  },
+  {
+    name: "Muscletech NitroTech",
+    price: "Rs. 9,500.00",
+    image: nitrotech,
+  },
+  {
+    name: "C4 Original Pre Workout",
+    price: "Rs. 6,500.00",
+    image: "https://m.media-amazon.com/images/I/71fT7P4L5VL.jpg"
+  },
+  {
+    name: "BCAA Energy",
+    price: "Rs. 5,999.00",
+    image: "https://m.media-amazon.com/images/I/71D8m8nB4XL.jpg"
+  },
+  {
+    name: "Mass Gainer",
+    price: "Rs. 10,500.00",
+    image: "https://m.media-amazon.com/images/I/71m6Cw7Y6ML.jpg"
+  },
+  {
+    name: "Creatine Monohydrate",
+    price: "Rs. 4,999.00",
+    image: "https://m.media-amazon.com/images/I/61f+P1H3iLL.jpg"
+  },
+  {
+    name: "Fish Oil Omega 3",
+    price: "Rs. 3,999.00",
+    image: "https://m.media-amazon.com/images/I/71J8jQxP2KL.jpg"
+  },
+  {
+    name: "Multivitamin Tablets",
+    price: "Rs. 2,999.00",
+    image: "https://m.media-amazon.com/images/I/71d6i6QfAOL.jpg"
+  },
+  {
+    name: "Protein Bars Pack",
+    price: "Rs. 3,500.00",
+    image: "https://m.media-amazon.com/images/I/81b7YfQjvWL.jpg"
+  }
+];
 
 return (
 <div style={styles.page}>
@@ -232,9 +276,10 @@ color:"black"
 },
 
 image:{
-width:"100%",
-height:"170px",
-objectFit:"contain"
+  width:"100%",
+  height:"220px",
+  objectFit:"cover",
+  borderRadius:"10px"
 },
 
 productTitle:{
