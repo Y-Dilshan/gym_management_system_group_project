@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const API = "http://localhost:3000/api";
 
@@ -44,11 +45,9 @@ export default function ApplyAsTrainer() {
       const data = await res.json();
 
       if (!res.ok) {
-        setStatus("error");
-        setMessage(data.error || "Failed to submit application.");
+        toast.error(data.error || "Failed to submit application.");
       } else {
-        setStatus("success");
-        setMessage(data.message);
+        toast.success(data.message || "Application submitted successfully!");
 
         setForm({
           full_name: "",
@@ -60,8 +59,7 @@ export default function ApplyAsTrainer() {
         });
       }
     } catch {
-      setStatus("error");
-      setMessage("Cannot connect to server. Please try again.");
+      toast.eror("Cannot connect to server. Please try again.");
     }
   };
 
@@ -87,10 +85,19 @@ export default function ApplyAsTrainer() {
       <div className="w-2/5 h-screen flex items-center justify-center">
         <section className="py-20 px-6">
           <div className="max-w-6xl mx-auto text-center">
-            <h1 className="text-5xl md:text-7xl font-black leading-tight"> APPLY AS A <br /> <span className="text-[#D4AF37]">TRAINER</span> </h1>
+            <h1 className="text-5xl md:text-7xl font-black leading-tight">
+              {" "}
+              APPLY AS A <br />{" "}
+              <span className="text-[#D4AF37]">TRAINER</span>{" "}
+            </h1>
             <div className="w-28 h-1 bg-[#D4AF37] mx-auto mt-6 rounded-full" />
 
-            <p className="text-gray-400 text-lg max-w-3xl mx-auto mt-6"> Join the Power Zone family and inspire people to achieve their fitness goals. Share your expertise, motivate members, and grow your professional fitness career with us. </p>
+            <p className="text-gray-400 text-lg max-w-3xl mx-auto mt-6">
+              {" "}
+              Join the Power Zone family and inspire people to achieve their
+              fitness goals. Share your expertise, motivate members, and grow
+              your professional fitness career with us.{" "}
+            </p>
           </div>
         </section>
       </div>
@@ -101,9 +108,16 @@ export default function ApplyAsTrainer() {
           <div className="max-w-4xl mx-auto">
             {/* Heading */}
             <div className="text-center mb-10">
-              <h2 className="text-4xl font-bold text-[#D4AF37]"> Become Part of Our Team </h2>
+              <h2 className="text-4xl font-bold text-[#D4AF37]">
+                {" "}
+                Become Part of Our Team{" "}
+              </h2>
 
-              <p className="text-gray-400 mt-3"> Complete the application below and our team will review your profile. </p>
+              <p className="text-gray-400 mt-3">
+                {" "}
+                Complete the application below and our team will review your
+                profile.{" "}
+              </p>
             </div>
 
             {/* Form Card */}
@@ -111,60 +125,145 @@ export default function ApplyAsTrainer() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Full Name */}
                 <div>
-                  <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Full Name * </label>
+                  <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase">
+                    {" "}
+                    Full Name *{" "}
+                  </label>
 
-                  <input type="text" name="full_name" value={form.full_name} onChange={handleChange} required placeholder="Enter your full name" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                  <input
+                    type="text"
+                    name="full_name"
+                    value={form.full_name}
+                    onChange={handleChange}
+                    required
+                    placeholder="Enter your full name"
+                    className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  />
                 </div>
 
                 {/* Email & Phone */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Email Address * </label>
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase">
+                      {" "}
+                      Email Address *{" "}
+                    </label>
 
-                    <input type="email" name="email" value={form.email} onChange={handleChange} required placeholder="you@example.com" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      required
+                      placeholder="you@example.com"
+                      className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    />
                   </div>
 
                   <div>
-                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Phone Number </label>
-                    <input type="text" name="phone" value={form.phone} onChange={handleChange} placeholder="+94 77 123 4567" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase">
+                      {" "}
+                      Phone Number{" "}
+                    </label>
+                    <input
+                      type="text"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      placeholder="+94 77 123 4567"
+                      className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    />
                   </div>
                 </div>
 
                 {/* Specialization & Experience */}
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Specialization * </label>
-                    <select name="specialization" value={form.specialization} onChange={handleChange} required className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" >
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase">
+                      {" "}
+                      Specialization *{" "}
+                    </label>
+                    <select
+                      name="specialization"
+                      value={form.specialization}
+                      onChange={handleChange}
+                      required
+                      className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    >
                       <option value="">Select Specialization</option>
 
                       {specializations.map((item) => (
-                        <option key={item} value={item}> {item} </option>
+                        <option key={item} value={item}>
+                          {" "}
+                          {item}{" "}
+                        </option>
                       ))}
                     </select>
                   </div>
 
                   <div>
-                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> Experience (Years) </label>
+                    <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase">
+                      {" "}
+                      Experience (Years){" "}
+                    </label>
 
-                    <input type="number" min="0" max="50" name="experience_years" value={form.experience_years} onChange={handleChange} placeholder="Years of experience" className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                    <input
+                      type="number"
+                      min="0"
+                      max="50"
+                      name="experience_years"
+                      value={form.experience_years}
+                      onChange={handleChange}
+                      placeholder="Years of experience"
+                      className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                    />
                   </div>
                 </div>
 
                 {/* Bio */}
                 <div>
-                  <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase"> About You </label>
+                  <label className="block mb-2 text-sm font-semibold text-[#D4AF37] uppercase">
+                    {" "}
+                    About You{" "}
+                  </label>
 
-                  <textarea rows={6} name="bio" value={form.bio} onChange={handleChange} placeholder="Tell us about your certifications, achievements, coaching style, and fitness experience..."  className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 resize-none focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]" />
+                  <textarea
+                    rows={6}
+                    name="bio"
+                    value={form.bio}
+                    onChange={handleChange}
+                    placeholder="Tell us about your certifications, achievements, coaching style, and fitness experience..."
+                    className="w-full bg-[#1E1E1E] border border-[#444444] rounded-xl px-5 py-3 text-white placeholder-gray-500 resize-none focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]"
+                  />
                 </div>
 
                 {/* Submit Button */}
-                <button type="submit" disabled={status === "loading"} className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-black font-bold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-yellow-500/20 hover:scale-[1.02] disabled:opacity-50" > {status === "loading" ? "SUBMITTING..." : "SUBMIT APPLICATION"} </button>
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="w-full bg-[#D4AF37] hover:bg-[#B8860B] text-black font-bold py-4 rounded-xl transition-all duration-300 shadow-lg shadow-yellow-500/20 hover:scale-[1.02] disabled:opacity-50"
+                >
+                  {" "}
+                  {status === "loading"
+                    ? "SUBMITTING..."
+                    : "SUBMIT APPLICATION"}{" "}
+                </button>
 
                 {/* Login Link */}
-                <p className="text-center text-gray-400"> Already have an account?{" "} <Link to="/trainer/login" onClick={() => navigate("/signin")} className="text-[#D4AF37] hover:text-[#B8860B] font-semibold" > Sign in here </Link></p>
+                <p className="text-center text-gray-400">
+                  {" "}
+                  Already have an account?{" "}
+                  <Link
+                    to="/trainer/login"
+                    onClick={() => navigate("/signin")}
+                    className="text-[#D4AF37] hover:text-[#B8860B] font-semibold"
+                  >
+                    {" "}
+                    Sign in here{" "}
+                  </Link>
+                </p>
               </form>
             </div>
-            
           </div>
         </section>
       </div>
