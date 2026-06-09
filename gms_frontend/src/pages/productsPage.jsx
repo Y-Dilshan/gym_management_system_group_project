@@ -101,7 +101,7 @@ export default function ProductPage() {
     activeCategory === "all"
       ? products
       : products.filter((p) => p.category === activeCategory);
-  //////////////////////////////////////////////
+      
   return (
     <div className="bg-[#333333]">
       <Header />
