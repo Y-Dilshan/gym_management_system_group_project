@@ -26,16 +26,16 @@ export default function HomePage() {
         <div className=" bg-[#333333]">
             
             {/* navbar */}
-            <nav className="bg-black h-[80px] px-[100px] shadow-md">
+            <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[100px] px-[100px]">
                 <div className="flex items-center justify-between h-full">
                     <div>
                         <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
                     </div>
                     <div className="flex items-center gap-10 text-xl text-white">
-                        <Link to="/">Home</Link>
-                        <Link to="/about">About</Link>
-                        <Link to="/our_services">Our Services</Link>
-                        <Link to="/contacts">Contacts</Link>
+                        <a href="#">Home</a>
+                        <a href="#about">About</a>
+                        <a href="#our_services">Our Services</a>
+                        <a href="#contacts">Contacts</a>
                     </div>
 
                     <div className="flex gap-5">
@@ -74,7 +74,7 @@ export default function HomePage() {
             </div>
 
             {/*about*/} 
-            <div >
+            <div id="about">
             <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">About Us</h1>
             <div className = "flex items-center justify-center mt-[30px] gap-10">
                 <p className = "text-center text-lg text-white mt-4 px-4 max-w-[800px] ml-[100px]">Welcome to our fitness gym, where we help people of all levels achieve their health and fitness goals. With modern equipment, expert trainers, and personalized programs, we create a supportive and motivating environment for everyone. We believe fitness is more than just exercise it’s about building confidence, discipline, and a healthier lifestyle. Join us and start your journey toward a stronger, better you.</p>
@@ -83,6 +83,7 @@ export default function HomePage() {
             </div>
 
             {/*Our Services*/} 
+            <div id="our_services">
             <div>
                 <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">Our Services</h1>
             </div>
@@ -123,10 +124,11 @@ export default function HomePage() {
            </div>
 
         </div>
+        </div>
 
 
         {/*Contact Us*/} 
-        <div>
+        <div id="contacts">
             <div>
                 <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">Contact Us</h1>
             </div>
@@ -210,8 +212,6 @@ export default function HomePage() {
                         <div className = "text-white text-[20px] pt-[20px] text-center">Healthy BMI range: 18.5 - 25</div>
 
                     </div>
-
-                    
                 </div>
             </div>
         </div>
