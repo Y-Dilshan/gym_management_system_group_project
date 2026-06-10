@@ -1,3 +1,4 @@
+import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
@@ -7,7 +8,7 @@ import { fileURLToPath } from "url";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import trainerRoutes from "./routes/trainerRouter.js";
-
+import trainerApplicationRoutes from "./routes/trainerapplicationroutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -18,7 +19,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ← serves profile pictures
 
+app.use(cors());
+
 // Routes
+app.use("/api/trainer-applications", trainerApplicationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/trainers", trainerRoutes);

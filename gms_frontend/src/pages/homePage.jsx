@@ -1,6 +1,7 @@
-import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { GoSignIn } from "react-icons/go";
+import { SlUserFollowing } from "react-icons/sl";
 
 export default function HomePage() {
 
@@ -13,9 +14,46 @@ export default function HomePage() {
     const handleGetStarted = () =>{
         navigate('/signup');
     }
+
+    const handleSignin = () => {
+        navigate('/signin');
+    }
+
+    const handleSignUp = () => {
+        navigate('/signup');
+    }
     return(
         <div className=" bg-[#333333]">
-            <Header />
+            
+            {/* navbar */}
+            <nav className="bg-black h-[80px] px-[100px] shadow-md">
+                <div className="flex items-center justify-between h-full">
+                    <div>
+                        <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
+                    </div>
+                    <div className="flex items-center gap-10 text-xl text-white">
+                        <Link to="/">Home</Link>
+                        <Link to="/about">About</Link>
+                        <Link to="/our_services">Our Services</Link>
+                        <Link to="/contacts">Contacts</Link>
+                    </div>
+
+                    <div className="flex gap-5">
+                        <Link to = "/signin">
+                        <button onClick = {handleSignin} className="bg-[#333333] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300">
+                            Sign in <GoSignIn />
+                        </button>
+                        </Link>
+                    
+                        <Link to = "/signup">
+                        <button onClick = {handleSignUp} className="bg-[#D4AF37] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#333333] hover:text-white transition duration-300">
+                            Sign Up <SlUserFollowing />
+                        </button>
+                        </Link>
+                    </div>
+                </div>
+
+            </nav>
 
             {/*home*/}
             <div className = "w-full px-[100px]">
@@ -28,6 +66,7 @@ export default function HomePage() {
                     Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods.</p>
 
             <div className = "flex items-center justify-center py-[50px]">
+
                 <button onClick={handleGetStarted} className="bg-[#333333] text-white  rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[20px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
             </div>
               
@@ -52,32 +91,32 @@ export default function HomePage() {
            <div className="px-[100px] py-[50px]">
 
            <div className="grid grid-cols-3 gap-4 ">
-               <button className="p-6 flex items-center justify-center shadow  shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="cursor-pointer p-6 flex items-center justify-center shadow  shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Schedules</h3>
                 <p className = "py-[10px]">Flexible workout schedules designed to fit your daily routine and keep you consistent.</p>
                </button>
 
-               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Trainers</h3>
                 <p className = "py-[10px]">Certified and experienced trainers who guide and motivate you to reach your fitness goals.</p>
                </button>
 
-               <button onClick = {handleProduct} className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button onClick = {handleProduct} className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Supplements</h3>
                 <p className = "py-[10px]">High-quality supplements to support performance, recovery, and overall health.</p>
                </button>
 
-               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Diet Plans</h3>
                 <p className = "py-[10px]">Customized diet plans to help you maintain a balanced and healthy lifestyle.</p>
                </button>
 
-               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Personal Training</h3>
                 <p className = "py-[10px]">One-on-one training sessions tailored to your specific fitness needs and goals.</p>
                </button>
 
-               <button className="p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
+               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
                 <h3 className = "text-black text-bold text-2xl">Modern gym equipment</h3>
                 <p className = "py-[10px]">State-of-the-art gym equipment for effective and safe workouts.</p>
                </button>
@@ -105,7 +144,7 @@ export default function HomePage() {
             </div>
 
              <div className = " flex justify-center pt-[20px]">
-                <button className="flex items-center justify-center gap-2 border text-white text-2xl border-[#D4AF37] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#D4AF37] hover:text-black">Submit</button>
+                <button className="flex items-center justify-center gap-2 border text-white text-2xl border-[#D4AF37] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#D4AF37] hover:text-black cursor-pointer">Submit</button>
             </div>
         </div>
 
@@ -157,11 +196,11 @@ export default function HomePage() {
                         </div>
 
                         <div className = "text-white text-center text-[20px] pt-[30px]">
-                            <button type = "submit" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl text-black bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-white">Calculate</button>
+                            <button type = "submit" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl text-black bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-white cursor-pointer">Calculate</button>
                         </div>
 
                         <div className = "text-white text-center text-[20px] pt-[30px]">
-                            <button type = "reset" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl bg-[#333333] hover:bg-[#D4AF37] hover:outline-[#D4AF37] hover:text-black">Clear</button>
+                            <button type = "reset" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl bg-[#333333] hover:bg-[#D4AF37] hover:outline-[#D4AF37] hover:text-black cursor-pointer">Clear</button>
                         </div>
 
                         <div className = "text-white text-[25px] pt-[20px] text-center">Result</div>

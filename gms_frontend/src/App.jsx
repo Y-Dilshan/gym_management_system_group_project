@@ -1,51 +1,59 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Toaster } from "react-hot-toast";
 
-// Your pages
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Cart from "./pages/Cart";
-
-// Team pages
 import HomePage from "./pages/homePage.jsx";
 import SigninPage from "./pages/signinPage.jsx";
 import SignUpPage from "./pages/signUpPage.jsx";
-import ProductPage from "./pages/productPage.jsx";
+import ProductsPage from "./pages/productsPage.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
-import AdminUsers from "./pages/admin/adminUsersPage.jsx";
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
-import ApplyAsTrainer from "./pages/applyAsTrainer.jsx";
-import MemberDashboard from './pages/MemberDashboard.jsx';
+import ApplyAsTrainer from "./pages/ApplyAsTrainer.jsx";
+import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
+import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
+import AdminProductPage from "./pages/admin/adminProductPage.jsx";
+import AdminTrainers from "./pages/admin/adminTrainers.jsx";
+import AdminSchedules from "./pages/admin/adminSchedules.jsx";
+import DeleteForm from "./components/deleteForm.jsx";
+
+// Your dashboard
+import MemberDashboard from "./pages/MemberDashboard.jsx";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Toaster position="top-right" />
+    <div>
+      <BrowserRouter>
+        <Toaster position="top-right" />
 
-      <Routes>
-        {/* Your pages */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/dashboard" element={<MemberDashboard />} />
-        {/* Team pages */}
-        <Route path="/homepage" element={<HomePage />} />
-        <Route path="/signin" element={<SigninPage />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
-        <Route path="/trainer/login" element={<SigninPage />} />
-        <Route path="/products" element={<ProductPage />} />
+        <Routes>
+          <Route path="/*" element={<HomePage />} />
+          <Route path="/signin" element={<SigninPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
+          <Route path="/trainer/login" element={<SigninPage />} />
+          <Route path="/products" element={<ProductsPage />} />
+          <Route path="/delete" element={<DeleteForm />} />
 
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/add-product" element={<AdminAddProduct />} />
-        <Route path="/admin/users" element={<AdminUsers />} />
-        <Route path="/admin/orders" element={<AdminOrdersPage />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Member Dashboard */}
+          <Route path="/dashboard" element={<MemberDashboard />} />
+
+          <Route path="/admin" element={<AdminDashboard />}>
+            <Route index element={<AdminOrdersPage />} />
+            <Route path="dashboard" element={<h1>Dashboard Overview</h1>} />
+            <Route path="products" element={<AdminProductPage />} />
+            <Route path="add-product" element={<AdminAddProduct />} />
+            <Route path="users" element={<AdminUsersPage />} />
+            <Route path="orders" element={<AdminOrdersPage />} />
+            <Route path="memberships" element={<h1>Memberships Page</h1>} />
+            <Route path="trainers" element={<AdminTrainers />} />
+            <Route path="schedules" element={<AdminSchedules />} />
+            <Route path="revenue" element={<h1>Revenue Page</h1>} />
+            <Route path="settings" element={<h1>Settings Page</h1>} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
