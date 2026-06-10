@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
+import { Toaster , toast } from "react-hot-toast";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -34,7 +35,7 @@ export default function SigninPage() {
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      alert("Login successful!");
+      toast.success("Login successful!");
 
       console.log(response.data);
 
@@ -42,7 +43,7 @@ export default function SigninPage() {
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.error || "Login failed");
+      toast.error(error.response?.data?.error || "Login failed");
     }
   };
 

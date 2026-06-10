@@ -19,6 +19,9 @@ import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import Delete from "./components/deleteForm.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
 import TrainersPage from "./pages/trainersPage.jsx";
+import CartPage from "./pages/cart.jsx";
+import PaymentPage from "./pages/paymentPage.jsx";
+import CheckoutPage from "./pages/checkoutPage.jsx";
 
 function App() {
   return (
@@ -35,6 +38,9 @@ function App() {
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/delete" element={<DeleteForm />} />
             <Route path="/trainers" element={<TrainersPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/payment" element={<PaymentPage />} />
              
 
             <Route path="/admin" element={<AdminDashboard />}>

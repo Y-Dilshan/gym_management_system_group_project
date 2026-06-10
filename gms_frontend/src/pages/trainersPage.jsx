@@ -80,7 +80,7 @@ export default function TrainersPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState([]);
 
-  const API = "http://localhost:3000/api";
+  const API = VITE_BACKEND_URL;
 
   useEffect(() => {
     loadProducts();
