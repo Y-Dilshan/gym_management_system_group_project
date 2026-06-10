@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -21,7 +22,8 @@ export default function SigninPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/login",
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/users/login",
         {
           email,
           password,
@@ -34,7 +36,7 @@ export default function SigninPage() {
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      alert("Login successful!");
+      toast.success("Login successful!");
 
       console.log(response.data);
 
@@ -42,7 +44,7 @@ export default function SigninPage() {
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.error || "Login failed");
+      toast.error(error.response?.data?.error || "Login failed");
     }
   };
 
@@ -74,7 +76,6 @@ export default function SigninPage() {
             />
           </div>
 
-
           <div className="w-[400px] flex flex-col pt-[20px]">
             <label className="text-white mb-2 text-[16px]"> Password </label>
             <input
@@ -99,14 +100,19 @@ export default function SigninPage() {
         <div className="pt-[30px] flex pl-[50px] text-white gap-2">
           <span>You already haven’t an account?</span>
 
-          <button onClick={handleSignup} className="cursor-pointer hover:text-[#D4AF37] transition duration-300">
+          <button
+            onClick={handleSignup}
+            className="cursor-pointer hover:text-[#D4AF37] transition duration-300"
+          >
             Sign Up
           </button>
         </div>
 
         <div className="pt-[30px] flex pl-[50px] text-white gap-2 justify-end pr-[50px]">
           <span>Forgot Password?</span>
-          <button className="cursor-pointer hover:text-[#D4AF37] transition duration-300">Reset here</button>
+          <button className="cursor-pointer hover:text-[#D4AF37] transition duration-300">
+            Reset here
+          </button>
         </div>
       </div>
     </div>
