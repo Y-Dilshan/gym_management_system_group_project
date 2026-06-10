@@ -26,7 +26,7 @@ export default function HomePage() {
         <div className=" bg-[#333333]">
             
             {/* navbar */}
-            <nav className="bg-black h-[80px] px-[100px] shadow-md">
+            <nav className="bg-black h-[100px] px-[100px] shadow-md">
                 <div className="flex items-center justify-between h-full">
                     <div>
                         <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
