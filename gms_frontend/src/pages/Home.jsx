@@ -1,6 +1,13 @@
 import "../styles/Home.css";
 import logo from "../assets/logo.jpeg";
+import {useNavigate} from "react-router-dom";
+
 function Home() {
+const navigate = useNavigate();
+
+const handleSignUp = () => {
+ navigate("/register");
+};
 
 const services = [
 {
@@ -59,7 +66,7 @@ alt="Power Zone Logo"
 Sign In
 </button>
 
-<button className="signup">
+<button onClick={handleSignUp} className="signup">
 Sign Up
 </button>
 

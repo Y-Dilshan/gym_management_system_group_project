@@ -35,7 +35,7 @@ function App() {
         {/* Team pages */}
         <Route path="/homepage" element={<HomePage />} />
         <Route path="/signin" element={<SigninPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
         <Route path="/trainer/login" element={<SigninPage />} />
         <Route path="/products" element={<ProductPage />} />
