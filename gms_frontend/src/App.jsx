@@ -19,7 +19,7 @@ import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import Delete from "./components/deleteForm.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
 import TrainersPage from "./pages/trainersPage.jsx";
-import CartPage from "./pages/cart.jsx";
+import CartPage from "./pages/cartPage.jsx";
 import PaymentPage from "./pages/paymentPage.jsx";
 import CheckoutPage from "./pages/checkoutPage.jsx";
 
