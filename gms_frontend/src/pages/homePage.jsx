@@ -139,8 +139,10 @@ export default function HomePage() {
         </div>
 
         {/*BMI*/} 
-
-        <BMI />
+        <div className = "mt-[50px]">
+            <BMI />
+        </div>
+        
 
         {/* Footer */}
 

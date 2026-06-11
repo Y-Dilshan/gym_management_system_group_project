@@ -15,7 +15,7 @@ const categories = [
 
 
 
-export default function ProductPage() {
+export default function SchedulesPage() {
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState([]);
 
