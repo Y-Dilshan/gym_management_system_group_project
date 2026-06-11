@@ -17,7 +17,7 @@ import AdminTrainers from "./pages/admin/adminTrainers.jsx";
 import AdminSchedules from "./pages/admin/adminSchedules.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
 import TrainersPage from "./pages/trainersPage.jsx";
-import CartPage from "./pages/cart.jsx";
+import CartPage from "./pages/cartPage.jsx";
 import PaymentPage from "./pages/paymentPage.jsx";
 import CheckoutPage from "./pages/checkoutPage.jsx";
 import MemberDashboard from "./pages/MemberDashboard.jsx";
