@@ -29,7 +29,7 @@ export default function HomePage() {
             <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[100px] px-[100px]">
                 <div className="flex items-center justify-between h-full">
                     <div>
-                        <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
+                        <img src="logo.png" alt="logo" className="w-[100px] h-[100px]"/>
                     </div>
                     <div className="flex items-center gap-10 text-xl text-white">
                         <a href="#">Home</a>
