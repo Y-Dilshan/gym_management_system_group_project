@@ -16,8 +16,10 @@ import AdminProductPage from "./pages/admin/adminProductPage.jsx";
 import AdminTrainers from "./pages/admin/adminTrainers.jsx";
 import AdminSchedules from "./pages/admin/adminSchedules.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
-
-// Your dashboard
+import TrainersPage from "./pages/trainersPage.jsx";
+import CartPage from "./pages/cart.jsx";
+import PaymentPage from "./pages/paymentPage.jsx";
+import CheckoutPage from "./pages/checkoutPage.jsx";
 import MemberDashboard from "./pages/MemberDashboard.jsx";
 
 function App() {
@@ -34,10 +36,15 @@ function App() {
           <Route path="/trainer/login" element={<SigninPage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/delete" element={<DeleteForm />} />
+          <Route path="/trainers" element={<TrainersPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
 
           {/* Member Dashboard */}
           <Route path="/dashboard" element={<MemberDashboard />} />
 
+          {/* Admin Dashboard */}
           <Route path="/admin" element={<AdminDashboard />}>
             <Route index element={<AdminOrdersPage />} />
             <Route path="dashboard" element={<h1>Dashboard Overview</h1>} />
@@ -45,6 +52,10 @@ function App() {
             <Route path="add-product" element={<AdminAddProduct />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
+            <Route
+              path="trainer-applications"
+              element={<TrainerApplicationsPage />}
+            />
             <Route path="memberships" element={<h1>Memberships Page</h1>} />
             <Route path="trainers" element={<AdminTrainers />} />
             <Route path="schedules" element={<AdminSchedules />} />
