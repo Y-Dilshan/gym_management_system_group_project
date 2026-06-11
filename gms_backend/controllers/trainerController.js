@@ -84,8 +84,7 @@ export const getTrainerById = (req, res) => {
                t.trainer_id, t.specialization, t.bio, t.experience_years
         FROM users u
         JOIN trainers t ON u.user_id = t.user_id
-        WHERE t.trainer_id = ?
-    `;
+        WHERE t.trainer_id = ?`;
   db.query(sql, [id], (err, results) => {
     if (err) {
       console.error("Error fetching trainer:", err);
@@ -101,16 +100,7 @@ export const getTrainerById = (req, res) => {
 //  UPDATE TRAINER
 export const updateTrainer = (req, res) => {
   const { id } = req.params; // trainer Id
-  const {
-    full_name,
-    email,
-    phone,
-    status,
-    profile_picture,
-    specification,
-    bio,
-    experience_years,
-  } = req.body;
+  const {full_name,email,phone,status,profile_picture,specification,bio,experience_years,} = req.body;
 
   //get user id from trainer table
   db.query(
@@ -127,8 +117,7 @@ export const updateTrainer = (req, res) => {
       const userID = findREsults[0].user_id;
 
       //update users table
-      const userSql =
-        "UPDATE users SET full_name = ?, email = ?, phone =?, status = ? WHERE user_id = ?";
+      const userSql ="UPDATE users SET full_name = ?, email = ?, phone =?, status = ? WHERE user_id = ?";
 
       db.query(
         userSql,
@@ -139,8 +128,7 @@ export const updateTrainer = (req, res) => {
             return res.status(500).json({ error: "Failed to update trainer" });
           }
           //update trainers table
-          const trainerSql =
-            "UPDATE trainers SET specialization = ?, bio = ?, experience_years = ? WHERE trainer_id = ?";
+          const trainerSql ="UPDATE trainers SET specialization = ?, bio = ?, experience_years = ? WHERE trainer_id = ?";
           db.query(
             trainerSql,
             [specialization, bio, experience_years, id],

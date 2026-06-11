@@ -16,15 +16,7 @@ export const createProduct = (req, res) => {
     return res.status(403).json({ message: "Only admins can create products" });
   }
 
-  const {
-    product_name,
-    category,
-    description,
-    price,
-    stock_quantity,
-    image_url,
-    status,
-  } = req.body;
+  const {product_name,category,description,price,stock_quantity,image_url,status,} = req.body;
 
   if (!product_name || !category || !price) {
     return res.status(400).json({
@@ -42,15 +34,7 @@ export const createProduct = (req, res) => {
     "INSERT INTO products (product_name, category, description, price, stock_quantity, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
   db.query(
     sql,
-    [
-      product_name,
-      category.toLowerCase(),
-      description,
-      price,
-      stock_quantity,
-      image_url,
-      status || "active",
-    ],
+    [product_name,category.toLowerCase(),description,price,stock_quantity,image_url,status || "active",],
     (err, result) => {
       if (err) {
         console.error("Error creating product:", err);
