@@ -2,7 +2,7 @@ import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { IoMdCart } from "react-icons/io";
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { label: "All", value: "all" },
@@ -13,9 +13,8 @@ const categories = [
   { label: "Protein", value: "protein" },
 ];
 
-
-
 export default function ProductPage() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState([]);
 
@@ -40,7 +39,7 @@ export default function ProductPage() {
     activeCategory === "all"
       ? products
       : products.filter((p) => p.category === activeCategory);
-      
+
   return (
     <div className="bg-[#333333]">
       <Header />
@@ -86,11 +85,7 @@ export default function ProductPage() {
                 {/* {product.badge} */}
                 {product.category}
               </span>
-              {/* <img
-                src={product.image}
-                alt={product.name}
-                className="h-40 object-contain relative z-10"
-              /> */}
+
               <img
                 src={product.image_url || "/s1.png"}
                 alt={product.product_name}
@@ -119,8 +114,11 @@ export default function ProductPage() {
                     Rs. {Number(product.price).toLocaleString()}
                   </p>
                 </div>
-                <button className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg transition-all duration-150 whitespace-nowrap cursor-pointer">
-                  <IoMdCart /> Add to cart
+                <button
+                  onClick={() => navigate(`/product/${product.product_id}`)}
+                  className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg"
+                >
+                  <IoMdCart/> Buy Now
                 </button>
               </div>
             </div>

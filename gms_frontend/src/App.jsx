@@ -11,13 +11,14 @@ import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/ApplyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
-import AdminProductPage from "./pages/admin/adminProductPage.jsx"
+import AdminProductPage from "./pages/admin/adminProductPage.jsx";
 // import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
 import AdminTrainers from "./pages/admin/adminTrainers.jsx";
 import AdminSchedules from "./pages/admin/adminSchedules.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import Delete from "./components/deleteForm.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
+import ProductByPage from "./pages/ProductByPage.jsx";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
             <Route path="/trainer/login" element={<SigninPage />} />
             <Route path="/products" element={<ProductsPage />} />
             <Route path="/delete" element={<DeleteForm />} />
+            <Route path="/product/:id" element={<ProductByPage />} />
 
             <Route path="/admin" element={<AdminDashboard />}>
               <Route index element={<AdminOrdersPage />} />
