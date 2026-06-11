@@ -23,7 +23,7 @@ export default function HomePage() {
         navigate('/signup');
     }
     return(
-        <div className=" bg-[#333333]">
+        <div className=" bg-[#050505]">
             
             {/* navbar */}
             <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[100px] px-[100px]">
@@ -56,22 +56,19 @@ export default function HomePage() {
             </nav>
 
             {/*home*/}
-            <div className = "w-full px-[100px]">
-                <div className="flex items-center justify-center min-h-[calc(100vh-80px)]">
-                <img src="homepage.jpg" alt="homepage" className="w-[1320px] h-[650px] blur-[2px] object-cover"/>
-                </div>
-            <div>
-                <h1 className = "text-4xl font-bold text-center text-[#D4AF37] pt-[50px]">Unleash Your Potential</h1>
-                <p className = "text-center text-lg text-white mt-4 px-4 max-w-[800px] mx-auto">
+            <div className = "w-full h-screen bg-[url('home.jpg')] bg-cover bg-center pt-[50px]">
+                <div className = "w-full mt-50">
+                <h1 className = "text-6xl font-bold text-center text-[#D4AF37]">Unleash Your Potential</h1>
+                <p className = "text-center text-2xl text-white mt-10 px-4 max-w-[800px] mx-auto">
                     Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods.</p>
 
-            <div className = "flex items-center justify-center py-[50px]">
-
-                <button onClick={handleGetStarted} className="bg-[#333333] text-white  rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[20px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
-            </div>
-              
+                <div className = "flex items-center justify-center py-[50px]">
+                    <button onClick={handleGetStarted} className="bg-[#050505] text-white  rounded w-[200px] h-[50px] mt-20 flex items-center justify-center gap-2 text-[30px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
+                </div>
             </div>
             </div>
+            
+            
 
             {/*about*/} 
             <div id="about">
