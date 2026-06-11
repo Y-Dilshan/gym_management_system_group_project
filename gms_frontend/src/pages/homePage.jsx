@@ -1,11 +1,15 @@
 import Footer from "../components/footer.jsx";
 import { useNavigate, Link } from "react-router-dom";
+import { useState } from "react";
 import { GoSignIn } from "react-icons/go";
 import { SlUserFollowing } from "react-icons/sl";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import BMI from "../components/bmiCal.jsx";
 
 export default function HomePage() {
 
     const navigate = useNavigate();
+    const [current, setCurrent] = useState(0);
 
     const handleProduct = () => {
         navigate('/products');
@@ -22,6 +26,24 @@ export default function HomePage() {
     const handleSignUp = () => {
         navigate('/signup');
     }
+
+    const images = [
+        "/services1.jpg",
+        "/services2.jpg",
+        "/services3.jpg",
+        "/services4.jpg",
+        "/services5.jpg",
+        "/services6.jpg",
+    ]
+
+  const nextImage = () => {
+    setCurrent((prev) => (prev + 1) % images.length);
+  };
+
+  const prevImage = () => {
+    setCurrent((prev) => (prev - 1 + images.length) % images.length);
+  };
+
     return(
         <div className=" bg-[#050505]">
             
@@ -40,13 +62,13 @@ export default function HomePage() {
 
                     <div className="flex gap-5">
                         <Link to = "/signin">
-                        <button onClick = {handleSignin} className="bg-[#333333] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300">
+                        <button onClick = {handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300">
                             Sign in <GoSignIn />
                         </button>
                         </Link>
                     
                         <Link to = "/signup">
-                        <button onClick = {handleSignUp} className="bg-[#D4AF37] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#333333] hover:text-white transition duration-300">
+                        <button onClick = {handleSignUp} className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300">
                             Sign Up <SlUserFollowing />
                         </button>
                         </Link>
@@ -58,12 +80,12 @@ export default function HomePage() {
             {/*home*/}
             <div className = "w-full h-screen bg-[url('home.jpg')] bg-cover bg-center pt-[50px]">
                 <div className = "w-full mt-50">
-                <h1 className = "text-6xl font-bold text-center text-[#D4AF37]">Unleash Your Potential</h1>
+                <h1 className = "text-6xl font-bold text-center text-[#d4a017]">Unleash Your Potential</h1>
                 <p className = "text-center text-2xl text-white mt-10 px-4 max-w-[800px] mx-auto">
                     Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods.</p>
 
                 <div className = "flex items-center justify-center py-[50px]">
-                    <button onClick={handleGetStarted} className="bg-[#050505] text-white  rounded w-[200px] h-[50px] mt-20 flex items-center justify-center gap-2 text-[30px] border border-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition duration-300 font-bold">Get Started </button>
+                    <button onClick={handleGetStarted} className="bg-[#d4a017] text-black  rounded-3xl w-[200px] h-[50px] mt-20 flex items-center justify-center gap-2 text-[30px] border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold">Get Started </button>
                 </div>
             </div>
             </div>
@@ -72,7 +94,7 @@ export default function HomePage() {
 
             {/*about*/} 
             <div id="about">
-            <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">About Us</h1>
+            <h1 className = "text-4xl font-bold text-center text-[#d4a017] py-[50px]">About Us</h1>
             <div className = "flex items-center justify-center mt-[30px] gap-10">
                 <p className = "text-center text-lg text-white mt-4 px-4 max-w-[800px] ml-[100px]">Welcome to our fitness gym, where we help people of all levels achieve their health and fitness goals. With modern equipment, expert trainers, and personalized programs, we create a supportive and motivating environment for everyone. We believe fitness is more than just exercise it’s about building confidence, discipline, and a healthier lifestyle. Join us and start your journey toward a stronger, better you.</p>
                 <img src = "about.jpg " alt = "about us" className="w-[480px] h-[280px] object-cover mt-[30px] mr-[100px]"/>
@@ -80,54 +102,23 @@ export default function HomePage() {
             </div>
 
             {/*Our Services*/} 
-            <div id="our_services">
             <div>
-                <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">Our Services</h1>
+                <h1 className = "text-4xl font-bold text-center text-[#d4a017] py-[50px]">Our Services</h1>
+                <div className="w-full mt-[20px] h-screen bg-cover bg-center relative" style={{ backgroundImage: `url(${images[current]})` }}>
+                {/* Left Arrow */}
+                <button onClick={prevImage} className="absolute left-5 top-1/2 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full"> <FaChevronLeft /> </button>
+
+                {/* Right Arrow */}
+                <button onClick={nextImage} className="absolute right-5 top-1/2 -translate-y-1/2 bg-black/50 text-white p-3 rounded-full"> <FaChevronRight /> </button>
+                
             </div>
-
-
-           <div className="px-[100px] py-[50px]">
-
-           <div className="grid grid-cols-3 gap-4 ">
-               <button className="cursor-pointer p-6 flex items-center justify-center shadow  shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
-                <h3 className = "text-black text-bold text-2xl">Schedules</h3>
-                <p className = "py-[10px]">Flexible workout schedules designed to fit your daily routine and keep you consistent.</p>
-               </button>
-
-               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
-                <h3 className = "text-black text-bold text-2xl">Trainers</h3>
-                <p className = "py-[10px]">Certified and experienced trainers who guide and motivate you to reach your fitness goals.</p>
-               </button>
-
-               <button onClick = {handleProduct} className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
-                <h3 className = "text-black text-bold text-2xl">Supplements</h3>
-                <p className = "py-[10px]">High-quality supplements to support performance, recovery, and overall health.</p>
-               </button>
-
-               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
-                <h3 className = "text-black text-bold text-2xl">Diet Plans</h3>
-                <p className = "py-[10px]">Customized diet plans to help you maintain a balanced and healthy lifestyle.</p>
-               </button>
-
-               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
-                <h3 className = "text-black text-bold text-2xl">Personal Training</h3>
-                <p className = "py-[10px]">One-on-one training sessions tailored to your specific fitness needs and goals.</p>
-               </button>
-
-               <button className="cursor-pointer p-6 flex items-center justify-center shadow shadow-2xl shadow-black bg-[#E7DBB8] rounded-[15px] flex flex-col text-center">
-                <h3 className = "text-black text-bold text-2xl">Modern gym equipment</h3>
-                <p className = "py-[10px]">State-of-the-art gym equipment for effective and safe workouts.</p>
-               </button>
-           </div>
-
-        </div>
-        </div>
-
+            </div>
+            
 
         {/*Contact Us*/} 
         <div id="contacts">
             <div>
-                <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">Contact Us</h1>
+                <h1 className = "text-4xl font-bold text-center text-[#d4a017] py-[50px]">Contact Us</h1>
             </div>
 
             <div className = "flex justify-center pt-[20px]">
@@ -143,75 +134,13 @@ export default function HomePage() {
             </div>
 
              <div className = " flex justify-center pt-[20px]">
-                <button className="flex items-center justify-center gap-2 border text-white text-2xl border-[#D4AF37] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#D4AF37] hover:text-black cursor-pointer">Submit</button>
+                <button className="flex items-center justify-center gap-2 border text-white text-2xl border-[#d4a017] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#d4a017] hover:text-black cursor-pointer">Submit</button>
             </div>
         </div>
 
         {/*BMI*/} 
 
-        <div>
-            <div>
-                <h1 className = "text-4xl font-bold text-center text-[#D4AF37] py-[50px]">Calculate Your BMI</h1>
-            </div>
-
-
-            {/*Left side */}
-            <div className="flex items-center justify-center">
-                <div className="w-[800px] h-[600px] bg-white flex">
-
-                    <div className = "w-[400px]">
-                        <img src = "bmi.jpg" />
-                    </div>
-
-                    {/*Right side */}
-                    <div className = "w-[400px] bg-[#1F1F1F] flex flex-col">
-                        <h1 className = "text-[25px] text-[#D4AF37] text-center text-bold pt-[20px]">BMI calculator</h1>
-
-                        <div className = "flex items-center pl-[20px]  gap-4 pt-[20px]">
-                        <label className = "text-white pl-[20px] ">Age :</label>
-                        <input className = "w-[200px] h-[30px] bg-[#E7DBB8] rounded-[15px]" />
-                        </div>
-
-                        <div className = "flex items-center pl-[20px]  gap-4 pt-[20px]">
-                        <label className = "text-white pl-[20px]">Height :</label>
-                        <input className = "w-[200px] h-[30px] bg-[#E7DBB8] rounded-[15px]" />
-                        <label className = "text-white">Cm</label>
-                        </div>
-
-                        <div className = "flex items-center pl-[20px]  gap-4 pt-[20px]">
-                        <label className = "text-white pl-[20px]">Weight :</label>
-                        <input className = "w-[200px] h-[30px] bg-[#E7DBB8] rounded-[15px]" />
-                        <label className = "text-white">kg</label>
-                        </div>
-
-                        <div className="flex items-center pl-[20px]  gap-4 pt-[20px]">
-                            <label className = "text-white pl-[20px]"> Gender </label>
-
-                            <select className="w-[200px] h-[30px] px-4 rounded-2xl bg-[#E7DBB8] outline-none border-2 border-transparent focus:border-[#D4AF37] text-black shadow-md">
-                                <option value="">Select Gender</option>
-                                <option value="male">Male</option>
-                                <option value="female">Female</option>
-                            </select>
-                        </div>
-
-                        <div className = "text-white text-center text-[20px] pt-[30px]">
-                            <button type = "submit" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl text-black bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-white cursor-pointer">Calculate</button>
-                        </div>
-
-                        <div className = "text-white text-center text-[20px] pt-[30px]">
-                            <button type = "reset" className = " border border-[#D4AF37] border-[2px] w-[300px] h-[40px] rounded-2xl bg-[#333333] hover:bg-[#D4AF37] hover:outline-[#D4AF37] hover:text-black cursor-pointer">Clear</button>
-                        </div>
-
-                        <div className = "text-white text-[25px] pt-[20px] text-center">Result</div>
-
-                        <div className = "text-white text-[25px] pt-[20px] text-center">BMI = _ _</div>
-
-                        <div className = "text-white text-[20px] pt-[20px] text-center">Healthy BMI range: 18.5 - 25</div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
+        <BMI />
 
         {/* Footer */}
 

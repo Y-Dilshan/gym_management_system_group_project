@@ -21,7 +21,6 @@ import CartPage from "./pages/cartPage.jsx";
 import PaymentPage from "./pages/paymentPage.jsx";
 import CheckoutPage from "./pages/checkoutPage.jsx";
 import MemberDashboard from "./pages/MemberDashboard.jsx";
-
 function App() {
   return (
     <div>
