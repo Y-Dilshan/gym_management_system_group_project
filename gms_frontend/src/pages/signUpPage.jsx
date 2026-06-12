@@ -60,7 +60,7 @@ export default function SignUpPage() {
         }}>
         <div className="absolute inset-0 bg-black/45"></div>
 
-        <button onClick={handleBack} className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover:text-[#D4AF37]" > ← Back </button>
+        <button onClick={handleBack} className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover" > ← Back </button>
 
         <div className="relative z-10 w-full max-w-[520px] flex flex-col justify-center">
           {/* Logo */}

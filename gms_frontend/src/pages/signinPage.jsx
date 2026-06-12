@@ -49,7 +49,7 @@ export default function SigninPage() {
   };
 
   return (
-    <div className="bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center">
+    <div className="bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center object-cover">
       <div className="w-[500px] h-[500px] bg-[#333333] shadow-2xl shadow-gray-600 pt-10 relative rounded-xl w-[400px]">
         {/* Back Button */}
         <button className="flex items-center gap-2 text-white hover:text-[#D4AF37] transition duration-300 absolute left-10 top-10">
