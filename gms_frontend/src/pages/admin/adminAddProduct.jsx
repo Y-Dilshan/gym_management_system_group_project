@@ -178,18 +178,9 @@ return (
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
-          <input
-            name="product_name"
-            placeholder="Product Name"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
-          />
+          <input name="product_name" placeholder="Product Name" onChange={handleChange} className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"/>
 
-          <select
-            name="category"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
-          >
+          <select name="category" onChange={handleChange} className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none">
             <option value="">Select Category</option>
             <option value="protein">Protein</option>
             <option value="pre-workout">Pre Workout</option>
@@ -198,42 +189,17 @@ return (
             <option value="recovery">Recovery</option>
           </select>
 
-          <input
-            name="price"
-            placeholder="Price"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
-          />
+          <input name="price" placeholder="Price" onChange={handleChange} className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"/>
 
-          <input
-            name="stock_quantity"
-            placeholder="Stock Quantity"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"
-          />
+          <input name="stock_quantity" placeholder="Stock Quantity" onChange={handleChange} className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none"/>
 
-          <input
-            name="image_url"
-            placeholder="Image URL"
-            onChange={handleChange}
-            className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none lg:col-span-2"
-          />
+          <input name="image_url" placeholder="Image URL" onChange={handleChange} className="border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:outline-none lg:col-span-2"/>
         </div>
 
         <textarea
-          name="description"
-          placeholder="Product Description"
-          onChange={handleChange}
-          rows="4"
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 mt-4 focus:ring-2 focus:ring-green-500 focus:outline-none"
-        />
+          name="description" placeholder="Product Description" onChange={handleChange} rows="4" className="w-full border border-gray-300 rounded-lg px-4 py-3 mt-4 focus:ring-2 focus:ring-green-500 focus:outline-none"/>
 
-        <button
-          onClick={createProduct}
-          className="mt-6 bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-lg transition duration-200"
-        >
-          Add Product
-        </button>
+        <button onClick={createProduct} className="mt-6 bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-3 rounded-lg transition duration-200"> Add Product </button>
       </div>
 
       {/* Products Table */}
