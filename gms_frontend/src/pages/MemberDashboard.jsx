@@ -216,6 +216,145 @@ export default function MemberDashboard() {
             </div>
 
           </div>
+          {/* Stats Cards */}
+<div className="grid grid-cols-4 gap-6 mt-8">
+
+  {/* Membership */}
+  <div className="bg-[#111111] rounded-2xl p-6 border border-white/5">
+    <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center text-yellow-400 text-3xl">
+      🏋️
+    </div>
+
+    <p className="text-gray-400 mt-4">Membership</p>
+
+    <h2 className="text-yellow-400 text-5xl font-bold">
+      Active
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      Your membership is active
+    </p>
+  </div>
+
+  {/* Attendance */}
+  <div className="bg-[#111111] rounded-2xl p-6 border border-white/5">
+    <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center text-green-400 text-3xl">
+      📅
+    </div>
+
+    <p className="text-gray-400 mt-4">Attendance</p>
+
+    <h2 className="text-green-400 text-5xl font-bold">
+      42 Days
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      This month
+    </p>
+  </div>
+
+  {/* BMI */}
+  <div className="bg-[#111111] rounded-2xl p-6 border border-white/5">
+    <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center text-blue-400 text-3xl">
+      💙
+    </div>
+
+    <p className="text-gray-400 mt-4">BMI</p>
+
+    <h2 className="text-blue-400 text-5xl font-bold">
+      21.8
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      Healthy Range
+    </p>
+  </div>
+
+  {/* Payments */}
+  <div className="bg-[#111111] rounded-2xl p-6 border border-white/5">
+    <div className="w-14 h-14 rounded-full bg-black flex items-center justify-center text-yellow-400 text-3xl">
+      💳
+    </div>
+
+    <p className="text-gray-400 mt-4">Payments</p>
+
+    <h2 className="text-yellow-400 text-5xl font-bold">
+      Rs.15,000
+    </h2>
+
+    <p className="text-gray-500 mt-2">
+      Total Paid
+    </p>
+  </div>
+
+</div>
+
+{/* Recent Orders */}
+<div className="mt-8 bg-[#111111] rounded-2xl p-8 border border-white/5">
+
+  <div className="flex justify-between items-center mb-6">
+
+    <h2 className="text-3xl font-bold">
+      Recent Orders
+    </h2>
+
+    <button className="text-yellow-400">
+      View All
+    </button>
+
+  </div>
+
+  <table className="w-full">
+
+    <thead>
+      <tr className="text-left text-gray-400 border-b border-white/10">
+        <th className="pb-4">Order ID</th>
+        <th className="pb-4">Supplement</th>
+        <th className="pb-4">Date</th>
+        <th className="pb-4">Status</th>
+        <th className="pb-4">Amount</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr className="border-b border-white/5">
+        <td className="py-5">ORD001</td>
+        <td>Gold Standard 100% Whey Protein</td>
+        <td>05 Jun 2026</td>
+        <td className="text-green-400">Delivered</td>
+        <td>Rs. 8,999</td>
+      </tr>
+
+      <tr className="border-b border-white/5">
+        <td className="py-5">ORD002</td>
+        <td>Creatine Monohydrate</td>
+        <td>02 Jun 2026</td>
+        <td className="text-yellow-400">Pending</td>
+        <td>Rs. 4,999</td>
+      </tr>
+
+      <tr className="border-b border-white/5">
+        <td className="py-5">ORD003</td>
+        <td>C4 Original Pre Workout</td>
+        <td>30 May 2026</td>
+        <td className="text-green-400">Delivered</td>
+        <td>Rs. 6,500</td>
+      </tr>
+
+      <tr>
+        <td className="py-5">ORD004</td>
+        <td>BCAA Energy</td>
+        <td>28 May 2026</td>
+        <td className="text-green-400">Delivered</td>
+        <td>Rs. 5,999</td>
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
 
         </main>
 
