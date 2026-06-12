@@ -1,4 +1,5 @@
 import gymImage from "../assets/hero.png";
+import { Link } from "react-router-dom";
 
 export default function MemberDashboard() {
   return (
@@ -59,9 +60,11 @@ export default function MemberDashboard() {
         Trainers
       </button>
 
+      <Link to="/profile">
       <button className="w-full py-2 px-6 rounded-xl text-left hover:bg-white/5">
-        Profile
+       Profile
       </button>
+      </Link>
 
       <button className="w-full py-2 px-6 rounded-xl text-left text-red-400 hover:bg-red-500/10">
         Logout

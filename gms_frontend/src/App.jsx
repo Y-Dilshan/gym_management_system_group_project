@@ -21,6 +21,7 @@ import CartPage from "./pages/cart.jsx";
 import PaymentPage from "./pages/paymentPage.jsx";
 import CheckoutPage from "./pages/checkoutPage.jsx";
 import MemberDashboard from "./pages/MemberDashboard.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/cart" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
 
           {/* Member Dashboard */}
           <Route path="/dashboard" element={<MemberDashboard />} />
