@@ -163,7 +163,273 @@ export default function MemberDashboard() {
         {/* Content */}
         <main className="p-8">
 
-         ....
+         {/* Title */}
+<div className="mb-6">
+  <h1 className="text-4xl font-bold">Edit Profile</h1>
+
+  <div className="flex items-center gap-2 mt-1 text-sm">
+    <span className="text-gray-400">Dashboard</span>
+    <span className="text-yellow-500">›</span>
+    <span className="text-yellow-500">Edit Profile</span>
+  </div>
+</div>
+
+{/* Profile Header */}
+<div className="bg-[#111111] rounded-3xl border border-white/5 p-6 flex items-center gap-6">
+
+  <div className="relative">
+    <img
+      src="https://i.pravatar.cc/200"
+      alt=""
+      className="w-24 h-24 rounded-full border-2 border-yellow-500 object-cover"
+    />
+
+    <button className="absolute bottom-0 right-0 bg-yellow-500 text-black w-9 h-9 rounded-full">
+      📷
+    </button>
+  </div>
+
+  <div>
+    <h2 className="text-3xl font-bold">
+      Kajanika Sivatheepan
+    </h2>
+
+    <p className="text-gray-400 mt-1">
+      Member since 01 Jan 2026
+    </p>
+
+    <div className="mt-3 inline-flex items-center gap-2 bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-xl">
+      👑 Gold Membership
+    </div>
+  </div>
+
+</div>
+
+{/* Information Cards */}
+<div className="grid grid-cols-2 gap-5 mt-5">
+
+  {/* Personal */}
+  <div className="bg-[#111111] rounded-3xl p-5 border border-white/5">
+
+    <h3 className="text-xl font-semibold mb-5">
+      👤 Personal Information
+    </h3>
+
+    <div className="grid grid-cols-2 gap-4">
+
+      <div>
+        <label className="text-sm text-gray-400">
+          First Name
+        </label>
+
+        <input
+          type="text"
+          defaultValue="Kajanika"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Last Name
+        </label>
+
+        <input
+          type="text"
+          defaultValue="Sivatheepan"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Email Address
+        </label>
+
+        <input
+          type="email"
+          defaultValue="kajanika@gmail.com"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Phone Number
+        </label>
+
+        <input
+          type="text"
+          defaultValue="+94 77 123 4567"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Date of Birth
+        </label>
+
+        <input
+          type="date"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Gender
+        </label>
+
+        <select className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4">
+          <option>Female</option>
+          <option>Male</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div className="mt-4">
+      <label className="text-sm text-gray-400">
+        Address
+      </label>
+
+      <input
+        type="text"
+        defaultValue="No. 123, Main Street, Jaffna, Sri Lanka"
+        className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+      />
+    </div>
+
+  </div>
+
+  {/* Account */}
+  <div className="bg-[#111111] rounded-3xl p-5 border border-white/5">
+
+    <h3 className="text-xl font-semibold mb-5">
+      🔒 Account Information
+    </h3>
+
+    <div className="space-y-4">
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Username
+        </label>
+
+        <input
+          type="text"
+          defaultValue="kajanika"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Membership Plan
+        </label>
+
+        <input
+          type="text"
+          defaultValue="Gold Membership"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Join Date
+        </label>
+
+        <input
+          type="date"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+      <div>
+        <label className="text-sm text-gray-400">
+          Member ID
+        </label>
+
+        <input
+          type="text"
+          defaultValue="PZ10026"
+          className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+        />
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+{/* Password */}
+<div className="bg-[#111111] rounded-3xl p-5 border border-white/5 mt-5">
+
+  <h3 className="text-xl font-semibold mb-5">
+    🔐 Change Password
+  </h3>
+
+  <div className="grid grid-cols-3 gap-5">
+
+    <div>
+      <label className="text-sm text-gray-400">
+        Current Password
+      </label>
+
+      <input
+        type="password"
+        placeholder="Enter current password"
+        className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+      />
+    </div>
+
+    <div>
+      <label className="text-sm text-gray-400">
+        New Password
+      </label>
+
+      <input
+        type="password"
+        placeholder="Enter new password"
+        className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+      />
+    </div>
+
+    <div>
+      <label className="text-sm text-gray-400">
+        Confirm New Password
+      </label>
+
+      <input
+        type="password"
+        placeholder="Confirm new password"
+        className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
+      />
+    </div>
+
+  </div>
+
+  <p className="text-gray-500 text-sm mt-3">
+    Leave password fields empty if you don't want to change your password.
+  </p>
+
+</div>
+
+{/* Buttons */}
+<div className="flex justify-center gap-4 mt-6">
+
+  <button className="px-12 py-3 border border-white/20 rounded-xl">
+    Cancel
+  </button>
+
+  <button className="px-12 py-3 bg-yellow-500 text-black font-semibold rounded-xl">
+    Save Changes
+  </button>
+
+</div>
          
 
 
