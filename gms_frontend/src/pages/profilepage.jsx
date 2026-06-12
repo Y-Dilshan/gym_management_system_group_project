@@ -1,132 +1,151 @@
+import gymImage from "../assets/hero.png";
 import { Link } from "react-router-dom";
-import logo from "../assets/logo.jpeg";
-import gymImage from "../assets/gym.jpg";
 
-export default function ProfilePage() {
+export default function MemberDashboard() {
   return (
     <div className="min-h-screen bg-black text-white flex">
 
+      
       {/* Sidebar */}
-      <aside className="w-[250px] bg-[#080808] border-r border-yellow-500/20 flex flex-col">
+<aside className="w-[280px] bg-[#0B0B0B] border-r border-yellow-500/10 flex flex-col">
 
-        {/* Logo */}
-        <div className="h-20 flex items-center px-6 border-b border-yellow-500/20">
-          <img
-            src={logo}
-            alt="logo"
-            className="w-12 h-12 object-contain"
-          />
+  {/* Logo */}
+  <div className="px-6 pt-7 pb-6 border-b border-yellow-500/10">
 
-          <div className="ml-3">
-            <h1 className="text-3xl font-bold">
-              <span className="text-white">POWER </span>
-              <span className="text-yellow-400">ZONE</span>
-            </h1>
+    <div className="flex items-center gap-3">
 
-            <p className="text-xs tracking-widest text-gray-400">
-              PREMIUM GYM
-            </p>
-          </div>
-        </div>
+      <img
+        src="https://via.placeholder.com/100"
+        alt="Power Zone"
+        className="w-12 h-12"
+      />
 
-        {/* Menu */}
-        <div className="px-5 pt-10 space-y-7">
+      <div>
+        <h1 className="text-[20px] font-bold leading-none">
+          <span className="text-white">POWER </span>
+          <span className="text-yellow-400">ZONE</span>
+        </h1>
 
-          <Link to="/dashboard" className="block">
-            Dashboard
-          </Link>
+        <p className="text-[11px] text-gray-400 tracking-[2px] mt-1">
+          PREMIUM GYM
+        </p>
+      </div>
 
-          <button className="block">
-            Membership
-          </button>
+    </div>
 
-          <button className="block">
-            Orders
-          </button>
+  </div>
 
-          <button className="block">
-            Payments
-          </button>
+  {/* Menu */}
+  <div className="px-6 pt-12">
 
-          <button className="block">
-            Trainers
-          </button>
+    <div className="space-y-6">
 
-          <button className="w-full bg-yellow-500/20 text-yellow-400 py-3 rounded-xl text-left px-5">
-            Profile
-          </button>
+      <button className="w-full bg-yellow-500 text-black py-4 rounded-xl font-semibold text-left px-6">
+        Dashboard
+      </button>
 
-          <button className="block text-gray-300">
-            Settings
-          </button>
+      <button className="w-full py-2 px-6 rounded-xl text-left hover:bg-white/5">
+        Membership
+      </button>
 
-          <button className="block text-red-400">
-            Logout
-          </button>
+      <button className="w-full py-2 px-6 rounded-xl text-left hover:bg-white/5">
+        Orders
+      </button>
 
-        </div>
+      <button className="w-full py-2 px-6 rounded-xl text-left hover:bg-white/5">
+        Payments
+      </button>
 
-        {/* Bottom Image */}
-        <div className="mt-auto p-5">
+      <button className="w-full py-2 px-6 rounded-xl text-left hover:bg-white/5">
+        Trainers
+      </button>
 
-          <div className="rounded-3xl overflow-hidden bg-[#111111]">
+      <Link to="/profile">
+      <button className="w-full py-2 px-6 rounded-xl text-left hover:bg-white/5">
+       Profile
+      </button>
+      </Link>
 
-            <img
-              src={gymImage}
-              alt="gym"
-              className="w-full h-64 object-cover"
-            />
+      <button className="w-full py-2 px-6 rounded-xl text-left text-red-400 hover:bg-red-500/10">
+        Logout
+      </button>
 
-            <div className="p-4">
+    </div>
 
-              <h3 className="text-4xl font-bold">
-                BE STRONGER
-              </h3>
+  </div>
 
-              <h3 className="text-4xl font-bold text-yellow-400">
-                THAN YOUR
-              </h3>
+  {/* Push image card to bottom */}
+  <div className="flex-1"></div>
 
-              <h3 className="text-4xl font-bold">
-                EXCUSES
-              </h3>
+  {/* Advertisement Card */}
+  <div className="px-5 pb-5">
 
-              <p className="mt-3 text-gray-300">
-                Keep Pushing 💪
-              </p>
+    <div className="bg-[#111111] rounded-3xl overflow-hidden border border-yellow-500/10">
 
-            </div>
+      <img
+        src={gymImage}
+        alt="Gym"
+        className="w-full h-60 object-cover"
+      />
 
-          </div>
+      <div className="p-5">
 
-        </div>
+        <h2 className="text-3xl font-bold leading-tight">
+          BE STRONGER
+        </h2>
 
-      </aside>
+        <h2 className="text-3xl font-bold text-yellow-400 leading-tight">
+          THAN YOUR
+        </h2>
+
+        <h2 className="text-3xl font-bold leading-tight">
+          EXCUSES
+        </h2>
+
+        <p className="text-gray-300 mt-4">
+          Keep Pushing 💪
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</aside>
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col">
 
         {/* Navbar */}
-        <header className="h-20 border-b border-yellow-500/20 flex items-center justify-between px-10 bg-[#080808]">
+        <header className="h-20 border-b border-yellow-500/20 bg-[#0A0A0A] flex items-center justify-between px-10">
 
           <div className="flex gap-12 font-medium">
 
-            <Link to="/dashboard">DASHBOARD</Link>
-            <span>MEMBERSHIP</span>
-            <span>ORDERS</span>
-            <span>PAYMENTS</span>
-            <span>TRAINERS</span>
-            <span>SUPPLEMENTS</span>
+            <span className="text-yellow-400 border-b-2 border-yellow-400 pb-1">
+              Dashboard
+            </span>
+
+            <span>Membership</span>
+            <span>Orders</span>
+            <span>Payments</span>
+            <span>Trainers</span>
+            <span>Supplements</span>
 
           </div>
 
           <div className="flex items-center gap-4">
 
             <div className="relative">
-              🔔
-              <div className="absolute -top-2 -right-2 bg-yellow-500 text-black text-xs w-5 h-5 rounded-full flex items-center justify-center">
+
+              <span className="text-yellow-400 text-xl">
+                🔔
+              </span>
+
+              <div className="absolute -top-2 -right-2 w-5 h-5 rounded-full bg-yellow-500 text-black text-xs flex items-center justify-center font-bold">
                 3
               </div>
+
             </div>
 
             <img
@@ -142,158 +161,12 @@ export default function ProfilePage() {
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-8 bg-black text-white">
+        <main className="p-8">
 
-          {/* Header */}
-          <div className="mb-6">
+         ....
+         
 
-            <h1 className="text-4xl font-bold">
-              Edit Profile
-            </h1>
 
-            <div className="flex items-center gap-2 mt-2 text-sm">
-              <span className="text-gray-400">Dashboard</span>
-              <span className="text-yellow-400">›</span>
-              <span className="text-yellow-400">Edit Profile</span>
-            </div>
-
-          </div>
-
-          {/* Profile Card */}
-          <div className="bg-[#111111] rounded-3xl p-6 border border-white/5 flex items-center gap-6">
-
-            <div className="relative">
-
-              <img
-                src="https://i.pravatar.cc/200"
-                alt="profile"
-                className="w-28 h-28 rounded-full border-2 border-yellow-500"
-              />
-
-              <button className="absolute bottom-1 right-1 bg-yellow-500 text-black w-10 h-10 rounded-full">
-                📷
-              </button>
-
-            </div>
-
-            <div>
-
-              <h2 className="text-4xl font-bold">
-                Kajanika Sivatheepan
-              </h2>
-
-              <p className="text-gray-400 mt-2">
-                Member since 01 Jan 2026
-              </p>
-
-              <button className="mt-4 bg-yellow-500/20 text-yellow-400 px-5 py-2 rounded-xl">
-                👑 Gold Membership
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* Info Cards */}
-          <div className="grid grid-cols-2 gap-6 mt-6">
-
-            {/* Personal Info */}
-            <div className="bg-[#111111] rounded-3xl p-6">
-
-              <h3 className="text-xl font-semibold mb-6">
-                Personal Information
-              </h3>
-
-              <div className="grid grid-cols-2 gap-4">
-
-                <input className="bg-black border border-white/10 rounded-xl p-3" defaultValue="Kajanika" />
-                <input className="bg-black border border-white/10 rounded-xl p-3" defaultValue="Sivatheepan" />
-
-                <input className="bg-black border border-white/10 rounded-xl p-3" defaultValue="kajanika@gmail.com" />
-                <input className="bg-black border border-white/10 rounded-xl p-3" defaultValue="+94 77 123 4567" />
-
-                <input type="date" className="bg-black border border-white/10 rounded-xl p-3" />
-
-                <select className="bg-black border border-white/10 rounded-xl p-3">
-                  <option>Female</option>
-                  <option>Male</option>
-                </select>
-
-              </div>
-
-              <input
-                className="w-full mt-4 bg-black border border-white/10 rounded-xl p-3"
-                defaultValue="No.123, Main Street, Jaffna, Sri Lanka"
-              />
-
-            </div>
-
-            {/* Account Info */}
-            <div className="bg-[#111111] rounded-3xl p-6">
-
-              <h3 className="text-xl font-semibold mb-6">
-                Account Information
-              </h3>
-
-              <div className="space-y-4">
-
-                <input className="w-full bg-black border border-white/10 rounded-xl p-3" defaultValue="kajanika" />
-
-                <input className="w-full bg-black border border-white/10 rounded-xl p-3" defaultValue="Gold Membership" />
-
-                <input type="date" className="w-full bg-black border border-white/10 rounded-xl p-3" />
-
-                <input className="w-full bg-black border border-white/10 rounded-xl p-3" defaultValue="PZ10026" />
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* Password */}
-          <div className="bg-[#111111] rounded-3xl p-6 mt-6">
-
-            <h3 className="text-xl font-semibold mb-6">
-              Change Password
-            </h3>
-
-            <div className="grid grid-cols-3 gap-6">
-
-              <input
-                type="password"
-                placeholder="Current Password"
-                className="bg-black border border-white/10 rounded-xl p-3"
-              />
-
-              <input
-                type="password"
-                placeholder="New Password"
-                className="bg-black border border-white/10 rounded-xl p-3"
-              />
-
-              <input
-                type="password"
-                placeholder="Confirm Password"
-                className="bg-black border border-white/10 rounded-xl p-3"
-              />
-
-            </div>
-
-          </div>
-
-          {/* Buttons */}
-          <div className="flex justify-center gap-4 mt-8">
-
-            <button className="border border-white/20 px-10 py-3 rounded-xl">
-              Cancel
-            </button>
-
-            <button className="bg-yellow-500 text-black font-semibold px-10 py-3 rounded-xl">
-              Save Changes
-            </button>
-
-          </div>
 
         </main>
 
