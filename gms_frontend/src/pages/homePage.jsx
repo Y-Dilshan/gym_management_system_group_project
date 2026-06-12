@@ -54,10 +54,12 @@ export default function HomePage() {
                         <img src="logo.png" alt="logo" className="w-[100px] h-[100px]"/>
                     </div>
                     <div className="flex items-center gap-10 text-xl text-white">
-                        <a href="#">Home</a>
-                        <a href="#about">About</a>
-                        <a href="#our_services">Our Services</a>
-                        <a href="#contacts">Contacts</a>
+                        <a className = "hover:text-[#d4a017]" href="#">Home</a>
+                        <a className = "hover:text-[#d4a017]" href="#about">About</a>
+                        <a className = "hover:text-[#d4a017]" href="#our_services">Our Services</a>
+                        <a className = "hover:text-[#d4a017]" href="#contacts">Contacts</a>
+                        <Link className = "hover:text-[#d4a017]" to="/trainers">Trainers</Link>
+                        <Link className = "hover:text-[#d4a017]" to="/schedules">Schedules</Link>
                     </div>
 
                     <div className="flex gap-5">
@@ -146,7 +148,7 @@ export default function HomePage() {
 
         {/* Footer */}
 
-        <div className = "pt-[20px]">
+        <div className = "pt-[50px]">
             <Footer/>
         </div>
         

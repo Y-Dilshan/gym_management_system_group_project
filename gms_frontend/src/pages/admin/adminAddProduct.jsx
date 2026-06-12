@@ -84,7 +84,7 @@ import { useEffect, useState } from "react";
 
 const API = "http://localhost:3000/api/products";
 
-export default function AdminProductPage() {
+export default function AdminAddProduct() {
   const [products, setProducts] = useState([]);
 
   const [form, setForm] = useState({
@@ -163,24 +163,18 @@ export default function AdminProductPage() {
   };
 
 return (
-  <div className="min-h-screen bg-gray-100 p-8">
-    <div className="max-w-7xl mx-auto">
+  <div className="min-h-screen bg-gray-100">
+    <div className="w-full mx-auto">
 
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-800">
-          Product Management
-        </h1>
-        <p className="text-gray-500 mt-2">
-          Manage products, inventory and categories
-        </p>
+      <div className=" bg-[#050505] h-[80px] flex flex-col justify-center">
+        <h1 className="text-4xl font-bold text-white ml-10 "> Add Products </h1>
+        <p className="mt-2 text-white ml-10"> Manage products, inventory and categories </p>
       </div>
 
       {/* Add Product Form */}
       <div className="bg-white rounded-2xl shadow-md p-6 mb-8">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">
-          Add New Product
-        </h2>
+        <h2 className="text-2xl font-semibold mb-6 text-gray-800"> Add New Product </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 
