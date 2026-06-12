@@ -22,6 +22,7 @@ import PaymentPage from "./pages/paymentPage.jsx";
 import CheckoutPage from "./pages/checkoutPage.jsx";
 import MemberDashboard from "./pages/MemberDashboard.jsx";
 import SchedulesPage from "./pages/schedulesPage.jsx";
+import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
 
 function App() {
   return (
@@ -48,7 +49,6 @@ function App() {
 
           {/* Admin Dashboard */}
           <Route path="/admin" element={<AdminDashboard />}>
-            <Route index element={<AdminOrdersPage />} />
             <Route path="dashboard" element={<h1>Admin Dashboad</h1>} />
             <Route path="products" element={<AdminProductPage />} />
             <Route path="add-product" element={<AdminAddProduct />} />
@@ -60,6 +60,7 @@ function App() {
             />
             <Route path="memberships" element={<h1>Memberships Page</h1>} />
             <Route path="trainers" element={<AdminTrainers />} />
+            <Route path="add-trainers" element={<AddTrainerPage />} />
             <Route path="schedules" element={<AdminSchedules />} />
             <Route path="revenue" element={<h1>Revenue Page</h1>} />
             <Route path="settings" element={<h1>Settings Page</h1>} />
