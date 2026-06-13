@@ -15,16 +15,16 @@ export default function Header() {
         navigate('/signup');
     }
     return(
-        <nav className="bg-black h-[100px] px-[100px] shadow-md">
+        <nav className="bg-black h-[100px] px-[100px] shadow-2xl shadow-[#333333] border-b-1 border-white">
             <div className="flex items-center justify-between h-full">
                 <div>
-                    <img src="logo.png" alt="logo" className="w-[75px] h-[75px]"/>
+                    <img src="logo.png" alt="logo" className="w-[100px] h-[100px]"/>
                 </div>
                 <div className="flex items-center gap-10 text-xl text-white">
-                    <Link to="/">Home</Link>
-                    <Link to="/about">About</Link>
-                    <Link to="/our_services">Our Services</Link>
-                    <Link to="/contacts">Contacts</Link>
+                    <a className = "hover:text-[#d4a017]" href="/">Home</a>
+                    <a className = "hover:text-[#d4a017]" href="/about">About</a>
+                    <a className = "hover:text-[#d4a017]" href="/our_services">Our Services</a>
+                    <a className = "hover:text-[#d4a017]" href="/contacts">Contacts</a>
                 </div>
  
                <div className = "flex items-center justify-center gap-10">

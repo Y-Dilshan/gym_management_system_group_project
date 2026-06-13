@@ -14,18 +14,7 @@ export const createUserByAdmin = (req, res) => {
     });
   }
 
-  const {
-    user_id,
-    full_name,
-    email,
-    password,
-    phone,
-    role,
-    status,
-    profile_picture,
-    created_at,
-    position,
-  } = req.body;
+  const {user_id,full_name,email,password,phone,role,status,profile_picture,created_at} = req.body;
 
   if (!full_name || !email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -42,34 +31,11 @@ export const createUserByAdmin = (req, res) => {
 
     if (role === "ADMIN") {
       const userSql = `
-    INSERT INTO users
-    (
-      user_id,
-      full_name,
-      email,
-      password,
-      phone,
-      role,
-      status,
-      profile_picture,
-      created_at
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+    INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         userSql,
-        [
-          user_id,
-          full_name,
-          email,
-          hashedPassword,
-          phone,
-          role,
-          status,
-          profile_picture,
-          created_at,
-        ],
+        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
         (err, result) => {
           if (err) {
             console.error("Error creating admin user:", err);
@@ -81,13 +47,7 @@ export const createUserByAdmin = (req, res) => {
 
           // Insert into admins table AFTER user exists
           const adminSql = `
-        INSERT INTO admins
-        (
-          user_id,
-          position
-        )
-        VALUES (?, ?)
-      `;
+        INSERT INTO admins (user_id,position) VALUES (?, ?)`;
 
           db.query(
             adminSql,
@@ -113,34 +73,11 @@ export const createUserByAdmin = (req, res) => {
     } else if (role === "TRAINER") {
       // FIRST create user
       const userSql = `
-    INSERT INTO users
-    (
-      user_id,
-      full_name,
-      email,
-      password,
-      phone,
-      role,
-      status,
-      profile_picture,
-      created_at
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
+    INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         userSql,
-        [
-          user_id,
-          full_name,
-          email,
-          hashedPassword,
-          phone,
-          role,
-          status,
-          profile_picture,
-          created_at,
-        ],
+        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
         (err, userResult) => {
           if (err) {
             console.error("Error creating trainer user:", err);
@@ -154,10 +91,7 @@ export const createUserByAdmin = (req, res) => {
           const createdUserId = userResult.insertId;
 
           // NOW create trainer
-          const trainerSql = `
-        INSERT INTO trainers (user_id)
-        VALUES (?)
-      `;
+          const trainerSql = `INSERT INTO trainers (user_id) VALUES (?)`;
 
           db.query(trainerSql, [createdUserId], (err, trainerResult) => {
             if (err) {
@@ -177,35 +111,11 @@ export const createUserByAdmin = (req, res) => {
         },
       );
     } else {
-      const sql = `
-      INSERT INTO users
-      (
-        user_id,
-        full_name,
-        email,
-        password,
-        phone,
-        role,
-        status,
-        profile_picture,
-        created_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
+      const sql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         sql,
-        [
-          user_id,
-          full_name,
-          email,
-          hashedPassword,
-          phone,
-          role,
-          status,
-          profile_picture,
-          created_at,
-        ],
+        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
         (err, result) => {
           if (err) {
             console.error("Error creating user: ", err);
@@ -224,7 +134,7 @@ export const createUserByAdmin = (req, res) => {
     }
   });
 };
-//////////////////////////////////////////////
+
 export const register = (req, res) => {
   const { full_name, email, password, phone } = req.body;
 
@@ -241,11 +151,7 @@ export const register = (req, res) => {
       });
     }
 
-    const sql = `
-        INSERT INTO users
-        (full_name, email, password, phone, role, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-        `;
+    const sql = `INSERT INTO users (full_name, email, password, phone, role, status) VALUES (?, ?, ?, ?, ?, ?)`;
 
     db.query(
       sql,
@@ -358,16 +264,7 @@ export const updateUser = (req, res) => {
         "UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
       db.query(
         sql,
-        [
-          full_name,
-          email,
-          hashedPassword,
-          phone,
-          role,
-          status,
-          profile_picture,
-          id,
-        ],
+        [full_name,email,hashedPassword,phone,role,status,profile_picture,id,],
         (err, result) => {
           if (err) {
             console.error("Error updating user: ", err);
