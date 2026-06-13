@@ -24,7 +24,7 @@ export default function AdminDashboard() {
     location.pathname === "/admin" ||
     location.pathname === "/admin/dashboard";
 
-  const navStyle = ({ isActive }) =>
+  const navLinkClass = ({ isActive }) =>
     `flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
       isActive
         ? "bg-[#D4AF37] text-black font-bold"
@@ -32,26 +32,17 @@ export default function AdminDashboard() {
     }`;
 
   return (
-    <div className="flex min-h-screen bg-[#0A0A0A]">
-      {/* Sidebar */}
-      <div className="w-[280px] bg-[#050505] border-r border-[#2A2A2A] p-6">
+    <div className="bg-[#0A0A0A] min-h-screen">
+      {/* Fixed Sidebar */}
+      <aside className="fixed left-0 top-0 w-[280px] h-screen bg-[#050505] border-r border-[#2A2A2A] p-6">
         {/* Logo */}
-        <div className="flex items-center gap-4 mb-10">
-          <img
-            src="/logo.png"
-            alt="Logo"
-            className="w-20 h-20 object-contain"
-          />
-
-          <div>
-            <h1 className="text-[#D4AF37] text-2xl font-bold">
-              POWER ZONE
-            </h1>
-
-            <p className="text-gray-400 text-sm">
-              Admin Panel
-            </p>
-          </div>
+        <div className="mb-10">
+          <h1 className="text-[#D4AF37] text-3xl font-bold">
+            POWER ZONE
+          </h1>
+          <p className="text-gray-400 text-sm mt-1">
+            Admin Panel
+          </p>
         </div>
 
         {/* Overview */}
@@ -62,7 +53,7 @@ export default function AdminDashboard() {
 
           <NavLink
             to="/admin/dashboard"
-            className={navStyle}
+            className={navLinkClass}
           >
             <MdOutlineDashboardCustomize size={20} />
             Dashboard
@@ -78,7 +69,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-2">
             <NavLink
               to="/admin/products"
-              className={navStyle}
+              className={navLinkClass}
             >
               <FaClipboardList size={20} />
               Products
@@ -86,7 +77,7 @@ export default function AdminDashboard() {
 
             <NavLink
               to="/admin/users"
-              className={navStyle}
+              className={navLinkClass}
             >
               <LuUsers size={20} />
               Users
@@ -94,7 +85,7 @@ export default function AdminDashboard() {
 
             <NavLink
               to="/admin/orders"
-              className={navStyle}
+              className={navLinkClass}
             >
               <LiaThListSolid size={20} />
               Orders
@@ -102,7 +93,7 @@ export default function AdminDashboard() {
 
             <NavLink
               to="/admin/memberships"
-              className={navStyle}
+              className={navLinkClass}
             >
               <MdPayments size={20} />
               Memberships
@@ -119,7 +110,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-2">
             <NavLink
               to="/admin/trainers"
-              className={navStyle}
+              className={navLinkClass}
             >
               <MdSportsGymnastics size={20} />
               Trainers
@@ -127,7 +118,7 @@ export default function AdminDashboard() {
 
             <NavLink
               to="/admin/schedules"
-              className={navStyle}
+              className={navLinkClass}
             >
               <AiFillSchedule size={20} />
               Schedules
@@ -144,7 +135,7 @@ export default function AdminDashboard() {
           <div className="flex flex-col gap-2">
             <NavLink
               to="/admin/revenue"
-              className={navStyle}
+              className={navLinkClass}
             >
               <SiRevenuecat size={20} />
               Revenue
@@ -152,17 +143,17 @@ export default function AdminDashboard() {
 
             <NavLink
               to="/admin/settings"
-              className={navStyle}
+              className={navLinkClass}
             >
               <IoIosSettings size={20} />
               Settings
             </NavLink>
           </div>
         </div>
-      </div>
+      </aside>
 
       {/* Main Content */}
-      <div className="flex-1 p-8 overflow-y-auto">
+      <main className="ml-[280px] p-8 min-h-screen">
         {isDashboard && (
           <>
             {/* Header */}
@@ -185,7 +176,7 @@ export default function AdminDashboard() {
               </Link>
             </div>
 
-            {/* Stats Cards */}
+            {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               <div className="bg-[#141414] p-6 rounded-2xl border border-[#2A2A2A]">
                 <FaUsers className="text-[#D4AF37] text-3xl mb-3" />
@@ -221,7 +212,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Recent Orders */}
-            <div className="bg-[#141414] rounded-3xl border border-[#2A2A2A] overflow-hidden">
+            <div className="bg-[#141414] rounded-3xl border border-[#2A2A2A] overflow-hidden mb-8">
               <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
                 <h2 className="text-2xl text-white font-semibold">
                   Recent Orders
@@ -237,44 +228,28 @@ export default function AdminDashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-[#D4AF37] text-black">
-                    <th className="px-6 py-4 text-left">
-                      Order ID
-                    </th>
-                    <th className="px-6 py-4 text-left">
-                      Customer
-                    </th>
-                    <th className="px-6 py-4 text-left">
-                      Date
-                    </th>
-                    <th className="px-6 py-4 text-left">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left">
-                      Amount
-                    </th>
+                    <th className="px-6 py-4 text-left">Order ID</th>
+                    <th className="px-6 py-4 text-left">Customer</th>
+                    <th className="px-6 py-4 text-left">Date</th>
+                    <th className="px-6 py-4 text-left">Status</th>
+                    <th className="px-6 py-4 text-left">Amount</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   <tr className="border-b border-[#2A2A2A] hover:bg-[#1C1C1C]">
-                    <td className="px-6 py-5 text-white">
-                      #12345
-                    </td>
-
+                    <td className="px-6 py-5 text-white">#12345</td>
                     <td className="px-6 py-5 text-gray-300">
                       John Doe
                     </td>
-
                     <td className="px-6 py-5 text-gray-300">
                       2026-06-12
                     </td>
-
                     <td className="px-6 py-5">
                       <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full">
                         Completed
                       </span>
                     </td>
-
                     <td className="px-6 py-5 text-[#D4AF37] font-bold">
                       $120
                     </td>
@@ -282,12 +257,79 @@ export default function AdminDashboard() {
                 </tbody>
               </table>
             </div>
+
+            {/* Summary Cards */}
+            <div className="grid lg:grid-cols-2 gap-6">
+              <div className="bg-[#141414] rounded-3xl p-6 border border-[#2A2A2A]">
+                <h2 className="text-white text-2xl font-bold mb-4">
+                  Membership Summary
+                </h2>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Basic Plan</span>
+                    <span className="text-white">
+                      120 Members
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Premium Plan</span>
+                    <span className="text-white">
+                      85 Members
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">Elite Plan</span>
+                    <span className="text-white">
+                      45 Members
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-[#141414] rounded-3xl p-6 border border-[#2A2A2A]">
+                <h2 className="text-white text-2xl font-bold mb-4">
+                  Revenue Overview
+                </h2>
+
+                <div className="space-y-4">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">
+                      Membership Revenue
+                    </span>
+                    <span className="text-[#D4AF37]">
+                      $8,200
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">
+                      Product Revenue
+                    </span>
+                    <span className="text-[#D4AF37]">
+                      $4,250
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-gray-400">
+                      Total Revenue
+                    </span>
+                    <span className="text-green-400">
+                      $12,450
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </>
         )}
 
-        {/* Child Routes */}
+        {/* Child Pages */}
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 }
