@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -22,7 +23,8 @@ export default function SigninPage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/api/users/login",
+        // "http://localhost:3000/api/users/login",
+        import.meta.env.VITE_BACKEND_URL + "/users/login",
         {
           email,
           password,
@@ -35,7 +37,8 @@ export default function SigninPage() {
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      alert("Login successful!");
+
+      toast.success("Login successful!");
 
       console.log(response.data);
 
@@ -43,16 +46,16 @@ export default function SigninPage() {
     } catch (error) {
       console.error(error);
 
-      alert(error.response?.data?.error || "Login failed");
+      toast.error(error.response?.data?.error || "Login failed");
     }
   };
 
   return (
-    <div className="bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center">
+    <div className="bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center object-cover">
       <div className="w-[500px] h-[500px] bg-[#333333] shadow-2xl shadow-gray-600 pt-10 relative rounded-xl w-[400px]">
         {/* Back Button */}
         <button className="flex items-center gap-2 text-white hover:text-[#D4AF37] transition duration-300 absolute left-10 top-10">
-          <GoArrowLeft className="text-[20px]" />
+          <GoArrowLeft className="text-[20px] " />
           <span onClick={handleBack} className="cursor-pointer">
             Back
           </span>
@@ -90,7 +93,7 @@ export default function SigninPage() {
         <div className="text-white text-center text-[20px] pt-[30px]">
           <button
             onClick={handleSubmit}
-            className="cursor-pointer border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] hover:outline-[#333333] hover:text-black"
+            className="cursor-pointer border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] transition duration-300 hover:outline-[#333333] hover:text-black"
           >
             Sign In
           </button>
@@ -99,14 +102,19 @@ export default function SigninPage() {
         <div className="pt-[30px] flex pl-[50px] text-white gap-2">
           <span>You already haven’t an account?</span>
 
-          <button onClick={handleSignup} className="cursor-pointer">
+          <button
+            onClick={handleSignup}
+            className="cursor-pointer hover:text-[#D4AF37] transition duration-300"
+          >
             Sign Up
           </button>
         </div>
 
         <div className="pt-[30px] flex pl-[50px] text-white gap-2 justify-end pr-[50px]">
           <span>Forgot Password?</span>
-          <button className="cursor-pointer">Reset here</button>
+          <button className="cursor-pointer hover:text-[#D4AF37] transition duration-300">
+            Reset here
+          </button>
         </div>
       </div>
     </div>

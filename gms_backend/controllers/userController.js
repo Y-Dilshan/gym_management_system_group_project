@@ -8,244 +8,133 @@ const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
 export const createUserByAdmin = (req, res) => {
   const user = req.user; ///////////// Get from auth middleware
 
-
   if (!isAdmin(user)) {
     return res.status(403).json({
       message: "Only admins can create users",
     });
   }
 
-  const {
-    user_id,
-    full_name,
-    email,
-    password,
-    phone,
-    role,
-    status,
-    profile_picture,
-    created_at,
-    position,
-  } = req.body;
+  const {user_id,full_name,email,password,phone,role,status,profile_picture,created_at} = req.body;
 
   if (!full_name || !email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
+    if (err) {
+      console.error("Error hashing password: ", err);
 
-  if (err) {
-    console.error("Error hashing password: ", err);
+      return res.status(500).json({
+        error: "Failed to process password",
+      });
+    }
 
-    return res.status(500).json({
-      error: "Failed to process password",
-    });
-  }
-
-if (role === "ADMIN") {
-
-  const userSql = `
-    INSERT INTO users
-    (
-      user_id,
-      full_name,
-      email,
-      password,
-      phone,
-      role,
-      status,
-      profile_picture,
-      created_at
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(
-    userSql,
-    [
-      user_id,
-      full_name,
-      email,
-      hashedPassword,
-      phone,
-      role,
-      status,
-      profile_picture,
-      created_at,
-    ],
-    (err, result) => {
-
-      if (err) {
-        console.error("Error creating admin user:", err);
-
-        return res.status(500).json({
-          error: "Failed to create admin user",
-        });
-      }
-
-      // Insert into admins table AFTER user exists
-      const adminSql = `
-        INSERT INTO admins
-        (
-          user_id,
-          position
-        )
-        VALUES (?, ?)
-      `;
+    if (role === "ADMIN") {
+      const userSql = `
+    INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
-        adminSql,
-        [result.insertId, "Manager"],
-        (err, adminResult) => {
-
+        userSql,
+        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
+        (err, result) => {
           if (err) {
-            console.error("Error creating admin:", err);
+            console.error("Error creating admin user:", err);
 
             return res.status(500).json({
-              error: "Failed to create admin",
+              error: "Failed to create admin user",
+            });
+          }
+
+          // Insert into admins table AFTER user exists
+          const adminSql = `
+        INSERT INTO admins (user_id,position) VALUES (?, ?)`;
+
+          db.query(
+            adminSql,
+            [result.insertId, "Manager"],
+            (err, adminResult) => {
+              if (err) {
+                console.error("Error creating admin:", err);
+
+                return res.status(500).json({
+                  error: "Failed to create admin",
+                });
+              }
+
+              return res.status(201).json({
+                message: "Admin created successfully",
+                userId: result.insertId,
+                admin_id: adminResult.insertId,
+              });
+            },
+          );
+        },
+      );
+    } else if (role === "TRAINER") {
+      // FIRST create user
+      const userSql = `
+    INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+      db.query(
+        userSql,
+        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
+        (err, userResult) => {
+          if (err) {
+            console.error("Error creating trainer user:", err);
+
+            return res.status(500).json({
+              error: "Failed to create trainer user",
+            });
+          }
+
+          // GET created user_id
+          const createdUserId = userResult.insertId;
+
+          // NOW create trainer
+          const trainerSql = `INSERT INTO trainers (user_id) VALUES (?)`;
+
+          db.query(trainerSql, [createdUserId], (err, trainerResult) => {
+            if (err) {
+              console.error("Error creating trainer:", err);
+
+              return res.status(500).json({
+                error: "Failed to create trainer",
+              });
+            }
+
+            return res.status(201).json({
+              message: "Trainer created successfully",
+              userId: createdUserId,
+              trainerId: trainerResult.insertId,
+            });
+          });
+        },
+      );
+    } else {
+      const sql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+      db.query(
+        sql,
+        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
+        (err, result) => {
+          if (err) {
+            console.error("Error creating user: ", err);
+
+            return res.status(500).json({
+              error: "Failed to create user",
             });
           }
 
           return res.status(201).json({
-            message: "Admin created successfully",
+            message: "User created successfully",
             userId: result.insertId,
-            admin_id: adminResult.insertId,
           });
-        }
+        },
       );
     }
-  );
+  });
+};
 
-}
-
-  else if (role === "TRAINER") {
-
-  // FIRST create user
-  const userSql = `
-    INSERT INTO users
-    (
-      user_id,
-      full_name,
-      email,
-      password,
-      phone,
-      role,
-      status,
-      profile_picture,
-      created_at
-    )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `;
-
-  db.query(
-    userSql,
-    [
-      user_id,
-      full_name,
-      email,
-      hashedPassword,
-      phone,
-      role,
-      status,
-      profile_picture,
-      created_at,
-    ],
-    (err, userResult) => {
-
-      if (err) {
-
-        console.error("Error creating trainer user:", err);
-
-        return res.status(500).json({
-          error: "Failed to create trainer user",
-        });
-      }
-
-      // GET created user_id
-      const createdUserId = userResult.insertId;
-
-      // NOW create trainer
-      const trainerSql = `
-        INSERT INTO trainers (user_id)
-        VALUES (?)
-      `;
-
-      db.query(
-        trainerSql,
-        [createdUserId],
-        (err, trainerResult) => {
-
-          if (err) {
-
-            console.error("Error creating trainer:", err);
-
-            return res.status(500).json({
-              error: "Failed to create trainer",
-            });
-          }
-
-          return res.status(201).json({
-            message: "Trainer created successfully",
-            userId: createdUserId,
-            trainerId: trainerResult.insertId,
-          });
-        }
-      );
-    }
-  );
-}
-
-  else {
-
-    const sql = `
-      INSERT INTO users
-      (
-        user_id,
-        full_name,
-        email,
-        password,
-        phone,
-        role,
-        status,
-        profile_picture,
-        created_at
-      )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
-    db.query(
-      sql,
-      [
-        user_id,
-        full_name,
-        email,
-        hashedPassword,
-        phone,
-        role,
-        status,
-        profile_picture,
-        created_at,
-      ],
-      (err, result) => {
-
-        if (err) {
-          console.error("Error creating user: ", err);
-
-          return res.status(500).json({
-            error: "Failed to create user",
-          });
-        }
-
-        return res.status(201).json({
-          message: "User created successfully",
-          userId: result.insertId,
-        });
-      }
-    );
-  }
-});
-}
-//////////////////////////////////////////////
 export const register = (req, res) => {
   const { full_name, email, password, phone } = req.body;
 
@@ -262,11 +151,7 @@ export const register = (req, res) => {
       });
     }
 
-    const sql = `
-        INSERT INTO users
-        (full_name, email, password, phone, role, status)
-        VALUES (?, ?, ?, ?, ?, ?)
-        `;
+    const sql = `INSERT INTO users (full_name, email, password, phone, role, status) VALUES (?, ?, ?, ?, ?, ?)`;
 
     db.query(
       sql,
@@ -379,16 +264,7 @@ export const updateUser = (req, res) => {
         "UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
       db.query(
         sql,
-        [
-          full_name,
-          email,
-          hashedPassword,
-          phone,
-          role,
-          status,
-          profile_picture,
-          id,
-        ],
+        [full_name,email,hashedPassword,phone,role,status,profile_picture,id,],
         (err, result) => {
           if (err) {
             console.error("Error updating user: ", err);
@@ -424,7 +300,7 @@ export const updateUser = (req, res) => {
 export const deleteUser = (req, res) => {
   const user = req.user; // Get from auth middleware
 
-  if (!user || user.role !== "admin") {
+  if (!isAdmin(user)) {
     return res.status(403).json({
       message: "Only admins can delete users",
     });

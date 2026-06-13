@@ -4,22 +4,19 @@ import bcrypt from "bcrypt";
 // Apply as a Trainer
 
 export const applyAsTrainer = (req, res) => {
-  const { full_name, email, phone, specialization, bio, experience_years } =
-    req.body;
+  const { full_name, email, phone, specialization, bio, experience_years } = req.body;
 
   if (!full_name || !email || !specialization) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  /////////// Check if already applied with same email
 
   const checkSql = `
-        SELECT application_id, status FROM trainer_applications WHERE email = ?
-    `;
-  db.query(checkSql, [email], (checkErr, checkResults) => {
-    if (checkErr) {
-      console.error("Error checking application:", checkErr);
-      return res.status(500).json({ error: "Failed to submit application" });
+        SELECT application_id, status FROM trainer_applications WHERE email = ?`;
+          db.query(checkSql, [email], (checkErr, checkResults) => {
+          if (checkErr) {
+            console.error("Error checking application:", checkErr);
+          return res.status(500).json({ error: "Failed to submit application" });
     }
 
     if (checkResults.length > 0) {
@@ -35,23 +32,14 @@ export const applyAsTrainer = (req, res) => {
             "Your application was already approved. Contact admin for login credentials.",
         });
       }
-      const reApplySql = `
-                UPDATE trainer_applications 
+      const reApplySql = `UPDATE trainer_applications 
                 SET full_name = ?, phone = ?, specialization = ?, bio = ?, 
                     experience_years = ?, status = 'pending', applied_at = NOW(), 
                     reviewed_at = NULL, admin_note = NULL
-                WHERE application_id = ?
-            `;
+                    WHERE application_id = ?`;
       db.query(
         reApplySql,
-        [
-          full_name,
-          phone,
-          specialization,
-          bio || null,
-          experience_years || null,
-          existing.application_id,
-        ],
+        [full_name,phone,specialization,bio || null,experience_years || null,existing.application_id,],
         (reApplyErr) => {
           if (reApplyErr) {
             console.error("Error re-applying:", reApplyErr);
@@ -67,20 +55,10 @@ export const applyAsTrainer = (req, res) => {
       );
       return;
     }
-    const sql = `
-            INSERT INTO trainer_applications (full_name, email, phone, specialization, bio, experience_years)
-            VALUES (?, ?, ?, ?, ?, ?)
-        `;
+    const sql = `INSERT INTO trainer_applications (full_name, email, phone, specialization, bio, experience_years) VALUES (?, ?, ?, ?, ?, ?)`;
     db.query(
       sql,
-      [
-        full_name,
-        email,
-        phone || null,
-        specialization,
-        bio || null,
-        experience_years || null,
-      ],
+      [full_name,email,phone || null,specialization,bio || null,experience_years || null,],
       (err, result) => {
         if (err) {
           console.error("Error submitting application:", err);
@@ -141,8 +119,6 @@ export const getApplicationById = (req, res) => {
   );
 };
 
-/////// Approve application and create trainer account
-
 export const approveApplication = (req, res) => {
   const { id } = req.params;
   const { password } = req.body;
@@ -195,10 +171,7 @@ export const approveApplication = (req, res) => {
                 .json({ error: "Failed to process password" });
             }
 
-            const userSql = `
-                    INSERT INTO users (full_name, email, password, phone, role, status, created_at)
-                    VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())
-                `;
+            const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())`;
             db.query(
               userSql,
               [app.full_name, app.email, hashedPassword, app.phone],
@@ -212,18 +185,10 @@ export const approveApplication = (req, res) => {
 
                 const newUserId = userResult.insertId;
 
-                const trainerSql = `
-                        INSERT INTO trainers (user_id, specialization, bio, experience_years)
-                        VALUES (?, ?, ?, ?)
-                    `;
+                const trainerSql = `INSERT INTO trainers (user_id, specialization, bio, experience_years) VALUES (?, ?, ?, ?)`;
                 db.query(
                   trainerSql,
-                  [
-                    newUserId,
-                    app.specialization,
-                    app.bio,
-                    app.experience_years,
-                  ],
+                  [newUserId,app.specialization,app.bio,app.experience_years,],
                   (trainerErr, trainerResult) => {
                     if (trainerErr) {
                       console.error(
@@ -231,16 +196,13 @@ export const approveApplication = (req, res) => {
                         trainerErr,
                       );
 
-                      db.query("DELETE FROM users WHERE user_id = ?", [
-                        newUserId,
-                      ]);
+                      db.query("DELETE FROM users WHERE user_id = ?", [newUserId,]);
                       return res
                         .status(500)
                         .json({ error: "Failed to create trainer profile" });
                     }
 
-                    db.query(
-                      `UPDATE trainer_applications 
+                    db.query(`UPDATE trainer_applications 
                                  SET status = 'approved', reviewed_at = NOW() 
                                  WHERE application_id = ?`,
                       [id],
@@ -292,11 +254,9 @@ export const rejectApplication = (req, res) => {
             return res.status(409).json({ error: 'Cannot reject an already approved application' });
         }
  
-        const sql = `
-            UPDATE trainer_applications 
+        const sql = `UPDATE trainer_applications 
             SET status = 'rejected', reviewed_at = NOW(), admin_note = ?
-            WHERE application_id = ?
-        `;
+            WHERE application_id = ?`;
         db.query(sql, [admin_note || null, id], (err) => {
             if (err) {
                 console.error('Error rejecting application:', err);
