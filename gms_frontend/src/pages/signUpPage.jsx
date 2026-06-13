@@ -3,7 +3,6 @@ import { useState } from "react";
 import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
-import axios from "axios";
 import toast from "react-hot-toast";
 import {Link} from "react-router-dom"
 
@@ -41,7 +40,7 @@ export default function SignUpPage() {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/signup",
+      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/register",
         {
           full_name: fullName,
           email: email,
@@ -53,10 +52,14 @@ export default function SignUpPage() {
       toast.success(response.data.message);
       navigate("/signin");
     } catch (error) {
-      console.error(error);
+  console.log(error.response?.data);
 
-      toast.error(error.response?.data?.error || "Registration failed");
-    }
+  toast.error(
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    "Registration failed"
+  );
+}
   };
 
   return (
