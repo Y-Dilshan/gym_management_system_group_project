@@ -34,120 +34,52 @@ export default function AdminDashboard() {
   return (
     <div className="bg-[#0A0A0A] min-h-screen">
       {/* Fixed Sidebar */}
-      <aside className="fixed left-0 top-0 w-[280px] h-screen bg-[#050505] border-r border-[#2A2A2A] p-6">
+      <aside className="fixed left-0 top-0 w-[280px] h-screen bg-[#050505] border-r border-[#2A2A2A] pl-6 pt-6 pr-6">
         {/* Logo */}
-        <div className="mb-10">
-          <h1 className="text-[#D4AF37] text-3xl font-bold">
-            POWER ZONE
-          </h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Admin Panel
-          </p>
+        <div className="mb-5 flex  gap-5">
+          <img src="/logo.png" alt="logo" className = "w-[100px] h-[100px] justify-center items-center" />
+          <div className = "flex flex-col">
+            <h1 className="text-[#D4AF37] text-3xl font-bold"> POWER ZONE </h1>
+          <p className="text-gray-400 text-sm mt-1"> Admin Panel </p>
+          </div>
+          
         </div>
 
         {/* Overview */}
-        <div className="mb-8">
-          <h2 className="text-[#D4AF37] font-bold mb-3">
-            OVERVIEW
-          </h2>
-
-          <NavLink
-            to="/admin/dashboard"
-            className={navLinkClass}
-          >
-            <MdOutlineDashboardCustomize size={20} />
-            Dashboard
-          </NavLink>
+        <div className="mb-5">
+          <h2 className="text-[#D4AF37] font-bold mb-2"> OVERVIEW </h2>
+          <NavLink to="/admin/dashboard" className={navLinkClass} >  <MdOutlineDashboardCustomize size={20} /> Dashboard </NavLink>
         </div>
 
         {/* Management */}
-        <div className="mb-8">
-          <h2 className="text-[#D4AF37] font-bold mb-3">
-            MANAGEMENT
-          </h2>
+        <div className="mb-5">
+          <h2 className="text-[#D4AF37] font-bold mb-2"> MANAGEMENT </h2>
 
           <div className="flex flex-col gap-2">
-            <NavLink
-              to="/admin/products"
-              className={navLinkClass}
-            >
-              <FaClipboardList size={20} />
-              Products
-            </NavLink>
-
-            <NavLink
-              to="/admin/users"
-              className={navLinkClass}
-            >
-              <LuUsers size={20} />
-              Users
-            </NavLink>
-
-            <NavLink
-              to="/admin/orders"
-              className={navLinkClass}
-            >
-              <LiaThListSolid size={20} />
-              Orders
-            </NavLink>
-
-            <NavLink
-              to="/admin/memberships"
-              className={navLinkClass}
-            >
-              <MdPayments size={20} />
-              Memberships
-            </NavLink>
+            <NavLink to="/admin/products" className={navLinkClass} > <FaClipboardList size={20} /> Products </NavLink>
+            <NavLink to="/admin/users" className={navLinkClass} > <LuUsers size={20} /> Users </NavLink>
+            <NavLink to="/admin/orders" className={navLinkClass} > <LiaThListSolid size={20} /> Orders </NavLink>
+            <NavLink to="/admin/memberships" className={navLinkClass} > <MdPayments size={20} /> Memberships </NavLink>
           </div>
         </div>
 
         {/* Content */}
-        <div className="mb-8">
-          <h2 className="text-[#D4AF37] font-bold mb-3">
-            CONTENT
-          </h2>
+        <div className="mb-5">
+          <h2 className="text-[#D4AF37] font-bold mb-2"> CONTENT </h2>
 
           <div className="flex flex-col gap-2">
-            <NavLink
-              to="/admin/trainers"
-              className={navLinkClass}
-            >
-              <MdSportsGymnastics size={20} />
-              Trainers
-            </NavLink>
-
-            <NavLink
-              to="/admin/schedules"
-              className={navLinkClass}
-            >
-              <AiFillSchedule size={20} />
-              Schedules
-            </NavLink>
+            <NavLink to="/admin/trainers" className={navLinkClass} > <MdSportsGymnastics size={20} /> Trainers </NavLink>
+            <NavLink to="/admin/schedules" className={navLinkClass} > <AiFillSchedule size={20} /> Schedules </NavLink>
           </div>
         </div>
 
         {/* Finance */}
         <div>
-          <h2 className="text-[#D4AF37] font-bold mb-3">
-            FINANCE
-          </h2>
+          <h2 className="text-[#D4AF37] font-bold mb-2"> FINANCE </h2>
 
           <div className="flex flex-col gap-2">
-            <NavLink
-              to="/admin/revenue"
-              className={navLinkClass}
-            >
-              <SiRevenuecat size={20} />
-              Revenue
-            </NavLink>
-
-            <NavLink
-              to="/admin/settings"
-              className={navLinkClass}
-            >
-              <IoIosSettings size={20} />
-              Settings
-            </NavLink>
+            <NavLink to="/admin/revenue" className={navLinkClass} > <SiRevenuecat size={20} /> Revenue </NavLink>
+            <NavLink to="/admin/settings" className={navLinkClass} > <IoIosSettings size={20} /> Settings </NavLink>
           </div>
         </div>
       </aside>
