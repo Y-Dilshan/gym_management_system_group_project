@@ -23,6 +23,7 @@ import CheckoutPage from "./pages/checkoutPage.jsx";
 import MemberDashboard from "./pages/MemberDashboard.jsx";
 import SchedulesPage from "./pages/schedulesPage.jsx";
 import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
+import AdminMemberships from "./pages/admin/adminMembership.jsx"
 
 function App() {
   return (
@@ -58,7 +59,7 @@ function App() {
               path="trainer-applications"
               element={<TrainerApplicationsPage />}
             />
-            <Route path="memberships" element={<h1>Memberships Page</h1>} />
+            <Route path="memberships" element={<AdminMemberships />} />
             <Route path="trainers" element={<AdminTrainers />} />
             <Route path="add-trainers" element={<AddTrainerPage />} />
             <Route path="schedules" element={<AdminSchedules />} />
