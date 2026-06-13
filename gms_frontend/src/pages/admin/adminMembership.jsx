@@ -35,18 +35,10 @@ export default function AdminMemberships() {
       {/* Header */}
       <div className="bg-gradient-to-r from-[#111111] to-[#1C1C1C] border border-[#D4AF37]/20 rounded-2xl shadow-2xl p-6 mb-8 flex justify-between items-center">
         <div>
-          <h1 className="text-4xl font-bold text-white tracking-wide">
-            Membership Management
-          </h1>
-
-          <p className="text-gray-400 mt-2">
-            Manage gym membership plans and subscriptions
-          </p>
+          <h1 className="text-4xl font-bold text-white tracking-wide"> Membership Management </h1>
+          <p className="text-gray-400 mt-2">  Manage gym membership plans and subscriptions </p>
         </div>
-
-        <button className="bg-[#D4AF37] text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition">
-          + Add Membership
-        </button>
+        <button className="bg-[#D4AF37] text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition"> + Add Membership </button>
       </div>
 
       {/* Statistics */}
@@ -83,21 +75,13 @@ export default function AdminMemberships() {
 
         {/* Table Header */}
         <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
-          <h2 className="text-2xl font-semibold text-white">
-            Membership Plans
-          </h2>
-
-          <input
-            type="text"
-            placeholder="Search Plans..."
-            className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"
-          />
+          <h2 className="text-2xl font-semibold text-white"> Membership Plans </h2>
+          <input type="text" placeholder="Search Plans..." className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"/>
         </div>
 
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full">
-
             <thead>
               <tr className="bg-[#D4AF37] text-black">
                 <th className="px-6 py-5 text-left">Plan Name</th>
@@ -108,51 +92,28 @@ export default function AdminMemberships() {
                 <th className="px-6 py-5 text-left">Actions</th>
               </tr>
             </thead>
-
             <tbody>
               {plans.map((plan) => (
-                <tr
-                  key={plan.id}
-                  className="border-b border-[#2A2A2A] text-gray-300 hover:bg-[#1C1C1C] transition-all duration-300"
-                >
-                  <td className="px-6 py-5 font-semibold text-white">
-                    {plan.name}
-                  </td>
-
-                  <td className="px-6 py-5">
-                    {plan.duration}
-                  </td>
-
-                  <td className="px-6 py-5 text-[#D4AF37] font-bold">
-                    {plan.price}
-                  </td>
-
-                  <td className="px-6 py-5">
-                    {plan.members}
-                  </td>
-
+                <tr key={plan.id} className="border-b border-[#2A2A2A] text-gray-300 hover:bg-[#1C1C1C] transition-all duration-300">
+                  <td className="px-6 py-5 font-semibold text-white"> {plan.name} </td>
+                  <td className="px-6 py-5"> {plan.duration} </td>
+                  <td className="px-6 py-5 text-[#D4AF37] font-bold"> {plan.price} </td>
+                  <td className="px-6 py-5"> {plan.members} </td>
                   <td className="px-6 py-5">
                     <span
                       className={`px-4 py-2 rounded-full text-sm font-semibold border ${
                         plan.status === "Active"
                           ? "bg-green-500/20 text-green-400 border-green-500/30"
                           : "bg-red-500/20 text-red-400 border-red-500/30"
-                      }`}
-                    >
+                      }`} >
                       {plan.status}
                     </span>
                   </td>
 
                   <td className="px-6 py-5">
                     <div className="flex gap-3">
-                      <button className="bg-[#D4AF37] text-black px-4 py-2 rounded-xl font-semibold hover:scale-105 transition">
-                        View
-                      </button>
-
-                      <button className="bg-blue-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-blue-700 transition">
-                        Edit
-                      </button>
-
+                      <button className="bg-[#D4AF37] text-black px-4 py-2 rounded-xl font-semibold hover:scale-105 transition">View </button>
+                      <button className="bg-blue-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-blue-700 transition">Edit</button>
                       <button className="bg-red-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-red-700 transition">
                         Delete
                       </button>
@@ -161,7 +122,6 @@ export default function AdminMemberships() {
                 </tr>
               ))}
             </tbody>
-
           </table>
         </div>
       </div>
@@ -204,7 +164,6 @@ export default function AdminMemberships() {
             <li>✔ VIP Support</li>
           </ul>
         </div>
-
       </div>
     </div>
   );
