@@ -195,7 +195,7 @@ export default function MemberDashboard() {
     </h2>
 
     <p className="text-gray-400 mt-1">
-      Member since 01 Jan 2026
+      Member since 05 June 2026
     </p>
 
     <div className="mt-3 inline-flex items-center gap-2 bg-yellow-500/20 text-yellow-400 px-4 py-2 rounded-xl">
@@ -248,7 +248,7 @@ export default function MemberDashboard() {
 
         <input
           type="email"
-          defaultValue="kajanika@gmail.com"
+          defaultValue="abcde@gmail.com"
           className="w-full mt-2 h-12 bg-black border border-white/10 rounded-xl px-4"
         />
       </div>
