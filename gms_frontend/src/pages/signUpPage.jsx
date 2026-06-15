@@ -9,10 +9,12 @@ import {Link} from "react-router-dom"
 export default function SignUpPage() {
   const navigate = useNavigate();
 
+  //conect to backend
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+
 
   const handleBack = () => {
     navigate("/");
@@ -29,9 +31,16 @@ export default function SignUpPage() {
     navigate("/Applyastrainer");
   };
 
+
+  //////////////
+  // const handleRegister = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:3000/api/users/register",
+
   const handleRegister = async () => {
     try {
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/signup",
+      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/register",
         {
           full_name: fullName,
           email: email,
@@ -43,10 +52,14 @@ export default function SignUpPage() {
       toast.success(response.data.message);
       navigate("/signin");
     } catch (error) {
-      console.error(error);
+  console.log(error.response?.data);
 
-      toast.error(error.response?.data?.error || "Registration failed");
-    }
+  toast.error(
+    error.response?.data?.message ||
+    error.response?.data?.error ||
+    "Registration failed"
+  );
+}
   };
 
   return (
@@ -164,6 +177,7 @@ export default function SignUpPage() {
                 />
               </div>
             </div>
+
             <div
               onClick={handleRegister}
               className="text-white text-center text-[20px] pt-[30px]"
