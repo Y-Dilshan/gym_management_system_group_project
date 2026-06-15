@@ -26,6 +26,7 @@ import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import AdminRevenuePage from "./pages/admin/adminReveuePage.jsx";
 import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
+import SessionPage from "./pages/sessionPage.jsx";
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
+          <Route path="/sessions" element={<SessionPage />} />
 
           {/* Member Dashboard */}
           <Route path="/dashboard" element={<MemberDashboard />} />
@@ -57,10 +59,7 @@ function App() {
             <Route path="add-product" element={<AdminAddProduct />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
-            <Route
-              path="trainer-applications"
-              element={<TrainerApplicationsPage />}
-            />
+            <Route path="trainer-applications" element={<TrainerApplicationsPage />}/>
             <Route path="memberships" element={<AdminMemberships />} />
             <Route path="trainers" element={<AdminTrainers />} />
             <Route path="add-trainers" element={<AddTrainerPage />} />
