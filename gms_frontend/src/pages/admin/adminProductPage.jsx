@@ -1,18 +1,27 @@
+import {Link} from "react-router-dom";
+
 export default function AdminProductPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0A] p-8">
 
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#111111] to-[#1C1C1C] border border-[#D4AF37]/20 rounded-2xl shadow-2xl p-6 mb-8">
-        <h1 className="text-4xl font-bold text-white tracking-wide"> Product Management </h1>
-        <p className="text-gray-400 mt-2"> Manage customer orders and track deliveries </p>
-      </div>
+      <div className="bg-gradient-to-r from-[#111111] to-[#1C1C1C] border border-[#D4AF37]/20 rounded-2xl shadow-2xl p-6 mb-8 flex items-center justify-between">
+  
+        {/* Left Side Text */}
+        <div>
+          <h1 className="text-4xl font-bold text-white tracking-wide"> Product Management </h1>
+          <p className="text-gray-400 mt-2">  Manage customer orders and track deliveries </p>
+        </div>
 
-      {/* Table Card */}
-      <div className="bg-[#141414] border border-[#D4AF37]/20 rounded-3xl overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.08)]">
+        {/* Right Side Button */}
+        <Link to="/admin/add-product" className="bg-[#D4AF37] text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition">+ Add Product</Link>
+        </div>
+
+        {/* Table Card */}
+        <div className="bg-[#141414] border border-[#D4AF37]/20 rounded-3xl overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.08)]">
 
         {/* Card Header */}
-        <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
+          <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
           <h2 className="text-2xl font-semibold text-white"> Orders List </h2>
 
           <input type="text" placeholder="Search Orders..." className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"/>
