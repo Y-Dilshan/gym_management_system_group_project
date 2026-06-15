@@ -1,160 +1,333 @@
-export default function CartPage({ cart, setCart, setPage }) {
-  const updateQty = (id, delta) => {
-    setCart(c =>
-      c.map(i =>
-        i.id === id
-          ? { ...i, qty: Math.max(1, i.qty + delta) }
-          : i
-      )
-    );
-  };
+import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
+import whey from "../assets/supplements/whey.jpg";
+import nitrotech from "../assets/supplements/nitrotech.jpeg";
+import c4 from "../assets/supplements/c4.webp";
+import bcaa from "../assets/supplements/bcaa.webp";
 
-  const remove = (id) => setCart(c => c.filter(i => i.id !== id));
 
-  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = subtotal > 100 ? 0 : 9.99;
-  const total = subtotal + shipping;
 
-  return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold tracking-widest text-yellow-500 mb-2">
-        YOUR CART
-      </h1>
+function Cart() {
 
-      <p className="text-sm text-gray-500 mb-8">
-        {cart.length} items in your cart
-      </p>
+const products = [
+  {
+    name: "Gold Standard 100% Whey Protein",
+    price: "Rs. 8,999.00",
+    image: whey,
+  },
+  {
+    name: "Muscletech NitroTech",
+    price: "Rs. 9,500.00",
+    image: nitrotech,
+  },
+  {
+    name: "C4 Original Pre Workout",
+    price: "Rs. 6,500.00",
+    image: c4,
+  },
+  {
+    name: "BCAA Energy",
+    price: "Rs. 5,999.00",
+    image: bcaa,
+  },
+  {
+    name: "Mass Gainer",
+    price: "Rs. 10,500.00",
+    image: "https://m.media-amazon.com/images/I/71m6Cw7Y6ML.jpg"
+  },
+  {
+    name: "Creatine Monohydrate",
+    price: "Rs. 4,999.00",
+    image: "https://m.media-amazon.com/images/I/61f+P1H3iLL.jpg"
+  },
+  {
+    name: "Fish Oil Omega 3",
+    price: "Rs. 3,999.00",
+    image: "https://m.media-amazon.com/images/I/71J8jQxP2KL.jpg"
+  },
+  {
+    name: "Multivitamin Tablets",
+    price: "Rs. 2,999.00",
+    image: "https://m.media-amazon.com/images/I/71d6i6QfAOL.jpg"
+  },
+  {
+    name: "Protein Bars Pack",
+    price: "Rs. 3,500.00",
+    image: "https://m.media-amazon.com/images/I/81b7YfQjvWL.jpg"
+  }
+];
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-        {/* Items */}
-        <div className="flex flex-col gap-4">
-          {cart.map((item) => (
-            <div
-              key={item.id}
-              className="bg-zinc-900 border border-zinc-700 rounded-xl p-5 flex items-center gap-5"
-            >
-              {/* Product Image */}
-              <div className="w-16 h-16 bg-zinc-800 rounded-lg flex items-center justify-center text-3xl">
-                {item.img}
-              </div>
+return (
+<div style={styles.page}>
 
-              {/* Product Details */}
-              <div className="flex-1">
-                <div className="text-white font-semibold tracking-wide">
-                  {item.name}
-                </div>
+{/* Navbar */}
 
-                <div className="text-sm text-gray-500 mt-1">
-                  {item.variant}
-                </div>
+<div style={styles.navbar}>
 
-                <div className="text-yellow-500 font-semibold mt-2">
-                  ${item.price.toFixed(2)}
-                </div>
-              </div>
+<div style={styles.logo}>
+POWER ZONE
+</div>
 
-              {/* Quantity Controls */}
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => updateQty(item.id, -1)}
-                  className="w-8 h-8 bg-zinc-800 border border-zinc-700 text-white rounded-md flex items-center justify-center hover:bg-zinc-700"
-                >
-                  −
-                </button>
+<div style={styles.menu}>
+<p>Home</p>
+<p>About</p>
+<p>Our Services</p>
+<p>Contacts</p>
+<p>Orders</p>
+</div>
 
-                <span className="w-6 text-center font-semibold">
-                  {item.qty}
-                </span>
+<div>
+<FaUserCircle
+size={38}
+color="white"
+/>
+</div>
 
-                <button
-                  onClick={() => updateQty(item.id, 1)}
-                  className="w-8 h-8 bg-zinc-800 border border-zinc-700 text-yellow-500 rounded-md flex items-center justify-center hover:bg-zinc-700"
-                >
-                  +
-                </button>
-              </div>
+</div>
 
-              {/* Item Total */}
-              <div className="min-w-[72px] text-right font-semibold text-white">
-                ${(item.price * item.qty).toFixed(2)}
-              </div>
+{/* Title */}
 
-              {/* Remove Button */}
-              <button
-                onClick={() => remove(item.id)}
-                className="text-gray-500 hover:text-red-500 text-lg"
-                title="Remove"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
+<div style={styles.header}>
 
-          {/* Promo Code */}
-          <div className="flex gap-3 mt-2">
-            <input
-              type="text"
-              placeholder="Promo code"
-              className="max-w-[220px] w-full px-4 py-2 rounded-md border border-zinc-700 bg-zinc-900 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500"
-            />
+<h1 style={styles.heading}>
+Premium Supplements
+</h1>
 
-            <button className="px-5 py-2 bg-zinc-800 border border-zinc-700 text-yellow-500 rounded-md font-semibold hover:bg-zinc-700 transition">
-              Apply
-            </button>
-          </div>
-        </div>
+<p style={styles.subtitle}>
+Enhance your fitness journey with premium supplements
+that support performance, strength and recovery
+</p>
 
-        {/* Order Summary */}
-        <div>
-          <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6">
-            <h2 className="text-lg font-bold tracking-wide text-white mb-5">
-              ORDER SUMMARY
-            </h2>
+</div>
 
-            <div className="flex flex-col gap-3">
-              <Row
-                label="Subtotal"
-                value={`$${subtotal.toFixed(2)}`}
-              />
+{/* Category Buttons */}
 
-              <Row
-                label="Shipping"
-                value={
-                  shipping === 0
-                    ? "FREE"
-                    : `$${shipping.toFixed(2)}`
-                }
-                highlight={shipping === 0}
-              />
+<div style={styles.categorySection}>
 
-              {shipping > 0 && (
-                <p className="text-xs text-gray-500">
-                  Free shipping on orders over $100
-                </p>
-              )}
+<div style={styles.categories}>
 
-              <div className="border-t border-zinc-700 pt-3 mt-1">
-                <Row
-                  label="Total"
-                  value={`$${total.toFixed(2)}`}
-                  big
-                />
-              </div>
-            </div>
+<button style={styles.activeBtn}>
+All
+</button>
 
-            <button
-              onClick={() => setPage("checkout")}
-              className="w-full mt-6 py-3.5 bg-yellow-500 hover:bg-yellow-400 text-black font-bold tracking-widest rounded-lg transition"
-            >
-              PROCEED TO CHECKOUT
-            </button>
+<button style={styles.btn}>
+Pre-Workout
+</button>
 
-            <div className="text-center mt-4 text-xs text-gray-500">
-              🔒 Secure checkout
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+<button style={styles.btn}>
+Health
+</button>
+
+<button style={styles.btn}>
+Performance
+</button>
+
+<button style={styles.btn}>
+Recovery
+</button>
+
+<button style={styles.btn}>
+Protein
+</button>
+
+</div>
+
+<FaShoppingCart
+size={28}
+color="white"
+/>
+
+</div>
+
+{/* Products */}
+
+<div style={styles.grid}>
+
+{products.map((product,index)=>(
+
+<div
+key={index}
+style={styles.card}
+>
+
+<img
+src={product.image}
+style={styles.image}
+/>
+
+<h3 style={styles.productTitle}>
+{product.name}
+</h3>
+
+<div style={styles.details}>
+<p>• High quality whey protein</p>
+<p>• Lean sugar</p>
+<p>• Low fat</p>
+<p>• Supports muscle growth</p>
+</div>
+
+<div style={styles.bottom}>
+
+<h4 style={styles.price}>
+{product.price}
+</h4>
+
+<button style={styles.cartBtn}>
+Add to Cart
+</button>
+
+</div>
+
+</div>
+
+))}
+
+</div>
+
+<div style={styles.viewContainer}>
+
+<button style={styles.viewBtn}>
+View More
+</button>
+
+</div>
+
+</div>
+
+)
+
 }
+
+const styles={
+
+page:{
+background:"#2d2d2d",
+minHeight:"100vh",
+padding:"30px",
+color:"white"
+},
+
+navbar:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+padding:"15px",
+borderBottom:"1px solid #E5B93E"
+},
+
+logo:{
+fontSize:"24px",
+fontWeight:"bold",
+color:"#E5B93E"
+},
+
+menu:{
+display:"flex",
+gap:"35px"
+},
+
+header:{
+textAlign:"center",
+marginTop:"30px"
+},
+
+heading:{
+color:"#E5B93E"
+},
+
+subtitle:{
+color:"#ccc"
+},
+
+categorySection:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+marginTop:"30px"
+},
+
+categories:{
+display:"flex",
+gap:"15px",
+flexWrap:"wrap"
+},
+
+btn:{
+padding:"10px 18px",
+borderRadius:"8px",
+border:"none",
+cursor:"pointer"
+},
+
+activeBtn:{
+padding:"10px 18px",
+background:"#E5B93E",
+border:"none",
+borderRadius:"8px"
+},
+
+grid:{
+display:"grid",
+gridTemplateColumns:"repeat(3,1fr)",
+gap:"30px",
+marginTop:"40px"
+},
+
+card:{
+background:"#e7e7e7",
+padding:"15px",
+borderRadius:"15px",
+color:"black"
+},
+
+image:{
+  width:"100%",
+  height:"220px",
+  objectFit:"cover",
+  borderRadius:"10px"
+},
+
+productTitle:{
+fontSize:"16px"
+},
+
+details:{
+fontSize:"13px"
+},
+
+bottom:{
+display:"flex",
+justifyContent:"space-between",
+alignItems:"center",
+marginTop:"15px"
+},
+
+price:{
+fontSize:"14px"
+},
+
+cartBtn:{
+background:"#E5B93E",
+border:"none",
+padding:"8px 12px",
+borderRadius:"7px",
+cursor:"pointer"
+},
+
+viewContainer:{
+display:"flex",
+justifyContent:"center",
+marginTop:"50px"
+},
+
+viewBtn:{
+padding:"15px 40px",
+background:"transparent",
+border:"2px solid #E5B93E",
+color:"white",
+borderRadius:"10px",
+fontSize:"18px"
+}
+
+}
+
+export default Cart
