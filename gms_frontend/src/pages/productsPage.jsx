@@ -2,7 +2,7 @@ import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { IoMdCart } from "react-icons/io";
 import { useState, useEffect } from "react";
-
+import { useNavigate } from "react-router-dom";
 
 const categories = [
   { label: "All", value: "all" },
@@ -13,9 +13,8 @@ const categories = [
   { label: "Protein", value: "protein" },
 ];
 
-
-
 export default function ProductPage() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState([]);
 
@@ -40,7 +39,7 @@ export default function ProductPage() {
     activeCategory === "all"
       ? products
       : products.filter((p) => p.category === activeCategory);
-      
+
   return (
     <div className="bg-[#050505]">
     <Header />
@@ -73,9 +72,17 @@ export default function ProductPage() {
             {/* Image Area */}
             <div className="relative bg-zinc-900 flex items-center justify-center h-56">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,_#D4AF3725,_transparent_70%)]" />
-              <span className="absolute top-3 left-3 bg-[#D4AF37] text-yellow-950 text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded">{product.category}</span>
-             
-              <img src={product.image_url || "/s1.png"} alt={product.product_name} className="h-40 object-contain relative z-10"/>
+              <span className="absolute top-3 left-3 bg-[#D4AF37] text-yellow-950 text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded">
+                {/* {product.badge} */}
+                {product.category}
+              </span>
+
+              <img
+                src={product.image_url || "/s1.png"}
+                alt={product.product_name}
+                className="h-40 object-contain relative z-10"
+              />
+
             </div>
 
             {/* Card Body */}
@@ -90,7 +97,13 @@ export default function ProductPage() {
                   <p className="text-[11px] text-zinc-400 uppercase tracking-widest mb-0.5">Price</p>
                   <p className="text-xl font-medium text-zinc-900 dark:text-white">Rs. {Number(product.price).toLocaleString()}</p>
                 </div>
-                <button className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg transition-all duration-150 whitespace-nowrap cursor-pointer"><IoMdCart /> Add to cart</button>
+                <button
+                  onClick={() => navigate(`/product/${product.product_id}`)}
+                  className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg"
+                >
+                  <IoMdCart/> Buy Now
+                </button>
+
               </div>
             </div>
           </div>

@@ -23,6 +23,7 @@ export default function SigninPage() {
 
     try {
       const response = await axios.post(
+        // "http://localhost:3000/api/users/login",
         import.meta.env.VITE_BACKEND_URL + "/users/login",
         {
           email,
@@ -35,6 +36,7 @@ export default function SigninPage() {
 
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
+
 
       toast.success("Login successful!");
 

@@ -8,14 +8,17 @@ import SignUpPage from "./pages/signUpPage.jsx";
 import ProductsPage from "./pages/productsPage.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
+
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/ApplyAsTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
 import AdminProductPage from "./pages/admin/adminProductPage.jsx";
+// import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
 import AdminTrainers from "./pages/admin/adminTrainers.jsx";
 import AdminSchedules from "./pages/admin/adminSchedules.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
+import ProductByPage from "./pages/ProductByPage.jsx";
 import TrainersPage from "./pages/trainersPage.jsx";
 import CartPage from "./pages/cartPage.jsx";
 import PaymentPage from "./pages/paymentPage.jsx";
@@ -33,6 +36,8 @@ function App() {
       <BrowserRouter>
         <Toaster position="top-right" />
 
+
+
         <Routes>
           <Route path="/*" element={<HomePage />} />
           <Route path="/signin" element={<SigninPage />} />
@@ -46,6 +51,8 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
+          <Route path="/product/:id" element={<ProductByPage />} />
+
 
           {/* Member Dashboard */}
           <Route path="/dashboard" element={<MemberDashboard />} />

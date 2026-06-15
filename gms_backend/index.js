@@ -9,6 +9,7 @@ import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import trainerRoutes from "./routes/trainerRouter.js";
 import trainerApplicationRoutes from "./routes/trainerapplicationroutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -26,6 +27,7 @@ app.use("/api/trainer-applications", trainerApplicationRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/trainers", trainerRoutes);
+app.use("/api/orders", orderRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
