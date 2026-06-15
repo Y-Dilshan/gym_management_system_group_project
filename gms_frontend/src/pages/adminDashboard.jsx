@@ -24,6 +24,7 @@ export default function AdminDashboard() {
     location.pathname === "/admin" ||
     location.pathname === "/admin/dashboard";
 
+
   const navLinkClass = ({ isActive }) =>
     `flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${
       isActive
@@ -32,6 +33,7 @@ export default function AdminDashboard() {
     }`;
 
   return (
+
     <div className="bg-[#0A0A0A] min-h-screen">
       {/* Fixed Sidebar */}
       <aside className="fixed left-0 top-0 w-[280px] h-screen bg-[#050505] border-r border-[#2A2A2A] pl-6 pt-6 pr-6">
@@ -62,6 +64,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Content */}
+
         <div className="mb-5">
           <h2 className="text-[#D4AF37] font-bold mb-2"> CONTENT </h2>
           <div className="flex flex-col gap-2">
@@ -72,6 +75,7 @@ export default function AdminDashboard() {
 
         {/* Finance */}
         <div>
+
           <h2 className="text-[#D4AF37] font-bold mb-2"> FINANCE </h2>
           <div className="flex flex-col gap-2">
             <NavLink to="/admin/revenue" className={navLinkClass} > <SiRevenuecat size={20} /> Revenue </NavLink>
@@ -92,6 +96,7 @@ export default function AdminDashboard() {
               </div>
               <Link to="/admin/add-product" className="bg-[#D4AF37] text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition"> + Add Product </Link>
             </div>
+
 
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -121,6 +126,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* Recent Orders */}
+
             <div className="bg-[#141414] rounded-3xl border border-[#2A2A2A] overflow-hidden mb-8">
               <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
                 <h2 className="text-2xl text-white font-semibold"> Recent Orders </h2>
@@ -131,6 +137,7 @@ export default function AdminDashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="bg-[#D4AF37] text-black">
+
                     <th className="px-6 py-4 text-left">Order ID</th>
                     <th className="px-6 py-4 text-left">Customer</th>
                     <th className="px-6 py-4 text-left">Date</th>
@@ -141,15 +148,29 @@ export default function AdminDashboard() {
 
                 <tbody>
                   <tr className="border-b border-[#2A2A2A] hover:bg-[#1C1C1C]">
+
                     <td className="px-6 py-5 text-white">#12345</td>
-                    <td className="px-6 py-5 text-gray-300">John Doe</td>
-                    <td className="px-6 py-5 text-gray-300">2026-06-12</td>
-                    <td className="px-6 py-5"><span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full"> Completed </span></td>
-                    <td className="px-6 py-5 text-[#D4AF37] font-bold"> $120 </td>
+
+                    <td className="px-6 py-5 text-gray-300">
+                      John Doe
+                    </td>
+                    <td className="px-6 py-5 text-gray-300">
+                      2026-06-12
+                    </td>
+                    <td className="px-6 py-5">
+                      <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full">
+                        Completed
+                      </span>
+                    </td>
+
+                    <td className="px-6 py-5 text-[#D4AF37] font-bold">
+                      $120
+                    </td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
 
             {/* Summary Cards */}
             <div className="grid lg:grid-cols-2 gap-6">
