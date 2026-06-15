@@ -27,6 +27,7 @@ import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import AdminRevenuePage from "./pages/admin/adminReveuePage.jsx";
 import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
+import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 
 function App() {
   return (
@@ -66,6 +67,10 @@ function App() {
             <Route path="schedules" element={<AdminSchedules />} />
             <Route path="revenue" element={<AdminRevenuePage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
+          </Route>
+
+          <Route>
+            <Route path = "/booksessions" element = {<TrainerBookingsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

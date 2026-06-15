@@ -1,136 +1,77 @@
 import Header from "../components/header";
 import Footer from "../components/footer";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useState } from "react";
+import {toast} from "react-hot-toast";
 
-const trainersData = [
-  {
-    trainer_id: 1,
-    name: "John Silva",
-    specialization: "Bodybuilding",
-  },
-  {
-    trainer_id: 2,
-    name: "Nimal Perera",
-    specialization: "Weight Loss",
-  },
-  {
-    trainer_id: 3,
-    name: "Kasun Fernando",
-    specialization: "Strength",
-  },
-  {
-    trainer_id: 4,
-    name: "Samantha Jayasuriya",
-    specialization: "Yoga",
-  },
-  {
-    trainer_id: 5,
-    name: "Dilshan Rodrigo",
-    specialization: "Cardio",
-  },
-];
+export default function SessionsPage() {
+  const location = useLocation();
+  const trainer = location.state?.trainer;
 
-export default function SessionPage() {
-  const { trainerId } = useParams();
+  const availableSlots = [
+    "06:00 AM",
+    "07:00 AM",
+    "08:00 AM",
+    "09:00 AM",
+    "10:00 AM",
+    "11:00 AM",
+    "02:00 PM",
+    "03:00 PM",
+    "04:00 PM",
+    "05:00 PM",
+  ];
 
-  const trainer = trainersData.find(
-    (t) => t.trainer_id === Number(trainerId)
-  );
+  const [selectedSlot, setSelectedSlot] = useState("");
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    date: "",
-    time: "",
-  });
+  const handleBooking = () => {
+    if (!selectedSlot) {
+      toast.error("Please select a time slot");
+      return;
+    }
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    alert(
-      `Session booked with ${trainer?.name}\nDate: ${formData.date}\nTime: ${formData.time}`
+    toast.success(`Session booked with ${trainer?.name} at ${selectedSlot}`
     );
-
-    console.log({
-      trainer,
-      ...formData,
-    });
   };
 
   return (
     <div className="bg-black min-h-screen">
       <Header />
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        <h1 className="text-4xl font-bold text-center text-white mb-10"> Book Your Session </h1>
+        {trainer && (
+          <div className="bg-zinc-900 rounded-2xl overflow-hidden border border-[#D4AF37]/20 mb-10">
+            <div className="md:flex">
+              <img src={trainer.image_url} alt={trainer.name} className="w-full md:w-80 h-80 object-cover"/>
+              <div className="p-6">
+                <h2 className="text-3xl font-bold text-white mb-3"> {trainer.name} </h2>
+                <p className="text-gray-400 mb-4"> {trainer.bio} </p>
+                <p className="text-white">
+                  <span className="text-[#D4AF37]"> Specialization: </span>{" "} {trainer.specialization} </p>
+                <p className="text-white mt-2"> <span className="text-[#D4AF37]"> Experience: </span>{" "} {trainer.experience} Years </p>
+                <p className="text-white mt-2"> <span className="text-[#D4AF37]"> Availability: </span>{" "} {trainer.availability} </p>
+              </div>
+            </div>
+          </div>
+        )}
 
-      <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="bg-zinc-900 rounded-2xl p-8 border border-[#D4AF37]/20">
-          <h1 className="text-4xl font-bold text-white mb-2">
-            Book a Session
-          </h1>
-
-          <p className="text-gray-400 mb-8">
-            Trainer:{" "}
-            <span className="text-[#D4AF37] font-semibold">
-              {trainer?.name}
-            </span>
-          </p>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <input
-              type="text"
-              name="name"
-              placeholder="Your Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              className="w-full bg-zinc-800 text-white p-4 rounded-xl outline-none"
-            />
-
-            <input
-              type="email"
-              name="email"
-              placeholder="Your Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              className="w-full bg-zinc-800 text-white p-4 rounded-xl outline-none"
-            />
-
-            <input
-              type="date"
-              name="date"
-              value={formData.date}
-              onChange={handleChange}
-              required
-              className="w-full bg-zinc-800 text-white p-4 rounded-xl outline-none"
-            />
-
-            <input
-              type="time"
-              name="time"
-              value={formData.time}
-              onChange={handleChange}
-              required
-              className="w-full bg-zinc-800 text-white p-4 rounded-xl outline-none"
-            />
-
-            <button
-              type="submit"
-              className="w-full bg-[#D4AF37] text-black py-4 rounded-xl font-bold hover:bg-[#b8962d]"
-            >
-              Confirm Booking
-            </button>
-          </form>
+          <h2 className="text-2xl font-bold text-white mb-6"> Available Time Slots </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {availableSlots.map((slot) => (
+              <button key={slot} onClick={() => setSelectedSlot(slot)} className={`py-3 rounded-xl font-semibold transition ${
+                  selectedSlot === slot
+                    ? "bg-[#D4AF37] text-black"
+                    : "bg-zinc-800 text-white hover:bg-zinc-700"
+                }`}>
+                {slot}
+              </button>
+            ))}
+          </div>
+          <div className="mt-8">
+            <button onClick={handleBooking} className="w-full bg-[#D4AF37] text-black font-bold py-4 rounded-xl hover:bg-[#b8962d] transition">Confirm Booking </button>
+          </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );
