@@ -148,24 +148,11 @@ export default function AdminDashboard() {
 
                 <tbody>
                   <tr className="border-b border-[#2A2A2A] hover:bg-[#1C1C1C]">
-
                     <td className="px-6 py-5 text-white">#12345</td>
-
-                    <td className="px-6 py-5 text-gray-300">
-                      John Doe
-                    </td>
-                    <td className="px-6 py-5 text-gray-300">
-                      2026-06-12
-                    </td>
-                    <td className="px-6 py-5">
-                      <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full">
-                        Completed
-                      </span>
-                    </td>
-
-                    <td className="px-6 py-5 text-[#D4AF37] font-bold">
-                      $120
-                    </td>
+                    <td className="px-6 py-5 text-gray-300"> John Doe </td>
+                    <td className="px-6 py-5 text-gray-300"> 2026-06-12 </td>
+                    <td className="px-6 py-5"> <span className="bg-green-500/20 text-green-400 px-3 py-1 rounded-full"> Completed </span> </td>
+                    <td className="px-6 py-5 text-[#D4AF37] font-bold"> $120 </td>
                   </tr>
                 </tbody>
               </table>

@@ -2,6 +2,7 @@ import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { FaCalendarCheck } from "react-icons/fa";
 import { useState } from "react";
+import {Link} from "react-router-dom";
 
 const categories = [
   { label: "All", value: "all" },
@@ -115,7 +116,7 @@ export default function TrainersPage() {
                 <p className="text-gray-400 mb-4">{trainer.bio}</p>
                 <p className="text-gray-300"> <span className="text-[#D4AF37]">Experience:</span>{" "} {trainer.experience} Years </p>
                 <p className="text-gray-300 mt-2"> <span className="text-[#D4AF37]">Availability:</span>{" "} {trainer.availability} </p>
-                <button className="w-full mt-6 bg-[#D4AF37] text-black font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#b8962d]"><FaCalendarCheck /> Book Session </button>
+                <Link to = "/sessions" className="w-full mt-6 bg-[#D4AF37] text-black font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#b8962d]"><FaCalendarCheck /> Book Session </Link>
               </div>
             </div>
           ))}
