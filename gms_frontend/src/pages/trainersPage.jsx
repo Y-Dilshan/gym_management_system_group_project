@@ -94,7 +94,7 @@ export default function TrainersPage() {
   const filteredTrainers =
     activeCategory === "all"
       ? trainers
-      : trainers.filter((trainer) => trainer.specialization === activeCategory);
+      : trainers.filter((trainer) => trainer.specialization?.toLowerCase() === activeCategory);
 
   return (
     <div className="min-h-screen bg-black">
@@ -141,11 +141,11 @@ export default function TrainersPage() {
                 {/* <img src={trainer.image_url} alt={trainer.name} className="w-full h-full object-cover"/> */}
                 <img
                   src={
-                    trainer.image_url
-                      ? `http://localhost:3000/${trainer.profile_picture}`
+                    trainer.profile_picture
+                      ? `http://localhost:3000${trainer.profile_picture}`
                       : "/trainer.png"
                   }
-                  alt={trainer.trainer_name}
+                  alt={trainer.full_name}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -153,7 +153,7 @@ export default function TrainersPage() {
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-white mb-2">
                   {" "}
-                  {trainer.trainer_name}{" "}
+                  {trainer.full_name}{" "}
                 </h2>
                 <p className="text-gray-400 mb-4">{trainer.bio}</p>
                 <p className="text-gray-300">
@@ -161,10 +161,14 @@ export default function TrainersPage() {
                   <span className="text-[#D4AF37]">Experience:</span>{" "}
                   {trainer.experience_years} Years{" "}
                 </p>
-                <p className="text-gray-300 mt-2">
+                {/* <p className="text-gray-300 mt-2">
                   {" "}
                   <span className="text-[#D4AF37]">Availability:</span>{" "}
                   {trainer.availability}{" "}
+                </p> */}
+                <p className="text-gray-300 mt-2">
+                  <span className="text-[#D4AF37]">Specialization:</span>
+                  {trainer.specialization}
                 </p>
                 <button className="w-full mt-6 bg-[#D4AF37] text-black font-semibold py-3 rounded-xl flex items-center justify-center gap-2 hover:bg-[#b8962d]">
                   <FaCalendarCheck /> Book Session{" "}
