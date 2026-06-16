@@ -12,58 +12,7 @@ const categories = [
   { label: "Yoga", value: "yoga" },
 ];
 
-// const trainersData = [
-//   {
-//     trainer_id: 1,
-//     name: "John Silva",
-//     specialization: "bodybuilding",
-//     experience: 8,
-//     availability: "Mon - Fri | 6:00 AM - 2:00 PM",
-//     bio: "Certified bodybuilding coach specializing in muscle growth and strength training.",
-//     image_url:
-//       "https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=500",
-//   },
-//   {
-//     trainer_id: 2,
-//     name: "Nimal Perera",
-//     specialization: "weight-loss",
-//     experience: 6,
-//     availability: "Mon - Sat | 8:00 AM - 5:00 PM",
-//     bio: "Expert in fat-loss programs and nutrition guidance.",
-//     image_url:
-//       "https://images.unsplash.com/photo-1549476464-37392f717541?w=500",
-//   },
-//   {
-//     trainer_id: 3,
-//     name: "Kasun Fernando",
-//     specialization: "strength",
-//     experience: 10,
-//     availability: "Mon - Fri | 5:00 PM - 10:00 PM",
-//     bio: "Powerlifting and strength-training specialist.",
-//     image_url:
-//       "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=500",
-//   },
-//   {
-//     trainer_id: 4,
-//     name: "Samantha Jayasuriya",
-//     specialization: "yoga",
-//     experience: 7,
-//     availability: "Tue - Sun | 7:00 AM - 1:00 PM",
-//     bio: "Certified yoga instructor focused on flexibility and mindfulness.",
-//     image_url:
-//       "https://images.unsplash.com/photo-1594381898411-846e7d193883?w=500",
-//   },
-//   {
-//     trainer_id: 5,
-//     name: "Dilshan Rodrigo",
-//     specialization: "cardio",
-//     experience: 5,
-//     availability: "Mon - Sat | 6:00 AM - 12:00 PM",
-//     bio: "Cardio fitness expert helping improve endurance.",
-//     image_url:
-//       "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=500",
-//   },
-// ];
+
 
 export default function TrainersPage() {
   const [activeCategory, setActiveCategory] = useState("all");
