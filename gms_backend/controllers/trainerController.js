@@ -300,8 +300,7 @@ export const updateTrainerProfile = (req, res) => {
             const userSql = `
                     UPDATE users 
                     SET full_name = ?, phone = ?, password = ?, profile_picture = ?
-                    WHERE user_id = ?
-                `;
+                    WHERE user_id = ?`;
             db.query(
               userSql,
               [
@@ -322,8 +321,7 @@ export const updateTrainerProfile = (req, res) => {
                 const trainerSql = `
                             UPDATE trainers 
                             SET specialization = ?, bio = ?, experience_years = ?
-                            WHERE trainer_id = ?
-                        `;
+                            WHERE trainer_id = ?`;
                 db.query(
                   trainerSql,
                   [

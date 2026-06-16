@@ -6,7 +6,7 @@ const SALT_ROUNDS = 10;
 const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
 
 export const createUserByAdmin = (req, res) => {
-  const user = req.user; ///////////// Get from auth middleware
+  const user = req.user; 
 
   if (!isAdmin(user)) {
     return res.status(403).json({
@@ -39,9 +39,8 @@ export const createUserByAdmin = (req, res) => {
       });
     }
 
-    if (role === "ADMIN") {
-      const userSql = `
-    INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    if (role === "admin") {
+      const userSql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         userSql,
@@ -66,8 +65,7 @@ export const createUserByAdmin = (req, res) => {
           }
 
           // Insert into admins table AFTER user exists
-          const adminSql = `
-        INSERT INTO admins (user_id,position) VALUES (?, ?)`;
+          const adminSql = `INSERT INTO admins (user_id,position) VALUES (?, ?)`;
 
           db.query(
             adminSql,
@@ -92,8 +90,7 @@ export const createUserByAdmin = (req, res) => {
       );
     } else if (role === "TRAINER") {
       // FIRST create user
-      const userSql = `
-    INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const userSql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         userSql,
@@ -251,7 +248,8 @@ export const register = (req, res) => {
     );
   });
 };
-//////////////////////////////////////////////////////
+
+///////////////////////////////////////////login/////////////////////////////
 export const login = (req, res) => {
   const { email, password } = req.body;
   const sql = "SELECT * FROM users WHERE email = ?";

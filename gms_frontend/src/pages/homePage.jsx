@@ -4,7 +4,7 @@ import { useState } from "react";
 import { GoSignIn } from "react-icons/go";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import BMI from "../components/bmiCal.jsx";
+import BMI from "../components/bmi.jsx";
 
 export default function HomePage() {
   const navigate = useNavigate();
