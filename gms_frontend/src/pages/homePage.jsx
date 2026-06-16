@@ -27,22 +27,65 @@ export default function HomePage() {
         navigate('/signup');
     }
 
-    const images = [
-        "/services1.jpg",
-        "/services2.jpg",
-        "/services3.jpg",
-        "/services4.jpg",
-        "/services5.jpg",
-        "/services6.jpg",
-    ]
+   const services = [
+  {
+    title: "Schedules",
+    image: "/services1.jpg",
+    description:
+      "Check available classes and gym schedules to plan your workouts.",
+    link: "/schedules",
+  },
 
-  const nextImage = () => {
-    setCurrent((prev) => (prev + 1) % images.length);
-  };
+  {
+    title: "Trainers",
+    image: "/services2.jpg",
+    description:
+      "Get guidance from certified trainers and achieve your goals faster.",
+    link: "/trainers",
+  },
 
-  const prevImage = () => {
-    setCurrent((prev) => (prev - 1 + images.length) % images.length);
-  };
+  {
+    title: "Supplements",
+    image: "/services3.jpg",
+    description:
+      "Explore premium supplements for muscle growth and recovery.",
+    link: "/products",
+  },
+
+  {
+    title: "Diet Plans",
+    image: "/services4.jpg",
+    description:
+      "Personalized meal plans to support your fitness journey.",
+    link: "/dietplans",
+  },
+
+  {
+    title: "Personal Training",
+    image: "/services5.jpg",
+    description:
+      "One-on-one coaching sessions designed for your goals.",
+    link: "/personal-training",
+  },
+
+  {
+    title: "Modern Equipment",
+    image: "/services6.jpg",
+    description:
+      "Train using the latest professional gym equipment.",
+    link: "/equipment",
+  },
+];
+
+  const nextCard = () => {
+setCurrent((prev) => (prev + 1) % services.length);
+};
+
+const prevCard = () => {
+setCurrent((prev) =>
+prev === 0 ? services.length - 3 : prev - 1
+);
+};
 
     return(
         <div className=" bg-[#050505]">
