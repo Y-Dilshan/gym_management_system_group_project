@@ -14,7 +14,17 @@ export const createUserByAdmin = (req, res) => {
     });
   }
 
-  const {user_id,full_name,email,password,phone,role,status,profile_picture,created_at} = req.body;
+  const {
+    user_id,
+    full_name,
+    email,
+    password,
+    phone,
+    role,
+    status,
+    profile_picture,
+    created_at,
+  } = req.body;
 
   if (!full_name || !email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -34,7 +44,17 @@ export const createUserByAdmin = (req, res) => {
 
       db.query(
         userSql,
-        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
+        [
+          user_id,
+          full_name,
+          email,
+          hashedPassword,
+          phone,
+          role,
+          status,
+          profile_picture,
+          created_at,
+        ],
         (err, result) => {
           if (err) {
             console.error("Error creating admin user:", err);
@@ -74,7 +94,17 @@ export const createUserByAdmin = (req, res) => {
 
       db.query(
         userSql,
-        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
+        [
+          user_id,
+          full_name,
+          email,
+          hashedPassword,
+          phone,
+          role,
+          status,
+          profile_picture,
+          created_at,
+        ],
         (err, userResult) => {
           if (err) {
             console.error("Error creating trainer user:", err);
@@ -88,23 +118,62 @@ export const createUserByAdmin = (req, res) => {
           const createdUserId = userResult.insertId;
 
           // NOW create trainer
-          const trainerSql = `INSERT INTO trainers (user_id) VALUES (?)`;
+          // const trainerSql = `INSERT INTO trainers (user_id) VALUES (?)`;
 
-          db.query(trainerSql, [createdUserId], (err, trainerResult) => {
-            if (err) {
-              console.error("Error creating trainer:", err);
+          // db.query(trainerSql, [createdUserId], (err, trainerResult) => {
+          //   if (err) {
+          //     console.error("Error creating trainer:", err);
 
-              return res.status(500).json({
-                error: "Failed to create trainer",
+          //     return res.status(500).json({
+          //       error: "Failed to create trainer",
+          //     });
+          //   }
+
+          //   return res.status(201).json({
+          //     message: "Trainer created successfully",
+          //     userId: createdUserId,
+          //     trainerId: trainerResult.insertId,
+          //   });
+          // });
+          const { specialization, bio, experience_years, profile_picture } =
+            req.body;
+
+          const trainerSql = `
+INSERT INTO trainers
+(
+ user_id,
+ specialization,
+ bio,
+ experience_years,
+ profile_picture
+)
+VALUES (?, ?, ?, ?, ?)
+`;
+
+          db.query(
+            trainerSql,
+            [
+              createdUserId,
+              specialization || "",
+              bio || "",
+              experience_years || 0,
+              profile_picture || "/default-trainer.png",
+            ],
+            (err, trainerResult) => {
+              if (err) {
+                console.error(err);
+
+                return res.status(500).json({
+                  error: "Failed to create trainer",
+                });
+              }
+
+              return res.status(201).json({
+                message: "Trainer created successfully",
+                trainerId: trainerResult.insertId,
               });
-            }
-
-            return res.status(201).json({
-              message: "Trainer created successfully",
-              userId: createdUserId,
-              trainerId: trainerResult.insertId,
-            });
-          });
+            },
+          );
         },
       );
     } else {
@@ -112,7 +181,17 @@ export const createUserByAdmin = (req, res) => {
 
       db.query(
         sql,
-        [user_id,full_name,email,hashedPassword,phone,role,status,profile_picture,created_at,],
+        [
+          user_id,
+          full_name,
+          email,
+          hashedPassword,
+          phone,
+          role,
+          status,
+          profile_picture,
+          created_at,
+        ],
         (err, result) => {
           if (err) {
             console.error("Error creating user: ", err);
@@ -262,7 +341,16 @@ export const updateUser = (req, res) => {
         "UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
       db.query(
         sql,
-        [full_name,email,hashedPassword,phone,role,status,profile_picture,id,],
+        [
+          full_name,
+          email,
+          hashedPassword,
+          phone,
+          role,
+          status,
+          profile_picture,
+          id,
+        ],
         (err, result) => {
           if (err) {
             console.error("Error updating user: ", err);
