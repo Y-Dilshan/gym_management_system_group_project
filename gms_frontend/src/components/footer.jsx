@@ -92,8 +92,8 @@ export default function Footer() {
 
           {/* Brand Column */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <div className="pz-logo text-[#d4a017] text-4xl tracking-widest mb-1">
-              ⚡ Power Zone
+            <div className="pz-logo text-[#d4a017] text-4xl tracking-widest mb-1 flex gap-2 items-center">
+              <img src = "/logo.png" className = "w-[80px] h-[80px]" /> Power Zone
             </div>
             <p className="text-[11px] tracking-[3px] uppercase text-[#666] mb-4">
               Unleash Your Potential
