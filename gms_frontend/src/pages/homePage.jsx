@@ -224,17 +224,8 @@ export default function HomePage() {
 
                     <button
                       onClick={() => navigate(service.link)}
-                      className="
-mt-6
-w-full
-bg-[#d4a017]
-text-black
-py-3
-rounded-xl
-font-bold
-hover:bg-yellow-500
-cursor-pointer
-"
+                      className="mt-6 w-full bg-[#d4a017] text-black py-3 rounded-xl font-bold hover:bg-yellow-500 cursor-pointer"
+
                     >
                       See More
                     </button>
