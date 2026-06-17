@@ -47,7 +47,7 @@ export default function TrainersPage() {
       : trainers.filter((trainer) => trainer.specialization?.toLowerCase() === activeCategory);
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-black fixed">
       <Header />
 
       {/* Hero Section */}

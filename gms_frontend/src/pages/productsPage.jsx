@@ -42,8 +42,9 @@ export default function ProductPage() {
 
   return (
     <div className="bg-[#050505]">
-    <Header />
 
+      <div className = "fixed w-full"><Header /></div>
+    
       <div className="flex flex-col h-[100px] justify-center items-center">
         <h1 className="font-['Roboto'] font-bold text-3xl tracking-wide text-zinc-900 dark:text-white mb-2 leading-tight"> Premium <span className="text-yellow-500">Supplements</span> </h1>
         <p className="text-white text-center"> Enhance your fitness journey with premium supplements that support performance, strength, and faster recovery. </p>

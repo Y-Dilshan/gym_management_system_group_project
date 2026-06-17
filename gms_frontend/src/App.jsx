@@ -56,10 +56,9 @@ function App() {
           <Route path="/product/:id" element={<ProductByPage />} />
           <Route path="/dietplans" element={<h1>Diet Plans</h1>} />
 
-////// for the services section in the home page
           <Route path="/personal-training" element={<h1>Personal Training</h1>}/>
           <Route path="/equipment" element={<h1>Modern Equipment</h1>}/>
-//// for the services section in the home page
+
           <Route path="/sessions" element={<SessionPage />} />
 
           {/* Member Dashboard */}
