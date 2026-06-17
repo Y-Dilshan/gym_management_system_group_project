@@ -43,7 +43,7 @@ export default function SchedulesPage() {
       
   return (
     <div className="bg-[#050505]">
-    <Header />
+    <div className = "w-full fixed"><Header /></div>
 
       <div className="flex flex-col h-[100px] justify-center items-center">
         <h1 className="font-['Roboto'] font-bold text-3xl tracking-wide text-zinc-900 dark:text-white mb-2 leading-tight"> Premium <span className="text-yellow-500">Supplements</span> </h1>

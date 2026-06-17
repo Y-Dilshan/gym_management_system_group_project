@@ -47,8 +47,10 @@ export default function TrainersPage() {
       : trainers.filter((trainer) => trainer.specialization?.toLowerCase() === activeCategory);
 
   return (
-    <div className="min-h-screen bg-black fixed">
-      <Header />
+    <div className="min-h-screen bg-black">
+
+      <div className = "w-full fixed"><Header /></div>
+      
 
       {/* Hero Section */}
       <div className="py-12 flex flex-col justify-center items-center">
@@ -134,7 +136,9 @@ export default function TrainersPage() {
           </div>
         )}
       </div>
-      <Footer />
+      <div className="pt-[50px]">
+        <Footer />
+      </div>
     </div>
   );
 }
