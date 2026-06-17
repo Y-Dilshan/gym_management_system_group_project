@@ -42,7 +42,7 @@ export default function MemberDashboard() {
   return (
     <div className="min-h-screen bg-black flex justify-center p-6">
       <div className="w-full max-w-5xl bg-[#111] p-8 rounded-2xl border border-yellow-500/20">
-        <h1 className="text-3xl font-bold text-yellow-400 mb-8"> Edit Profile </h1>
+        <h1 className="text-3xl font-bold text-yellow-400 mb-8"> Edit my Profile </h1>
 
         {/* Profile Picture */}
         <div className="flex flex-col items-center mb-8">
