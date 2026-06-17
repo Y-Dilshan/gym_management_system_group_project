@@ -57,57 +57,20 @@ export default function MemberDashboard() {
         {/* Form */}
         <div className="grid md:grid-cols-2 gap-5">
           <input type="text" name="name" placeholder="Full Name" value={member.name} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
-
           <input type="email" name="email" placeholder="Email Address" value={member.email} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
           <input type="text" name="phone" placeholder="Phone Number" value={member.phone} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
-
           <input type="date" name="dob"  value={member.dob} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
-
-          <select
-            name="gender"
-            value={member.gender}
-            onChange={handleChange}
-            className="p-3 rounded-lg bg-black border border-gray-700 text-white"
-          >
+          <select name="gender" value={member.gender} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white">
             <option value="">Select Gender</option>
             <option>Male</option>
             <option>Female</option>
             <option>Other</option>
           </select>
 
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={member.address}
-            onChange={handleChange}
-            className="p-3 rounded-lg bg-black border border-gray-700 text-white"
-          />
-
-          <input
-            type="number"
-            name="height"
-            placeholder="Height (cm)"
-            value={member.height}
-            onChange={handleChange}
-            className="p-3 rounded-lg bg-black border border-gray-700 text-white"
-          />
-
-          <input
-            type="number"
-            name="weight"
-            placeholder="Weight (kg)"
-            value={member.weight}
-            onChange={handleChange}
-            className="p-3 rounded-lg bg-black border border-gray-700 text-white"
-          />
-
-          <select
-            name="goal"
-            value={member.goal}
-            onChange={handleChange}
-            className="p-3 rounded-lg bg-black border border-gray-700 text-white"
-          >
+          <input type="text" name="address" placeholder="Address" value={member.address} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
+          <input type="number" name="height" placeholder="Height (cm)" value={member.height} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
+          <input type="number" name="weight" placeholder="Weight (kg)" value={member.weight} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
+          <select name="goal" value={member.goal} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white">
             <option value="">Fitness Goal</option>
             <option>Weight Loss</option>
             <option>Muscle Gain</option>
@@ -115,24 +78,18 @@ export default function MemberDashboard() {
             <option>General Fitness</option>
           </select>
 
-          <input
-            type="text"
-            name="emergencyContact"
-            placeholder="Emergency Contact"
-            value={member.emergencyContact}
-            onChange={handleChange}
-            className="p-3 rounded-lg bg-black border border-gray-700 text-white"
-          />
+          <input type="text" name="emergencyContact" placeholder="Emergency Contact" value={member.emergencyContact} onChange={handleChange} className="p-3 rounded-lg bg-black border border-gray-700 text-white"/>
         </div>
 
         {/* Save Button */}
-        <div className="mt-8 flex justify-end">
-          <button
-            onClick={handleSave}
-            className="bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold hover:bg-yellow-400 transition"
-          >
-            Save Changes
-          </button>
+        <div className = "flex gap-5 justify-end">
+        <div className="mt-8 flex">
+          <button onClick={handleSave} className="bg-yellow-500 text-black px-8 py-3 rounded-lg font-semibold hover:bg-white transition"> Save Changes </button>
+        </div>
+
+        <div className="mt-8 flex">
+          <button type="reset" className="bg-black text-white px-8 py-3 rounded-lg font-semibold border border-red-600 hover:bg-yellow-500 hover:text-black transition"> Clear </button>
+        </div>
         </div>
       </div>
     </div>
