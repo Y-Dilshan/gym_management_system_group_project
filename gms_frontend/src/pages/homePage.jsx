@@ -193,14 +193,14 @@ export default function HomePage() {
         <div className="relative px-20">
           <button
             onClick={prevCard}
-            className="absolute left-4 top-1/2 z-20 bg-black text-white p-4 rounded-full"
+            className="absolute left-4 top-1/2 z-20 bg-black text-white p-4 rounded-full "
           >
             <FaChevronLeft />
           </button>
 
           <div className="overflow-hidden">
             <div
-              className="flex gap-8 transition-transform duration-700"
+              className="flex gap-8 transition-transform duration-700 "
               style={{
                 transform: `translateX(-${current * 34}%)`,
               }}
