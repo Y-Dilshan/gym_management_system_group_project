@@ -52,7 +52,7 @@ export default function SessionsPage() {
 
   return (
     <div className="bg-black min-h-screen">
-      <Header />
+      <div className = "w-full fixed"><Header /></div>
 
       <div className="max-w-5xl mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold text-center text-white mb-10"> Book Your Session </h1>

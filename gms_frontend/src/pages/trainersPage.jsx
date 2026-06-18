@@ -48,7 +48,9 @@ export default function TrainersPage() {
 
   return (
     <div className="min-h-screen bg-black">
-      <Header />
+
+      <div className = "w-full fixed"><Header /></div>
+      
 
       {/* Hero Section */}
       <div className="py-12 flex flex-col justify-center items-center">
@@ -134,7 +136,9 @@ export default function TrainersPage() {
           </div>
         )}
       </div>
-      <Footer />
+      <div className="pt-[50px]">
+        <Footer />
+      </div>
     </div>
   );
 }
