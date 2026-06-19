@@ -29,6 +29,7 @@ import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import AdminRevenuePage from "./pages/admin/adminReveuePage.jsx";
 import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 
@@ -54,6 +55,9 @@ function App() {
           <Route path="/product/:id" element={<ProductByPage />} />
           <Route path="/dietplans" element={<h1>Diet Plans</h1>} />
 
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/personal-training" element={<h1>Personal Training</h1>}/>
+          <Route path="/equipment" element={<h1>Modern Equipment</h1>}/>
           <Route
             path="/personal-training"
             element={<h1>Personal Training</h1>}
