@@ -34,7 +34,7 @@ function getIdealRange(heightCm, unit) {
   return `${low}–${high} kg`;
 }
 
-export default function BMICalculator() {
+export default function BMI() {
   const [unit, setUnit] = useState("metric");
   const [weight, setWeight] = useState("");
   const [height, setHeight] = useState("");
@@ -75,36 +75,23 @@ export default function BMICalculator() {
 
         {/* Header */}
         <div className="text-center mb-8">
-          <span
-            className="inline-block text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full mb-3"
-            style={{ background: GOLD, color: "#1a1200" }}
-          >
-            Free Tool
-          </span>
+          <span className="inline-block text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full mb-3" style={{ background: GOLD, color: "#1a1200" }}> Free Tool </span>
           <h2 className="text-3xl font-bold text-white mb-2">BMI Calculator</h2>
-          <p className="text-gray-400 text-sm">
-            Check your body mass index and get a personalized fitness insight.
-          </p>
+          <p className="text-gray-400 text-sm"> Check your body mass index and get a personalized fitness insight. </p>
         </div>
 
         {/* Card */}
         <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6">
-
           {/* Unit toggle */}
           <div className="flex bg-zinc-800 rounded-xl p-1 mb-6">
             {["metric", "imperial"].map((u) => (
-              <button
-                key={u}
-                onClick={() => { setUnit(u); setResult(null); setWeight(""); setHeight(""); }}
-                className="flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-150"
+              <button key={u} onClick={() => { setUnit(u); setResult(null); setWeight(""); setHeight(""); }} className="flex-1 py-2 rounded-lg text-sm font-medium transition-all duration-150"
                 style={
                   unit === u
                     ? { background: GOLD, color: "#1a1200" }
                     : { color: "#9ca3af" }
-                }
-              >
-                {u === "metric" ? "Metric  (kg / cm)" : "Imperial  (lbs / ft)"}
-              </button>
+                }>
+                {u === "metric" ? "Metric  (kg / cm)" : "Imperial  (lbs / ft)"} </button>
             ))}
           </div>
 
@@ -115,18 +102,8 @@ export default function BMICalculator() {
               { id: "height", label: unit === "metric" ? "Height (cm)" : "Height (ft)",  val: height, set: setHeight, ph: unit === "metric" ? "170" : "5.7" },
             ].map(({ id, label, val, set, ph }) => (
               <div key={id}>
-                <label className="block text-xs text-gray-400 font-medium uppercase tracking-wider mb-1.5">
-                  {label}
-                </label>
-                <input
-                  type="number"
-                  value={val}
-                  onChange={(e) => { set(e.target.value); setResult(null); }}
-                  placeholder={ph}
-                  min="1"
-                  className="w-full h-11 bg-zinc-800 border border-zinc-600 rounded-lg px-3 text-white text-base font-medium outline-none focus:border-yellow-500 transition-colors"
-                  style={{ "--tw-ring-color": GOLD }}
-                />
+                <label className="block text-xs text-gray-400 font-medium uppercase tracking-wider mb-1.5"> {label} </label>
+                <input type="number" value={val} onChange={(e) => { set(e.target.value); setResult(null); }} placeholder={ph} min="1" className="w-full h-11 bg-zinc-800 border border-zinc-600 rounded-lg px-3 text-white text-base font-medium outline-none focus:border-yellow-500 transition-colors" style={{ "--tw-ring-color": GOLD }}/>
               </div>
             ))}
           </div>
@@ -137,12 +114,7 @@ export default function BMICalculator() {
               <label className="text-xs text-gray-400 font-medium uppercase tracking-wider">Age</label>
               <span className="text-sm font-semibold text-white">{age} yrs</span>
             </div>
-            <input
-              type="range" min="10" max="80" step="1" value={age}
-              onChange={(e) => setAge(Number(e.target.value))}
-              className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
-              style={{ accentColor: GOLD }}
-            />
+            <input type="range" min="10" max="80" step="1" value={age} onChange={(e) => setAge(Number(e.target.value))} className="w-full h-1.5 rounded-full appearance-none cursor-pointer" style={{ accentColor: GOLD }}/>
           </div>
 
           {/* Gender + Activity */}
@@ -152,28 +124,14 @@ export default function BMICalculator() {
               { id: "activity", label: "Activity Level", val: activity, set: setActivity, opts: ["Sedentary", "Light", "Moderate", "Very Active"] },
             ].map(({ id, label, val, set, opts }) => (
               <div key={id}>
-                <label className="block text-xs text-gray-400 font-medium uppercase tracking-wider mb-1.5">
-                  {label}
-                </label>
-                <select
-                  value={val}
-                  onChange={(e) => set(e.target.value)}
-                  className="w-full h-11 bg-zinc-800 border border-zinc-600 rounded-lg px-3 text-white text-sm outline-none focus:border-yellow-500 transition-colors"
-                >
-                  {opts.map((o) => <option key={o}>{o}</option>)}
-                </select>
+                <label className="block text-xs text-gray-400 font-medium uppercase tracking-wider mb-1.5"> </label>
+                <select value={val} onChange={(e) => set(e.target.value)} className="w-full h-11 bg-zinc-800 border border-zinc-600 rounded-lg px-3 text-white text-sm outline-none focus:border-yellow-500 transition-colors"> {opts.map((o) => <option key={o}>{o}</option>)} </select>
               </div>
             ))}
           </div>
 
           {/* CTA */}
-          <button
-            onClick={calculate}
-            className="w-full h-12 rounded-xl text-sm font-semibold tracking-wide transition-opacity hover:opacity-90 active:scale-[0.98]"
-            style={{ background: GOLD, color: "#1a1200" }}
-          >
-            Calculate BMI →
-          </button>
+          <button onClick={calculate} className="w-full h-12 rounded-xl text-sm font-semibold tracking-wide transition-opacity hover:opacity-90 active:scale-[0.98]" style={{ background: GOLD, color: "#1a1200" }}> Calculate BMI → </button>
 
           {/* Result */}
           {result && zone && (
@@ -181,21 +139,13 @@ export default function BMICalculator() {
               {/* Score row */}
               <div className="flex items-end gap-3 mb-4">
                 <span className="text-5xl font-semibold text-white leading-none">{result.bmi}</span>
-                <span
-                  className="text-xs font-semibold px-3 py-1 rounded-full mb-1"
-                  style={{ background: zone.bg, color: zone.text }}
-                >
-                  {zone.label}
-                </span>
+                <span className="text-xs font-semibold px-3 py-1 rounded-full mb-1" style={{ background: zone.bg, color: zone.text }}> {zone.label} </span>
               </div>
 
               {/* Gradient bar */}
               <div className="relative h-2 rounded-full overflow-hidden mb-1.5"
                 style={{ background: "linear-gradient(to right, #3b82f6 0%, #10b981 22%, #f59e0b 50%, #ef4444 100%)" }}>
-                <div
-                  className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-500"
-                  style={{ left: `${barPercent}%`, transform: `translate(-50%, -50%)`, background: "#fff", borderColor: "#1a1200" }}
-                />
+                <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-500" style={{ left: `${barPercent}%`, transform: `translate(-50%, -50%)`, background: "#fff", borderColor: "#1a1200" }}/>
               </div>
               <div className="flex justify-between text-[10px] text-gray-500 mb-4">
                 <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
@@ -216,24 +166,15 @@ export default function BMICalculator() {
               </div>
 
               {/* Tip */}
-              <p className="text-gray-400 text-sm leading-relaxed border-t border-zinc-700 pt-4">
-                {result.tip}
-              </p>
+              <p className="text-gray-400 text-sm leading-relaxed border-t border-zinc-700 pt-4"> {result.tip} </p>
 
               {/* CTA link */}
-              <button
-                onClick={() => sendPrompt("What Power Zone training program should I join based on my BMI?")}
-                className="mt-4 w-full py-2.5 rounded-lg border border-zinc-600 text-sm text-gray-300 hover:bg-zinc-700 transition-colors"
-              >
-                Get a training plan recommendation ↗
-              </button>
+              <button onClick={() => sendPrompt("What Power Zone training program should I join based on my BMI?")} className="mt-4 w-full py-2.5 rounded-lg border border-zinc-600 text-sm text-gray-300 hover:bg-zinc-700 transition-colors"> Get a training plan recommendation ↗ </button>
             </div>
           )}
         </div>
 
-        <p className="text-center text-zinc-600 text-xs mt-4">
-          BMI is a screening tool, not a diagnostic measure. Consult a healthcare professional for medical advice.
-        </p>
+        <p className="text-center text-zinc-600 text-xs mt-4"> BMI is a screening tool, not a diagnostic measure. Consult a healthcare professional for medical advice. </p>
       </div>
     </section>
   );

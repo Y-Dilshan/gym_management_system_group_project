@@ -61,16 +61,48 @@ export const trainerLogin = (req, res) => {
 
 // Get Trainers
 
+// export const getTrainers = (req, res) => {
+//   const sql = `
+//     SELECT u.user_id, u.full_name, u.email, u.phone, u.status, u.profile_picture, u.created_at, t.trainer_id, t.specification, t.bio, t.experience_years FROM users u JOIN trainers t ON u.user_id = t.user_id WHERE u.role = "trainer"
+//     `;
+
+//   db.query(sql, (err, results) => {
+//     if (err) {
+//       console.error("Error fatching trainers:", err);
+//       return res.status(500).json({ error: "failed to fetch trainers" });
+//     }
+//     res.status(200).json({
+//       trainers: results,
+//     });
+//   });
+// };
 export const getTrainers = (req, res) => {
   const sql = `
-    SELECT u.user_id, u.full_name, u.email, u.phone, u.status, u.profile_picture, u.created_at, t.trainer_id, t.specification, t.bio, t.experience_years FROM users u JOIN trainers t ON u.user_id = t.user_id WHERE u.role = "trainer"
-    `;
+SELECT
+t.trainer_id,
+u.user_id,
+u.full_name,
+u.email,
+u.phone,
+u.profile_picture,
+t.specialization,
+t.bio,
+t.experience_years
+FROM trainers t
+JOIN users u
+ON t.user_id = u.user_id
+WHERE u.role = 'trainer'
+`;
 
   db.query(sql, (err, results) => {
     if (err) {
-      console.error("Error fatching trainers:", err);
-      return res.status(500).json({ error: "failed to fetch trainers" });
+      console.error(err);
+
+      return res.status(500).json({
+        error: "Failed to fetch trainers",
+      });
     }
+
     res.status(200).json({
       trainers: results,
     });
@@ -100,7 +132,16 @@ export const getTrainerById = (req, res) => {
 //  UPDATE TRAINER
 export const updateTrainer = (req, res) => {
   const { id } = req.params; // trainer Id
-  const {full_name,email,phone,status,profile_picture,specification,bio,experience_years,} = req.body;
+  const {
+    full_name,
+    email,
+    phone,
+    status,
+    profile_picture,
+    specification,
+    bio,
+    experience_years,
+  } = req.body;
 
   //get user id from trainer table
   db.query(
@@ -117,7 +158,8 @@ export const updateTrainer = (req, res) => {
       const userID = findREsults[0].user_id;
 
       //update users table
-      const userSql ="UPDATE users SET full_name = ?, email = ?, phone =?, status = ? WHERE user_id = ?";
+      const userSql =
+        "UPDATE users SET full_name = ?, email = ?, phone =?, status = ? WHERE user_id = ?";
 
       db.query(
         userSql,
@@ -128,7 +170,8 @@ export const updateTrainer = (req, res) => {
             return res.status(500).json({ error: "Failed to update trainer" });
           }
           //update trainers table
-          const trainerSql ="UPDATE trainers SET specialization = ?, bio = ?, experience_years = ? WHERE trainer_id = ?";
+          const trainerSql =
+            "UPDATE trainers SET specialization = ?, bio = ?, experience_years = ? WHERE trainer_id = ?";
           db.query(
             trainerSql,
             [specialization, bio, experience_years, id],
@@ -257,8 +300,7 @@ export const updateTrainerProfile = (req, res) => {
             const userSql = `
                     UPDATE users 
                     SET full_name = ?, phone = ?, password = ?, profile_picture = ?
-                    WHERE user_id = ?
-                `;
+                    WHERE user_id = ?`;
             db.query(
               userSql,
               [
@@ -279,8 +321,7 @@ export const updateTrainerProfile = (req, res) => {
                 const trainerSql = `
                             UPDATE trainers 
                             SET specialization = ?, bio = ?, experience_years = ?
-                            WHERE trainer_id = ?
-                        `;
+                            WHERE trainer_id = ?`;
                 db.query(
                   trainerSql,
                   [
@@ -339,5 +380,3 @@ export const updateTrainerProfile = (req, res) => {
     },
   );
 };
-
-
