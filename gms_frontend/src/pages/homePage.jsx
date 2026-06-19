@@ -146,12 +146,12 @@ export default function HomePage() {
         <div className="relative px-20">
           <button onClick={prevCard} className="absolute left-4 top-1/2 z-20 bg-black text-white p-4 rounded-full"> <FaChevronLeft /> </button>
           <div className="overflow-hidden">
-            <div className="flex gap-8 transition-transform duration-700"
+            <div className="flex gap-8 transition-transform duration-700 "
               style={{
-                transform: `translateX(-${current * 34}%)`,
+                transform: `translateX(-${current * 22}%)`,
               }}>
               {services.map((service, index) => (
-                <div key={index} className="min-w-[32%] bg-[#111] rounded-3xl overflow-hidden shadow-lg">
+                <div key={index} className="min-w-[32%] bg-[#111] rounded-3xl overflow-hidden shadow-lg font-semibold hover:scale-110 transition duration-400">
                   <img src={service.image} className="h-[280px] w-full object-cover"/>
                   <div className="p-6">
                     <h2 className="text-3xl text-[#d4a017] font-bold"> {service.title} </h2>

@@ -2,7 +2,7 @@ import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { FaCalendarCheck } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const categories = [
   { label: "All", value: "all" },
@@ -12,8 +12,6 @@ const categories = [
   { label: "Bodybuilding", value: "bodybuilding" },
   { label: "Yoga", value: "yoga" },
 ];
-
-
 
 export default function TrainersPage() {
   const [activeCategory, setActiveCategory] = useState("all");
@@ -33,6 +31,7 @@ export default function TrainersPage() {
       const res = await fetch(`${API}/trainers`);
 
       const data = await res.json();
+      console.log(data.trainers);
 
       setTrainers(data.trainers || []);
     } catch (err) {
@@ -44,13 +43,15 @@ export default function TrainersPage() {
   const filteredTrainers =
     activeCategory === "all"
       ? trainers
-      : trainers.filter((trainer) => trainer.specialization?.toLowerCase() === activeCategory);
+      : trainers.filter(
+          (trainer) => trainer.specialization?.toLowerCase() === activeCategory,
+        );
 
   return (
     <div className="min-h-screen bg-black">
-
-      <div className = "w-full fixed"><Header /></div>
-      
+      <div className="w-full fixed">
+        <Header />
+      </div>
 
       {/* Hero Section */}
       <div className="py-12 flex flex-col justify-center items-center">
@@ -90,11 +91,11 @@ export default function TrainersPage() {
               className="bg-zinc-900 rounded-2xl overflow-hidden border border-[#D4AF37]/20"
             >
               <div className="h-80 overflow-hidden">
-                {/* <img src={trainer.image_url} alt={trainer.name} className="w-full h-full object-cover"/> */}
+                {/* <img src={trainer.profile_picture} alt={trainer.full_name} className="w-full h-full object-cover"/> */}
                 <img
                   src={
                     trainer.profile_picture
-                      ? `http://localhost:3000${trainer.profile_picture}`
+                      ? `${API}${trainer.profile_picture}`
                       : "/trainer.png"
                   }
                   alt={trainer.full_name}
