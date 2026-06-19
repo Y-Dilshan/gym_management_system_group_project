@@ -14,17 +14,7 @@ export const createUserByAdmin = (req, res) => {
     });
   }
 
-  const {
-    user_id,
-    full_name,
-    email,
-    password,
-    phone,
-    role,
-    status,
-    profile_picture,
-    created_at,
-  } = req.body;
+  const {user_id,full_name,email,password,phone,role,status,profile_picture,created_at} = req.body;
 
   if (!full_name || !email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -138,17 +128,7 @@ export const createUserByAdmin = (req, res) => {
           const { specialization, bio, experience_years, profile_picture } =
             req.body;
 
-          const trainerSql = `
-INSERT INTO trainers
-(
- user_id,
- specialization,
- bio,
- experience_years,
- profile_picture
-)
-VALUES (?, ?, ?, ?, ?)
-`;
+          const trainerSql = `INSERT INTO trainers(user_id,specialization,bio,experience_years,profile_picture) VALUES (?, ?, ?, ?, ?)`;
 
           db.query(
             trainerSql,
@@ -252,42 +232,59 @@ export const register = (req, res) => {
 ///////////////////////////////////////////login/////////////////////////////
 export const login = (req, res) => {
   const { email, password } = req.body;
+
   const sql = "SELECT * FROM users WHERE email = ?";
+
   db.query(sql, [email], (err, results) => {
     if (err) {
-      console.error("Error fetching user: ", err);
-      res.status(500).json({ error: "Failed to fetch user" });
-    } else if (results.length === 0) {
-      res.status(401).json({ error: "Invalid email or password" });
-    } else {
-      const user = results[0];
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err) {
-          console.error("Error comparing passwords: ", err);
-          res.status(500).json({ error: "Failed to process password" });
-        } else if (!isMatch) {
-          res.status(401).json({ error: "Invalid email or password" });
-        } else {
-          // Remove password from response
-          const { password, ...userWithoutPassword } = user;
-
-          const token = jwt.sign(
-            {
-              user_id: user.user_id,
-              role: user.role,
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" },
-          );
-
-          res.status(200).json({
-            message: "Login successful",
-            token,
-            user: userWithoutPassword,
-          });
-        }
+      console.error("Error fetching user:", err);
+      return res.status(500).json({
+        error: "Failed to fetch user",
       });
     }
+
+    if (results.length === 0) {
+      return res.status(401).json({
+        error: "Invalid email or password",
+      });
+    }
+
+    const user = results[0];
+
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        console.error("Error comparing passwords:", err);
+        return res.status(500).json({
+          error: "Failed to process password",
+        });
+      }
+
+      if (!isMatch) {
+        return res.status(401).json({
+          error: "Invalid email or password",
+        });
+      }
+
+      // Remove password from the user object before sending response
+      const { password: hashedPassword, ...userWithoutPassword } = user;
+
+      const token = jwt.sign(
+        {
+          user_id: user.user_id,
+          role: user.role,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        user: userWithoutPassword,
+      });
+    });
   });
 };
 
