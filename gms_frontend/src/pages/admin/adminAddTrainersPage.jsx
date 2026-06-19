@@ -112,14 +112,16 @@ export default function AddTrainerPage() {
               />
             </div>
             <div>
-              <label>Password</label>
+              <label className="block text-gray-300 mb-2">
+                Password
+              </label>
 
               <input
                 type="password"
                 name="password"
                 value={trainer.password}
                 onChange={handleChange}
-                className="w-full bg-[#1F1F1F] text-white px-4 py-3 rounded-xl"
+                className="w-full bg-[#1F1F1F] text-white px-4 py-3 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"
               />
             </div>
 
