@@ -39,8 +39,6 @@ function App() {
       <BrowserRouter>
         <Toaster position="top-right" />
 
-
-
         <Routes>
           <Route path="/*" element={<HomePage />} />
           <Route path="/signin" element={<SigninPage />} />
@@ -60,6 +58,11 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/personal-training" element={<h1>Personal Training</h1>}/>
           <Route path="/equipment" element={<h1>Modern Equipment</h1>}/>
+          <Route
+            path="/personal-training"
+            element={<h1>Personal Training</h1>}
+          />
+          <Route path="/equipment" element={<h1>Modern Equipment</h1>} />
 
           <Route path="/sessions" element={<SessionPage />} />
 
@@ -73,17 +76,20 @@ function App() {
             <Route path="add-product" element={<AdminAddProduct />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
-            <Route path="trainer-applications" element={<TrainerApplicationsPage />}/>
+            <Route
+              path="trainer-applications"
+              element={<TrainerApplicationsPage />}
+            />
             <Route path="memberships" element={<AdminMemberships />} />
             <Route path="trainers" element={<AdminTrainers />} />
-            <Route path="add-trainers" element={<AddTrainerPage />} />
+            <Route path="/admin/add-trainer" element={<AddTrainerPage />} />
             <Route path="schedules" element={<AdminSchedules />} />
             <Route path="revenue" element={<AdminRevenuePage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 
           <Route>
-            <Route path = "/booksessions" element = {<TrainerBookingsPage />} />
+            <Route path="/booksessions" element={<TrainerBookingsPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
