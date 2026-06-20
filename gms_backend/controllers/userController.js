@@ -211,7 +211,7 @@ export const register = (req, res) => {
 
     db.query(
       sql,
-      [full_name, email, hashedPassword, phone, "MEMBER", "ACTIVE"],
+      [full_name, email, hashedPassword, phone, role, "ACTIVE"],
       (err, result) => {
         if (err) {
           console.error(err);
@@ -229,7 +229,7 @@ export const register = (req, res) => {
   });
 };
 
-///////////////////////////////////////////login/////////////////////////////
+///////////////////////////////////login/////////////////////////////
 export const login = (req, res) => {
   const { email, password } = req.body;
 

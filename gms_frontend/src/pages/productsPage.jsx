@@ -17,6 +17,7 @@ export default function ProductPage() {
   const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
   const [products, setProducts] = useState([]);
+  const [logged, setLogged] = useState(false)
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
@@ -78,11 +79,7 @@ export default function ProductPage() {
                 {product.category}
               </span>
 
-              <img
-                src={product.image_url || "/s1.png"}
-                alt={product.product_name}
-                className="h-40 object-contain relative z-10"
-              />
+              <img src={product.image_url || "/s1.png"} alt={product.product_name} className="h-40 object-contain relative z-10"/>
 
             </div>
 
@@ -98,13 +95,10 @@ export default function ProductPage() {
                   <p className="text-[11px] text-zinc-400 uppercase tracking-widest mb-0.5">Price</p>
                   <p className="text-xl font-medium text-zinc-900 dark:text-white">Rs. {Number(product.price).toLocaleString()}</p>
                 </div>
-                <button
-                  onClick={() => navigate(`/product/${product.product_id}`)}
-                  className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg"
-                >
-                  <IoMdCart/> Buy Now
-                </button>
-
+                {logged && (
+                  <button onClick={() => navigate(`/product/${product.product_id}`)} className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg"> <IoMdCart/> Buy Now </button>
+                )}
+                
               </div>
             </div>
           </div>
