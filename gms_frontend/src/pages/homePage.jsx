@@ -84,12 +84,12 @@ export default function HomePage() {
   return (
     <div className=" bg-[#050505]">
       {/* navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[100px] px-[100px]">
+      <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[80px] md:h-[100px] px-5 md:px-10 lg:px-20">
         <div className="flex items-center justify-between h-full">
           <div>
-            <img src="logo.png" alt="logo" className="w-[100px] h-[100px]" />
+            <img src="logo.png" alt="logo" className="w-[70px] h-[70px] md:w-[100px] md:h-[100px]" />
           </div>
-          <div className="flex items-center gap-10 text-xl text-white">
+          <div className="hidden lg:flex items-center gap-6 text-lg text-white">
             <a className="hover:text-[#d4a017]" href="#"> Home </a>
             <a className="hover:text-[#d4a017]" href="#about"> About </a>
             <a className="hover:text-[#d4a017]" href="#our_services"> Our Services </a>
@@ -98,7 +98,7 @@ export default function HomePage() {
             <Link className="hover:text-[#d4a017]" to="/schedules"> Schedules </Link>
           </div>
 
-          <div className="flex gap-5">
+          <div className="hidden md:flex gap-3">
             <Link to="/signin"> <button onClick={handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"> Sign in <GoSignIn /> </button> </Link>
             <Link to="/signup"> <button onClick={handleSignUp} className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"> Sign Up <SlUserFollowing /> </button></Link>
           </div>
