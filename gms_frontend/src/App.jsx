@@ -32,6 +32,8 @@ import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
+import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Chatbot from './pages/Chatbot.jsx';
 
 function App() {
   return (
@@ -52,10 +54,22 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
-          <Route path="/product/:id" element={<ProductByPage />} />
+          <Route path="/bot" element={<Chatbot/>} />
+          
+          <Route path="/product/:id" element={
+            <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'TRAINER']}>
+              <ProductByPage />
+            </ProtectedRoute>
+          } />
+          
           <Route path="/dietplans" element={<h1>Diet Plans</h1>} />
 
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile" element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
+          } />
+          
           <Route path="/personal-training" element={<h1>Personal Training</h1>}/>
           <Route path="/equipment" element={<h1>Modern Equipment</h1>}/>
           <Route
@@ -64,13 +78,25 @@ function App() {
           />
           <Route path="/equipment" element={<h1>Modern Equipment</h1>} />
 
-          <Route path="/sessions" element={<SessionPage />} />
+          <Route path="/sessions" element={
+            <ProtectedRoute>
+              <SessionPage />
+            </ProtectedRoute>
+          } />
 
           {/* Member Dashboard */}
-          <Route path="/dashboard" element={<MemberDashboard />} />
+          <Route path="/dashboard" element={
+            <ProtectedRoute allowedRoles={['MEMBER']}>
+              <MemberDashboard />
+            </ProtectedRoute>
+          } />
 
           {/* Admin Dashboard */}
-          <Route path="/admin" element={<AdminDashboard />}>
+          <Route path="/admin" element={
+            <ProtectedRoute allowedRoles={['ADMIN']}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }>
             <Route path="admindashboard" element={<AdminDashboard />} />
             <Route path="products" element={<AdminProductPage />} />
             <Route path="add-product" element={<AdminAddProduct />} />
@@ -88,9 +114,11 @@ function App() {
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 
-          <Route>
-            <Route path="/booksessions" element={<TrainerBookingsPage />} />
-          </Route>
+          <Route path="/booksessions" element={
+            <ProtectedRoute allowedRoles={['TRAINER']}>
+              <TrainerBookingsPage />
+            </ProtectedRoute>
+          } />
         </Routes>
       </BrowserRouter>
     </div>

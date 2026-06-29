@@ -1,6 +1,6 @@
 import Footer from "../components/footer.jsx";
 import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GoSignIn } from "react-icons/go";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -9,13 +9,55 @@ import BMI from "../components/bmi.jsx";
 export default function HomePage() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
+  const [isLogged, setIsLogged] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem("user");
+    if (token && userString) {
+      setIsLogged(true);
+      try {
+        setUser(JSON.parse(userString));
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setIsLogged(false);
+      setUser(null);
+    }
+  }, []);
+
+  const handleDashboard = () => {
+    if (!user) return navigate("/signin");
+    const role = user.role ? user.role.toUpperCase() : "MEMBER";
+    if (role === "ADMIN") {
+      navigate("/admin");
+    } else if (role === "TRAINER") {
+      navigate("/booksessions");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLogged(false);
+    setUser(null);
+    navigate("/");
+  };
 
   const handleProduct = () => {
     navigate("/products");
   };
 
   const handleGetStarted = () => {
-    navigate("/signup");
+    if (isLogged) {
+      handleDashboard();
+    } else {
+      navigate("/signup");
+    }
   };
 
   const handleSignin = () => {
@@ -96,11 +138,25 @@ export default function HomePage() {
             <a className="hover:text-[#d4a017]" href="#contacts"> Contacts </a>
             <Link className="hover:text-[#d4a017]" to="/trainers"> Trainers </Link>
             <Link className="hover:text-[#d4a017]" to="/schedules"> Schedules </Link>
+            <Link className="hover:text-[#d4a017]" to="/products"> Supplements </Link>
           </div>
 
           <div className="flex gap-5">
-            <Link to="/signin"> <button onClick={handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"> Sign in <GoSignIn /> </button> </Link>
-            <Link to="/signup"> <button onClick={handleSignUp} className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"> Sign Up <SlUserFollowing /> </button></Link>
+            {isLogged ? (
+              <>
+                <button onClick={handleDashboard} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300">
+                  Dashboard
+                </button>
+                <button onClick={handleLogout} className="bg-red-600 text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-red-700 transition duration-300">
+                  Logout
+                </button>
+              </>
+            ) : (
+              <>
+                <button onClick={handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"> Sign in <GoSignIn /> </button>
+                <button onClick={handleSignUp} className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"> Sign Up <SlUserFollowing /> </button>
+              </>
+            )}
           </div>
         </div>
       </nav>

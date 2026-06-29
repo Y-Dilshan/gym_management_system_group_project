@@ -171,7 +171,7 @@ export const approveApplication = (req, res) => {
                 .json({ error: "Failed to process password" });
             }
 
-            const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'trainer', 'active', NOW())`;
+            const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'TRAINER', 'ACTIVE', NOW())`;
             db.query(
               userSql,
               [app.full_name, app.email, hashedPassword, app.phone],

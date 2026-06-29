@@ -22,6 +22,10 @@ export default function ProductPage() {
   const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setLogged(true);
+    }
     loadProducts();
   }, []);
 
@@ -57,7 +61,7 @@ export default function ProductPage() {
             className={`rounded-xl px-5 py-2 text-sm font-semibold transition-colors whitespace-nowrap
               ${
                 activeCategory === cat.value
-                  ? "bg-[#d4af37] text-black"
+                   ? "bg-[#d4af37] text-black"
                   : "bg-white text-black hover:bg-gray-100"
               }`}>
             {cat.label}
@@ -95,10 +99,18 @@ export default function ProductPage() {
                   <p className="text-[11px] text-zinc-400 uppercase tracking-widest mb-0.5">Price</p>
                   <p className="text-xl font-medium text-zinc-900 dark:text-white">Rs. {Number(product.price).toLocaleString()}</p>
                 </div>
-                {logged && (
-                  <button onClick={() => navigate(`/product/${product.product_id}`)} className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg"> <IoMdCart/> Buy Now </button>
-                )}
-                
+                <button 
+                  onClick={() => {
+                    if (logged) {
+                      navigate(`/product/${product.product_id}`);
+                    } else {
+                      navigate('/signin');
+                    }
+                  }} 
+                  className="flex items-center gap-2 bg-[#D4AF37] hover:bg-[#b8962d] active:scale-95 text-yellow-950 text-sm font-medium px-5 py-2.5 rounded-lg"
+                > 
+                  <IoMdCart/> Buy Now 
+                </button>
               </div>
             </div>
           </div>
