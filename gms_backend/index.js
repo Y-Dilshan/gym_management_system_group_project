@@ -10,7 +10,6 @@ import productRoutes from "./routes/productRoutes.js";
 import trainerRoutes from "./routes/trainerRouter.js";
 import trainerApplicationRoutes from "./routes/trainerapplicationroutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
-import chatbotRoute from './routes/chatbotRoute.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -29,8 +28,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/trainers", trainerRoutes);
 app.use("/api/orders", orderRoutes);
-app.use("/api/chatbot",chatbotRoute);
-
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
