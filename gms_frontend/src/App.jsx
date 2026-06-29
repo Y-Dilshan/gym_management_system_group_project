@@ -33,7 +33,6 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
-import Chatbot from './pages/Chatbot.jsx';
 
 function App() {
   return (
