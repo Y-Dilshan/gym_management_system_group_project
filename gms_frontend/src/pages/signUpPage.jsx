@@ -4,7 +4,7 @@ import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -14,7 +14,6 @@ export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-
 
   const handleBack = () => {
     navigate("/");
@@ -31,7 +30,6 @@ export default function SignUpPage() {
     navigate("/Applyastrainer");
   };
 
-
   //////////////
   // const handleRegister = async () => {
   //   try {
@@ -40,7 +38,8 @@ export default function SignUpPage() {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/register",
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/users/register",
         {
           full_name: fullName,
           email: email,
@@ -49,47 +48,72 @@ export default function SignUpPage() {
         },
       );
 
-      toast.success('Your account created successfully!');
+      toast.success("Your account created successfully!");
       navigate("/signin");
     } catch (error) {
-  console.log(error.response?.data);
+      console.log(error.response?.data);
 
-  toast.error(
-    error.response?.data?.message ||
-    error.response?.data?.error ||
-    "Registration failed"
-  );
-}
+      toast.error(
+        error.response?.data?.message ||
+          error.response?.data?.error ||
+          "Registration failed",
+      );
+    }
   };
 
   return (
     <div className="flex">
       {/* Left Side */}
-     <div
-        className="flex-1 relative bg-cover bg-center overflow-hidden flex justify-center items-center p-[50px]"
+      <div
+        className="flex-1 relative bg-cover bg-center overflow-hidden flex justify-center items-center p-[26px]"
+
         style={{
-          backgroundImage:
-            "url('sign_up page.jpg')",
-        }}>
+          backgroundImage: "url('sign_up page.jpg')",
+        }}
+      >
         <div className="absolute inset-0 bg-black/45"></div>
 
-        <button onClick={handleBack} className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover" > ← Back </button>
+        <button
+          onClick={handleBack}
+          className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover"
+        >
+          {" "}
+          ← Back{" "}
+        </button>
 
         <div className="relative z-10 w-full max-w-[520px] flex flex-col justify-center">
           {/* Logo */}
           <div className="flex items-center gap-5 mb-[50px]">
-            <img src="/logo.png" alt="Power Zone Logo" className="w-[90px] h-[90px] rounded-xl object-cover shadow-[0_0_20px_rgba(229,185,62,0.4)]" />
+            <img
+              src="/logo.png"
+              alt="Power Zone Logo"
+              className="w-[90px] h-[90px] rounded-xl object-cover shadow-[0_0_20px_rgba(229,185,62,0.4)]"
+            />
 
-            <h1 className="text-[#E5B93E] text-[56px] font-bold m-0"> Power Zone </h1>
+            <h1 className="text-[#E5B93E] text-[56px] font-bold m-0">
+              {" "}
+              Power Zone{" "}
+            </h1>
           </div>
 
           {/* Text Content */}
           <div className="flex flex-col [text-shadow:0_0_10px_rgba(229,185,62,0.5)]">
-            <p className="text-white text-[34px] font-medium m-0"> Start your journey </p>
+            <p className="text-white text-[34px] font-medium m-0">
+              {" "}
+              Start your journey{" "}
+            </p>
 
-            <h2 className="text-[#E5B93E] text-[68px] leading-[1.1] font-bold m-0"> Build the body <br /> you deserve. </h2>
+            <h2 className="text-[#E5B93E] text-[68px] leading-[1.1] font-bold m-0">
+              {" "}
+              Build the body <br /> you deserve.{" "}
+            </h2>
 
-            <p className="text-white text-[24px] leading-[1.6] mt-[10px] max-w-[500px]"> Join thousands of members who've transformed their lives with expert coaching, premium equipment, and a community that pushes you further. </p>
+            <p className="text-white text-[24px] leading-[1.6] mt-[10px] max-w-[500px]">
+              {" "}
+              Join thousands of members who've transformed their lives with
+              expert coaching, premium equipment, and a community that pushes
+              you further.{" "}
+            </p>
 
             {/* Features */}
             <div className="text-white text-[22px] leading-[2] mt-[10px]">
@@ -105,9 +129,13 @@ export default function SignUpPage() {
       {/* Right Side */}
       <div className=" w-[50%] h-screen bg-[#333333] ">
         <div className="bg-[#333333] w-full h-screen flex justify-center items-center">
-          <div className="w-[500px] h-[750px] bg-black shadow-2xl shadow-gray-600 pt-6 relative rounded-xl w-[400px]">
+          <div className="w-[500px] h-[720px] bg-black shadow-2xl shadow-gray-600 pt-6 relative rounded-xl">
+        
             {/* Title */}
-            <h1 className="text-[32px] text-[#D4AF37] text-center font-semibold"> {" "}Create your account </h1>
+            <h1 className="text-[32px] text-[#D4AF37] text-center font-semibold">
+              {" "}
+              Create your account{" "}
+            </h1>
             <div className="gap-10 text-white text-center">
               <h3>
                 You already have an account?{" "}
