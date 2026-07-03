@@ -50,36 +50,6 @@ export default function SigninPage() {
         navigate("/");
       }
 
-      // const role = response.data.user.role ? response.data.user.role.toUpperCase() : "MEMBER";
-
-      //       // toast.success("Login successful!");
-      //       if (role === "ADMIN") {
-      //         navigate('/admin');
-      //       } else if (role === "TRAINER") {
-      //         navigate('/booksessions');
-      //       } else {
-      //         navigate('/');
-      //       }
-
-      // console.log(response.data);
-
-      // navigate("/");
-
-      /////////////////////////////////////////////
-      // toast.success("Login successful!");
-
-      // console.log(response.data);
-
-      // const user = response.data.user;
-
-      // if (role.toLowerCase() === "admin") {
-      //   navigate("/admin");
-      // }else if (role === "TRAINER") {
-      //   navigate('/booksessions');
-      // } else {
-      //   navigate("/");
-      // }
-      /////////////////////////////////////////////
     } catch (error) {
       console.error(error);
 

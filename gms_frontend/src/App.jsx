@@ -53,7 +53,6 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
-          <Route path="/bot" element={<Chatbot/>} />
           
           <Route path="/product/:id" element={
             <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'TRAINER']}>
