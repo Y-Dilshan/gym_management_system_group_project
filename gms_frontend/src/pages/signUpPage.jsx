@@ -49,7 +49,7 @@ export default function SignUpPage() {
         },
       );
 
-      toast.success(response.data.message);
+      toast.success('Your account created successfully!');
       navigate("/signin");
     } catch (error) {
   console.log(error.response?.data);

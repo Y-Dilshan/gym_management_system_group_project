@@ -14,21 +14,14 @@ export const createUserByAdmin = (req, res) => {
     });
   }
 
-  const {
-    user_id,
-    full_name,
-    email,
-    password,
-    phone,
-    role,
-    status,
-    profile_picture,
-    created_at,
-  } = req.body;
+  const { full_name, email, password, phone, role, status, profile_picture } = req.body;
 
   if (!full_name || !email || !password) {
     return res.status(400).json({ error: "Missing required fields" });
   }
+
+  const normalizedRole = role ? role.toUpperCase() : "MEMBER";
+  const normalizedStatus = status ? status.toUpperCase() : "ACTIVE";
 
   bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
     if (err) {
@@ -39,21 +32,19 @@ export const createUserByAdmin = (req, res) => {
       });
     }
 
-    if (role === "admin") {
-      const userSql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    if (normalizedRole === "ADMIN") {
+      const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         userSql,
         [
-          user_id,
           full_name,
           email,
           hashedPassword,
           phone,
-          role,
-          status,
-          profile_picture,
-          created_at,
+          normalizedRole,
+          normalizedStatus,
+          profile_picture || null
         ],
         (err, result) => {
           if (err) {
@@ -88,22 +79,20 @@ export const createUserByAdmin = (req, res) => {
           );
         },
       );
-    } else if (role === "TRAINER") {
+    } else if (normalizedRole === "TRAINER") {
       // FIRST create user
-      const userSql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         userSql,
         [
-          user_id,
           full_name,
           email,
           hashedPassword,
           phone,
-          role,
-          status,
-          profile_picture,
-          created_at,
+          normalizedRole,
+          normalizedStatus,
+          profile_picture || null
         ],
         (err, userResult) => {
           if (err) {
@@ -117,38 +106,9 @@ export const createUserByAdmin = (req, res) => {
           // GET created user_id
           const createdUserId = userResult.insertId;
 
-          // NOW create trainer
-          // const trainerSql = `INSERT INTO trainers (user_id) VALUES (?)`;
+          const { specialization, bio, experience_years } = req.body;
 
-          // db.query(trainerSql, [createdUserId], (err, trainerResult) => {
-          //   if (err) {
-          //     console.error("Error creating trainer:", err);
-
-          //     return res.status(500).json({
-          //       error: "Failed to create trainer",
-          //     });
-          //   }
-
-          //   return res.status(201).json({
-          //     message: "Trainer created successfully",
-          //     userId: createdUserId,
-          //     trainerId: trainerResult.insertId,
-          //   });
-          // });
-          const { specialization, bio, experience_years, profile_picture } =
-            req.body;
-
-          const trainerSql = `
-INSERT INTO trainers
-(
- user_id,
- specialization,
- bio,
- experience_years,
- profile_picture
-)
-VALUES (?, ?, ?, ?, ?)
-`;
+          const trainerSql = `INSERT INTO trainers (user_id, specialization, bio, experience_years, profile_picture) VALUES (?, ?, ?, ?, ?)`;
 
           db.query(
             trainerSql,
@@ -161,10 +121,10 @@ VALUES (?, ?, ?, ?, ?)
             ],
             (err, trainerResult) => {
               if (err) {
-                console.error(err);
-
+                console.error("Error creating trainer profile:", err);
+                db.query("DELETE FROM users WHERE user_id = ?", [createdUserId]);
                 return res.status(500).json({
-                  error: "Failed to create trainer",
+                  error: "Failed to create trainer profile",
                 });
               }
 
@@ -177,20 +137,18 @@ VALUES (?, ?, ?, ?, ?)
         },
       );
     } else {
-      const sql = `INSERT INTO users (user_id,full_name,email,password,phone,role,status,profile_picture,created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const sql = `INSERT INTO users (full_name, email, password, phone, role, status, profile_picture) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
       db.query(
         sql,
         [
-          user_id,
           full_name,
           email,
           hashedPassword,
           phone,
-          role,
-          status,
-          profile_picture,
-          created_at,
+          normalizedRole,
+          normalizedStatus,
+          profile_picture || null
         ],
         (err, result) => {
           if (err) {
@@ -227,11 +185,11 @@ export const register = (req, res) => {
       });
     }
 
-    const sql = `INSERT INTO users (full_name, email, password, phone, role, status) VALUES (?, ?, ?, ?, ?, ?)`;
+    const sql = `INSERT INTO users (full_name, email, password, phone, role, status) VALUES (?, ?, ?, ?, 'MEMBER', 'ACTIVE')`;
 
     db.query(
       sql,
-      [full_name, email, hashedPassword, phone, "MEMBER", "ACTIVE"],
+      [full_name, email, hashedPassword, phone],
       (err, result) => {
         if (err) {
           console.error(err);
@@ -249,45 +207,62 @@ export const register = (req, res) => {
   });
 };
 
-///////////////////////////////////////////login/////////////////////////////
+///////////////////////////////////login/////////////////////////////
 export const login = (req, res) => {
   const { email, password } = req.body;
+
   const sql = "SELECT * FROM users WHERE email = ?";
+
   db.query(sql, [email], (err, results) => {
     if (err) {
-      console.error("Error fetching user: ", err);
-      res.status(500).json({ error: "Failed to fetch user" });
-    } else if (results.length === 0) {
-      res.status(401).json({ error: "Invalid email or password" });
-    } else {
-      const user = results[0];
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err) {
-          console.error("Error comparing passwords: ", err);
-          res.status(500).json({ error: "Failed to process password" });
-        } else if (!isMatch) {
-          res.status(401).json({ error: "Invalid email or password" });
-        } else {
-          // Remove password from response
-          const { password, ...userWithoutPassword } = user;
-
-          const token = jwt.sign(
-            {
-              user_id: user.user_id,
-              role: user.role,
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" },
-          );
-
-          res.status(200).json({
-            message: "Login successful",
-            token,
-            user: userWithoutPassword,
-          });
-        }
+      console.error("Error fetching user:", err);
+      return res.status(500).json({
+        error: "Failed to fetch user",
       });
     }
+
+    if (results.length === 0) {
+      return res.status(401).json({
+        error: "Invalid email or password",
+      });
+    }
+
+    const user = results[0];
+
+    bcrypt.compare(password, user.password, (err, isMatch) => {
+      if (err) {
+        console.error("Error comparing passwords:", err);
+        return res.status(500).json({
+          error: "Failed to process password",
+        });
+      }
+
+      if (!isMatch) {
+        return res.status(401).json({
+          error: "Invalid email or password",
+        });
+      }
+
+      // Remove password from the user object before sending response
+      const { password: hashedPassword, ...userWithoutPassword } = user;
+
+      const token = jwt.sign(
+        {
+          user_id: user.user_id,
+          role: user.role,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        user: userWithoutPassword,
+      });
+    });
   });
 };
 

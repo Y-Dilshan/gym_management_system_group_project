@@ -1,6 +1,6 @@
 import Footer from "../components/footer.jsx";
 import { useNavigate, Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { GoSignIn } from "react-icons/go";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
@@ -9,13 +9,55 @@ import BMI from "../components/bmi.jsx";
 export default function HomePage() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
+  const [isLogged, setIsLogged] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userString = localStorage.getItem("user");
+    if (token && userString) {
+      setIsLogged(true);
+      try {
+        setUser(JSON.parse(userString));
+      } catch (e) {
+        console.error(e);
+      }
+    } else {
+      setIsLogged(false);
+      setUser(null);
+    }
+  }, []);
+
+  const handleDashboard = () => {
+    if (!user) return navigate("/signin");
+    const role = user.role ? user.role.toUpperCase() : "MEMBER";
+    if (role === "ADMIN") {
+      navigate("/admin");
+    } else if (role === "TRAINER") {
+      navigate("/booksessions");
+    } else {
+      navigate("/dashboard");
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLogged(false);
+    setUser(null);
+    navigate("/");
+  };
 
   const handleProduct = () => {
     navigate("/products");
   };
 
   const handleGetStarted = () => {
-    navigate("/signup");
+    if (isLogged) {
+      handleDashboard();
+    } else {
+      navigate("/signup");
+    }
   };
 
   const handleSignin = () => {

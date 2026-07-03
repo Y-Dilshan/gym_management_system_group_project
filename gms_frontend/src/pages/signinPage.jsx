@@ -7,6 +7,7 @@ import { Toaster, toast } from "react-hot-toast";
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
 
   const navigate = useNavigate();
 
@@ -23,7 +24,6 @@ export default function SigninPage() {
 
     try {
       const response = await axios.post(
-        // "http://localhost:3000/api/users/login",
         import.meta.env.VITE_BACKEND_URL + "/users/login",
         {
           email,
@@ -33,26 +33,53 @@ export default function SigninPage() {
 
       // Save JWT token
       localStorage.setItem("token", response.data.token);
-
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
-      // toast.success("Login successful!");
+      toast.success("Login successful!");
+      console.log(response.data);
+
+      const user = response.data.user;
+      const role = (user.role || "MEMBER").toUpperCase();
+
+      if (role === "ADMIN") {
+        navigate("/admin");
+      } else if (role === "TRAINER") {
+        navigate("/booksessions");
+      } else {
+        navigate("/");
+      }
+
+      // const role = response.data.user.role ? response.data.user.role.toUpperCase() : "MEMBER";
+
+      //       // toast.success("Login successful!");
+      //       if (role === "ADMIN") {
+      //         navigate('/admin');
+      //       } else if (role === "TRAINER") {
+      //         navigate('/booksessions');
+      //       } else {
+      //         navigate('/');
+      //       }
 
       // console.log(response.data);
 
       // navigate("/");
-      toast.success("Login successful!");
 
-      console.log(response.data);
+      /////////////////////////////////////////////
+      // toast.success("Login successful!");
 
-      const user = response.data.user;
+      // console.log(response.data);
 
-      if (user.role.toLowerCase() === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
-      }
+      // const user = response.data.user;
+
+      // if (role.toLowerCase() === "admin") {
+      //   navigate("/admin");
+      // }else if (role === "TRAINER") {
+      //   navigate('/booksessions');
+      // } else {
+      //   navigate("/");
+      // }
+      /////////////////////////////////////////////
     } catch (error) {
       console.error(error);
 
@@ -65,15 +92,17 @@ export default function SigninPage() {
       <div className="w-[500px] h-[500px] bg-[#333333] shadow-2xl shadow-gray-600 pt-10 relative rounded-xl w-[400px]">
         {/* Back Button */}
         <button className="flex items-center gap-2 text-white hover:text-[#D4AF37] transition duration-300 absolute left-10 top-10">
-          <GoArrowLeft className="text-[20px] " />
+          <GoArrowLeft className="text-[20px] " />{" "}
           <span onClick={handleBack} className="cursor-pointer">
-            Back
-          </span>
+            {" "}
+            Back{" "}
+          </span>{" "}
         </button>
 
         {/* Title */}
         <h1 className="text-[32px] text-[#D4AF37] text-center font-semibold">
-          Sign In
+          {" "}
+          Sign In{" "}
         </h1>
 
         <div className="flex flex-col items-center pt-[20px]">
@@ -105,25 +134,26 @@ export default function SigninPage() {
             onClick={handleSubmit}
             className="cursor-pointer border border-[#D4AF37] border-[2px] w-[400px] h-[40px] rounded-2xl bg-[#D4AF37] hover:bg-[#333333] transition duration-300 hover:outline-[#333333] hover:text-black"
           >
-            Sign In
+            Sign In{" "}
           </button>
         </div>
 
         <div className="pt-[30px] flex pl-[50px] text-white gap-2">
           <span>You already haven’t an account?</span>
-
           <button
             onClick={handleSignup}
             className="cursor-pointer hover:text-[#D4AF37] transition duration-300"
           >
-            Sign Up
+            {" "}
+            Sign Up{" "}
           </button>
         </div>
 
         <div className="pt-[30px] flex pl-[50px] text-white gap-2 justify-end pr-[50px]">
           <span>Forgot Password?</span>
           <button className="cursor-pointer hover:text-[#D4AF37] transition duration-300">
-            Reset here
+            {" "}
+            Reset here{" "}
           </button>
         </div>
       </div>
