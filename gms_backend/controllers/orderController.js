@@ -26,7 +26,7 @@ export const createOrder = (req, res) => {
     }
 
     // create order
-    const orderSql = `INSERT INTO orders (member_id, total_amount, delivery_address) VALUES (?,?,?)`;
+    const orderSql = `INSERT INTO orders (user_id, total_amount, delivery_address) VALUES (?,?,?)`;
 
     db.query(
       orderSql,
@@ -74,7 +74,7 @@ export const getOrders = (req, res) => {
            u.full_name AS customer_name, u.email AS customer_email,
            oi.quantity, oi.unit_price, p.product_name, p.image_url
     FROM orders o
-    JOIN users u ON o.member_id = u.user_id
+    JOIN users u ON o.user_id = u.user_id
     JOIN order_items oi ON o.order_id = oi.order_id
     JOIN products p ON oi.product_id = p.product_id
     ORDER BY o.order_date DESC
@@ -100,7 +100,7 @@ export const getMyOrders = (req, res) => {
     FROM orders o
     JOIN order_items oi ON o.order_id = oi.order_id
     JOIN products p ON oi.product_id = p.product_id
-    WHERE o.member_id = ?
+    WHERE o.user_id = ?
     ORDER BY o.order_date DESC
   `;
 
