@@ -37,12 +37,22 @@ export default function SigninPage() {
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
 
+      // toast.success("Login successful!");
 
+      // console.log(response.data);
+
+      // navigate("/");
       toast.success("Login successful!");
 
       console.log(response.data);
 
-      navigate("/");
+      const user = response.data.user;
+
+      if (user.role.toLowerCase() === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
     } catch (error) {
       console.error(error);
 
