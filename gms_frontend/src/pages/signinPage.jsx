@@ -35,16 +35,14 @@ export default function SigninPage() {
       // Save user info
       localStorage.setItem("user", JSON.stringify(response.data.user));
       
-      const role = response.data.user.role;
+      const role = response.data.user.role ? response.data.user.role.toUpperCase() : "MEMBER";
 
-      if(role === "ADMIN"){
+      if (role === "ADMIN") {
         navigate('/admin');
-      }
-      else if(role === "TRAINER"){
+      } else if (role === "TRAINER") {
         navigate('/booksessions');
-      } 
-      else {
-        navigate('/home');
+      } else {
+        navigate('/');
       }
 
       toast.success("Login successful!");

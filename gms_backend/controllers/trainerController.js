@@ -16,8 +16,7 @@ export const trainerLogin = (req, res) => {
   }
 
   // Join users + trainers to get trainer info
-
-  const sql = `SELECT u.user_id, u.full_name, u.email, u.password, u.phone, u.status, u.created_at, t.trainer_id, t.specification, t.bio, t.experience_years FROM users u JOIN trainers t ON u.user_id = t.user_id WHERE u.email = ? AND u.role = "trainer" `;
+  const sql = `SELECT u.user_id, u.full_name, u.email, u.password, u.phone, u.role, u.status, u.created_at, t.trainer_id, t.specialization, t.bio, t.experience_years FROM users u JOIN trainers t ON u.user_id = t.user_id WHERE u.email = ? AND u.role = 'TRAINER'`;
 
   db.query(sql, [email], (err, results) => {
     if (err) {
@@ -30,7 +29,7 @@ export const trainerLogin = (req, res) => {
 
     const trainer = results[0];
 
-    if (trainer.status === "inactive") {
+    if (trainer.status && trainer.status.toUpperCase() === "INACTIVE") {
       return res.status(403).json({
         error: "Account is inactive",
       });
@@ -48,12 +47,26 @@ export const trainerLogin = (req, res) => {
           error: "Invalid email or password",
         });
       }
-      // Return trainer info  excluding password
-
+      // Return trainer info excluding password
       const { password: _, ...trainerData } = trainer;
+      
+      // Also generate JWT token for the trainer so they can make authorized requests!
+      const token = jwt.sign(
+        {
+          user_id: trainer.user_id,
+          role: "TRAINER",
+          trainer_id: trainer.trainer_id,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: "1d",
+        }
+      );
+
       res.status(200).json({
         message: "Login successful",
-        trainer: trainerData,
+        token,
+        user: trainerData,
       });
     });
   });
@@ -91,7 +104,7 @@ t.experience_years
 FROM trainers t
 JOIN users u
 ON t.user_id = u.user_id
-WHERE u.role = 'trainer'
+WHERE u.role = 'TRAINER'
 `;
 
   db.query(sql, (err, results) => {
@@ -244,7 +257,7 @@ export const getAssignedMembers = (req, res) => {
   const sql = `
         SELECT u.user_id, u.full_name, u.email, u.phone, u.status
         FROM users u
-        WHERE u.trainer_id = ? AND u.role = 'member'
+        WHERE u.trainer_id = ? AND u.role = 'MEMBER'
     `;
   db.query(sql, [id], (err, results) => {
     if (err) {
