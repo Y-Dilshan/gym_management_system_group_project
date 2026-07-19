@@ -47,7 +47,7 @@ export default function SigninPage() {
       } else if (role === "TRAINER") {
         navigate("/booksessions");
       } else {
-        navigate("/");
+        navigate("/home");
       }
 
     } catch (error) {
