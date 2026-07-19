@@ -76,10 +76,7 @@ function App() {
             <Route path="add-product" element={<AdminAddProduct />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
-            <Route
-              path="trainer-applications"
-              element={<TrainerApplicationsPage />}
-            />
+            <Route path="trainer-applications" element={<TrainerApplicationsPage />}/>
             <Route path="memberships" element={<AdminMemberships />} />
             <Route path="trainers" element={<AdminTrainers />} />
             <Route path="/admin/add-trainer" element={<AddTrainerPage />} />

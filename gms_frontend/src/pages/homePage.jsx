@@ -87,7 +87,7 @@ export default function HomePage() {
       <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[100px] px-[100px]">
         <div className="flex items-center justify-between h-full">
           <div>
-            <img src="logo.png" alt="logo" className="w-[100px] h-[100px]" />
+            <img src="logo.png" alt="logo" className="w-[100px] h-[100px] cursor-pointer" />
           </div>
           <div className="flex items-center gap-10 text-xl text-white">
             <a className="hover:text-[#d4a017]" href="#"> Home </a>
@@ -99,8 +99,8 @@ export default function HomePage() {
           </div>
 
           <div className="flex gap-5">
-            <Link to="/signin"> <button onClick={handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"> Sign in <GoSignIn /> </button> </Link>
-            <Link to="/signup"> <button onClick={handleSignUp} className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"> Sign Up <SlUserFollowing /> </button></Link>
+            <Link to="/signin"> <button onClick={handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer"> Sign in <GoSignIn /> </button> </Link>
+            <Link to="/signup"> <button onClick={handleSignUp} className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300 cursor-pointer"> Sign Up <SlUserFollowing /> </button></Link>
           </div>
         </div>
       </nav>
@@ -111,7 +111,7 @@ export default function HomePage() {
           <h1 className="text-6xl font-bold text-center text-[#d4a017]"> Unleash Your Potential </h1>
           <p className="text-center text-2xl text-white mt-10 px-4 max-w-[800px] mx-auto"> Join the ultimate fitness experience designed to build strength, improve endurance, and boost your confidence through expert guidance and modern training methods. </p>
           <div className="flex items-center justify-center py-[50px]">
-            <button onClick={handleGetStarted} className="bg-[#d4a017] text-black  rounded-3xl w-[200px] h-[50px] mt-20 flex items-center justify-center gap-2 text-[30px] border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold "> Get Started{" "} </button>
+            <button onClick={handleGetStarted} className="bg-[#d4a017] text-black  rounded-3xl w-[200px] h-[50px] mt-20 flex items-center justify-center gap-2 text-[30px] border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold cursor-pointer"> Get Started{" "} </button>
           </div>
         </div>
       </div>
