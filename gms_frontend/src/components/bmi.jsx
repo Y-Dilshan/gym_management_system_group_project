@@ -131,7 +131,7 @@ export default function BMI() {
           </div>
 
           {/* CTA */}
-          <button onClick={calculate} className="w-full h-12 rounded-xl text-sm font-semibold tracking-wide transition-opacity hover:opacity-90 active:scale-[0.98] cursor-pointer" style={{ background: GOLD, color: "#1a1200" }}> Calculate BMI → </button>
+          <button onClick={calculate} className="w-full h-12 rounded-xl text-sm font-semibold tracking-wide transition-opacity hover:opacity-90 active:scale-[0.98]" style={{ background: GOLD, color: "#1a1200" }}> Calculate BMI → </button>
 
           {/* Result */}
           {result && zone && (

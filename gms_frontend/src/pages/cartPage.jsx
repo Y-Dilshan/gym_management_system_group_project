@@ -1,333 +1,191 @@
-import { FaShoppingCart, FaUserCircle } from "react-icons/fa";
-import whey from "../assets/supplements/whey.jpg";
-import nitrotech from "../assets/supplements/nitrotech.jpeg";
-import c4 from "../assets/supplements/c4.webp";
-import bcaa from "../assets/supplements/bcaa.webp";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import { FaTrash, FaPlus, FaMinus, FaShoppingBag } from "react-icons/fa";
+import Header from "../components/header.jsx";
+import Footer from "../components/footer.jsx";
 
+export default function CartPage() {
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([]);
+  const [logged, setLogged] = useState(false);
 
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setLogged(false);
+      navigate("/signin");
+      return;
+    }
+    setLogged(true);
 
-function Cart() {
+    const cartStr = localStorage.getItem("cart") || "[]";
+    try {
+      setCartItems(JSON.parse(cartStr));
+    } catch (e) {
+      setCartItems([]);
+    }
+  }, []);
 
-const products = [
-  {
-    name: "Gold Standard 100% Whey Protein",
-    price: "Rs. 8,999.00",
-    image: whey,
-  },
-  {
-    name: "Muscletech NitroTech",
-    price: "Rs. 9,500.00",
-    image: nitrotech,
-  },
-  {
-    name: "C4 Original Pre Workout",
-    price: "Rs. 6,500.00",
-    image: c4,
-  },
-  {
-    name: "BCAA Energy",
-    price: "Rs. 5,999.00",
-    image: bcaa,
-  },
-  {
-    name: "Mass Gainer",
-    price: "Rs. 10,500.00",
-    image: "https://m.media-amazon.com/images/I/71m6Cw7Y6ML.jpg"
-  },
-  {
-    name: "Creatine Monohydrate",
-    price: "Rs. 4,999.00",
-    image: "https://m.media-amazon.com/images/I/61f+P1H3iLL.jpg"
-  },
-  {
-    name: "Fish Oil Omega 3",
-    price: "Rs. 3,999.00",
-    image: "https://m.media-amazon.com/images/I/71J8jQxP2KL.jpg"
-  },
-  {
-    name: "Multivitamin Tablets",
-    price: "Rs. 2,999.00",
-    image: "https://m.media-amazon.com/images/I/71d6i6QfAOL.jpg"
-  },
-  {
-    name: "Protein Bars Pack",
-    price: "Rs. 3,500.00",
-    image: "https://m.media-amazon.com/images/I/81b7YfQjvWL.jpg"
-  }
-];
+  const updateQuantity = (productId, newQty) => {
+    if (newQty < 1) return;
+    const updated = cartItems.map(item => {
+      if (item.product_id === productId) {
+        return { ...item, qty: newQty };
+      }
+      return item;
+    });
+    setCartItems(updated);
+    localStorage.setItem("cart", JSON.stringify(updated));
+    window.dispatchEvent(new Event("cart-updated"));
+  };
 
-return (
-<div style={styles.page}>
+  const removeItem = (productId) => {
+    const filtered = cartItems.filter(item => item.product_id !== productId);
+    setCartItems(filtered);
+    localStorage.setItem("cart", JSON.stringify(filtered));
+    window.dispatchEvent(new Event("cart-updated"));
+    toast.success("Item removed from cart");
+  };
 
-{/* Navbar */}
+  const getSubtotal = () => {
+    return cartItems.reduce((acc, item) => acc + (Number(item.price) * item.qty), 0);
+  };
 
-<div style={styles.navbar}>
+  const handleCheckout = () => {
+    if (cartItems.length === 0) {
+      toast.error("Your cart is empty");
+      return;
+    }
+    navigate("/checkout");
+  };
 
-<div style={styles.logo}>
-POWER ZONE
-</div>
+  const subtotal = getSubtotal();
+  const shipping = subtotal > 15000 ? 0 : 500;
+  const total = subtotal + shipping;
 
-<div style={styles.menu}>
-<p>Home</p>
-<p>About</p>
-<p>Our Services</p>
-<p>Contacts</p>
-<p>Orders</p>
-</div>
+  return (
+    <div className="bg-[#050505] min-h-screen text-white flex flex-col">
+      <div className="fixed w-full z-40"><Header /></div>
 
-<div>
-<FaUserCircle
-size={38}
-color="white"
-/>
-</div>
+      <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-[120px]">
+        <h1 className="text-4xl font-bold text-white tracking-wide mb-8">
+          Shopping <span className="text-[#D4AF37]">Cart</span>
+        </h1>
 
-</div>
+        {cartItems.length === 0 ? (
+          <div className="bg-[#111] rounded-3xl p-12 text-center border border-zinc-800 flex flex-col items-center justify-center min-h-[400px]">
+            <FaShoppingBag className="text-6xl text-[#D4AF37] mb-4 opacity-50" />
+            <h2 className="text-2xl font-bold mb-2">Your Cart is Empty</h2>
+            <p className="text-gray-400 mb-6 max-w-md">Looks like you haven't added any gym supplements to your cart yet. Let's find some fuels for your body!</p>
+            <button
+              onClick={() => navigate("/products")}
+              className="bg-[#D4AF37] text-black font-bold px-8 py-3 rounded-xl hover:bg-[#b8962d] transition cursor-pointer"
+            >
+              Shop Supplements
+            </button>
+          </div>
+        ) : (
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Cart Items List */}
+            <div className="lg:col-span-2 space-y-4">
+              {cartItems.map((item) => (
+                <div
+                  key={item.product_id}
+                  className="bg-[#111] border border-zinc-800 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-yellow-500/10 transition"
+                >
+                  <div className="flex items-center gap-4 w-full sm:w-auto">
+                    <img
+                      src={item.image_url || "/s1.png"}
+                      alt={item.name}
+                      className="w-20 h-20 object-contain rounded-xl bg-zinc-900 p-2 border border-zinc-800 shrink-0"
+                    />
+                    <div>
+                      <h3 className="font-bold text-lg text-white leading-tight">{item.name}</h3>
+                      <p className="text-[#D4AF37] font-semibold mt-1">Rs. {Number(item.price).toLocaleString()}</p>
+                    </div>
+                  </div>
 
-{/* Title */}
+                  <div className="flex items-center gap-8 justify-between w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-zinc-800">
+                    {/* Quantity Control */}
+                    <div className="flex items-center gap-3 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-1.5">
+                      <button
+                        onClick={() => updateQuantity(item.product_id, item.qty - 1)}
+                        className="text-gray-400 hover:text-white transition cursor-pointer p-1"
+                      >
+                        <FaMinus size={12} />
+                      </button>
+                      <span className="w-8 text-center font-bold text-sm">{item.qty}</span>
+                      <button
+                        onClick={() => updateQuantity(item.product_id, item.qty + 1)}
+                        className="text-gray-400 hover:text-white transition cursor-pointer p-1"
+                      >
+                        <FaPlus size={12} />
+                      </button>
+                    </div>
 
-<div style={styles.header}>
+                    {/* Subtotal & Delete */}
+                    <div className="flex items-center gap-6">
+                      <div className="text-right">
+                        <p className="text-xs text-zinc-500">Subtotal</p>
+                        <p className="font-bold text-white text-base">Rs. {(item.price * item.qty).toLocaleString()}</p>
+                      </div>
 
-<h1 style={styles.heading}>
-Premium Supplements
-</h1>
+                      <button
+                        onClick={() => removeItem(item.product_id)}
+                        className="text-red-500 hover:text-red-400 transition cursor-pointer p-2 rounded-lg bg-red-500/5 hover:bg-red-500/10 border border-red-500/10"
+                      >
+                        <FaTrash size={16} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-<p style={styles.subtitle}>
-Enhance your fitness journey with premium supplements
-that support performance, strength and recovery
-</p>
+            {/* Order Summary */}
+            <div className="h-fit">
+              <div className="bg-[#111] border border-zinc-800 rounded-2xl p-6 space-y-6 shadow-xl">
+                <h2 className="text-xl font-bold border-b border-zinc-800 pb-4">Order Summary</h2>
 
-</div>
+                <div className="space-y-4">
+                  <div className="flex justify-between text-sm text-zinc-400">
+                    <span>Subtotal</span>
+                    <span className="text-white font-semibold">Rs. {subtotal.toLocaleString()}</span>
+                  </div>
 
-{/* Category Buttons */}
+                  <div className="flex justify-between text-sm text-zinc-400">
+                    <span>Shipping fee</span>
+                    <span className={shipping === 0 ? "text-green-400 font-bold" : "text-white font-semibold"}>
+                      {shipping === 0 ? "FREE" : `Rs. ${shipping}`}
+                    </span>
+                  </div>
 
-<div style={styles.categorySection}>
+                  {shipping > 0 && (
+                    <p className="text-[10px] text-zinc-500 italic mt-1">Free delivery for orders above Rs. 15,000!</p>
+                  )}
 
-<div style={styles.categories}>
+                  <hr className="border-zinc-800" />
 
-<button style={styles.activeBtn}>
-All
-</button>
+                  <div className="flex justify-between text-lg font-bold">
+                    <span>Total</span>
+                    <span className="text-[#D4AF37]">Rs. {total.toLocaleString()}</span>
+                  </div>
+                </div>
 
-<button style={styles.btn}>
-Pre-Workout
-</button>
+                <button
+                  onClick={handleCheckout}
+                  className="w-full bg-[#D4AF37] hover:bg-[#b8962d] text-black font-bold py-4 rounded-xl transition uppercase tracking-wider text-sm cursor-pointer shadow-lg shadow-yellow-500/5"
+                >
+                  Proceed to Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
 
-<button style={styles.btn}>
-Health
-</button>
-
-<button style={styles.btn}>
-Performance
-</button>
-
-<button style={styles.btn}>
-Recovery
-</button>
-
-<button style={styles.btn}>
-Protein
-</button>
-
-</div>
-
-<FaShoppingCart
-size={28}
-color="white"
-/>
-
-</div>
-
-{/* Products */}
-
-<div style={styles.grid}>
-
-{products.map((product,index)=>(
-
-<div
-key={index}
-style={styles.card}
->
-
-<img
-src={product.image}
-style={styles.image}
-/>
-
-<h3 style={styles.productTitle}>
-{product.name}
-</h3>
-
-<div style={styles.details}>
-<p>• High quality whey protein</p>
-<p>• Lean sugar</p>
-<p>• Low fat</p>
-<p>• Supports muscle growth</p>
-</div>
-
-<div style={styles.bottom}>
-
-<h4 style={styles.price}>
-{product.price}
-</h4>
-
-<button style={styles.cartBtn}>
-Add to Cart
-</button>
-
-</div>
-
-</div>
-
-))}
-
-</div>
-
-<div style={styles.viewContainer}>
-
-<button style={styles.viewBtn}>
-View More
-</button>
-
-</div>
-
-</div>
-
-)
-
+      <Footer />
+    </div>
+  );
 }
-
-const styles={
-
-page:{
-background:"#2d2d2d",
-minHeight:"100vh",
-padding:"30px",
-color:"white"
-},
-
-navbar:{
-display:"flex",
-justifyContent:"space-between",
-alignItems:"center",
-padding:"15px",
-borderBottom:"1px solid #E5B93E"
-},
-
-logo:{
-fontSize:"24px",
-fontWeight:"bold",
-color:"#E5B93E"
-},
-
-menu:{
-display:"flex",
-gap:"35px"
-},
-
-header:{
-textAlign:"center",
-marginTop:"30px"
-},
-
-heading:{
-color:"#E5B93E"
-},
-
-subtitle:{
-color:"#ccc"
-},
-
-categorySection:{
-display:"flex",
-justifyContent:"space-between",
-alignItems:"center",
-marginTop:"30px"
-},
-
-categories:{
-display:"flex",
-gap:"15px",
-flexWrap:"wrap"
-},
-
-btn:{
-padding:"10px 18px",
-borderRadius:"8px",
-border:"none",
-cursor:"pointer"
-},
-
-activeBtn:{
-padding:"10px 18px",
-background:"#E5B93E",
-border:"none",
-borderRadius:"8px"
-},
-
-grid:{
-display:"grid",
-gridTemplateColumns:"repeat(3,1fr)",
-gap:"30px",
-marginTop:"40px"
-},
-
-card:{
-background:"#e7e7e7",
-padding:"15px",
-borderRadius:"15px",
-color:"black"
-},
-
-image:{
-  width:"100%",
-  height:"220px",
-  objectFit:"cover",
-  borderRadius:"10px"
-},
-
-productTitle:{
-fontSize:"16px"
-},
-
-details:{
-fontSize:"13px"
-},
-
-bottom:{
-display:"flex",
-justifyContent:"space-between",
-alignItems:"center",
-marginTop:"15px"
-},
-
-price:{
-fontSize:"14px"
-},
-
-cartBtn:{
-background:"#E5B93E",
-border:"none",
-padding:"8px 12px",
-borderRadius:"7px",
-cursor:"pointer"
-},
-
-viewContainer:{
-display:"flex",
-justifyContent:"center",
-marginTop:"50px"
-},
-
-viewBtn:{
-padding:"15px 40px",
-background:"transparent",
-border:"2px solid #E5B93E",
-color:"white",
-borderRadius:"10px",
-fontSize:"18px"
-}
-
-}
-
-export default Cart

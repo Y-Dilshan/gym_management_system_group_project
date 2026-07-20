@@ -33,6 +33,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import DietPlansPage from "./pages/dietPlansPage.jsx";
 
 function App() {
   return (
@@ -53,7 +54,6 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
-          <Route path="/bot" element={<Chatbot/>} />
           
           <Route path="/product/:id" element={
             <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'TRAINER']}>
@@ -61,7 +61,11 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/dietplans" element={<h1>Diet Plans</h1>} />
+          <Route path="/dietplans" element={
+            <ProtectedRoute>
+              <DietPlansPage />
+            </ProtectedRoute>
+          } />
 
           <Route path="/profile" element={
             <ProtectedRoute>
@@ -101,7 +105,10 @@ function App() {
             <Route path="add-product" element={<AdminAddProduct />} />
             <Route path="users" element={<AdminUsersPage />} />
             <Route path="orders" element={<AdminOrdersPage />} />
-            <Route path="trainer-applications" element={<TrainerApplicationsPage />}/>
+            <Route
+              path="trainer-applications"
+              element={<TrainerApplicationsPage />}
+            />
             <Route path="memberships" element={<AdminMemberships />} />
             <Route path="trainers" element={<AdminTrainers />} />
             <Route path="/admin/add-trainer" element={<AddTrainerPage />} />

@@ -36,6 +36,41 @@ export default function ProductByPage() {
     }
   };
 
+  const handleAddToCart = () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please sign in to add items to cart");
+      navigate("/signin");
+      return;
+    }
+
+    const cartStr = localStorage.getItem("cart") || "[]";
+    let cart = [];
+    try {
+      cart = JSON.parse(cartStr);
+    } catch (e) {
+      cart = [];
+    }
+
+    const existing = cart.find(item => item.product_id === product.product_id);
+    if (existing) {
+      existing.qty += parseInt(quantity);
+    } else {
+      cart.push({
+        id: product.product_id,
+        product_id: product.product_id,
+        name: product.product_name,
+        price: Number(product.price),
+        image_url: product.image_url,
+        qty: parseInt(quantity)
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("cart-updated"));
+    toast.success(`${product.product_name} added to cart!`);
+  };
+
   const handleBuy = async () => {
     if (!address.trim()) {
       toast.error("Please enter delivery address");
@@ -170,17 +205,28 @@ export default function ProductByPage() {
             </div>
           </div>
 
-          <button
-            onClick={handleBuy}
-            disabled={product.stock_quantity <= 0}
-            className={`mt-8 px-8 py-4 rounded-lg font-bold text-black tracking-wide text-lg transition duration-300 w-full md:w-auto ${
-              product.stock_quantity <= 0 
-                ? "bg-zinc-700 text-zinc-400 cursor-not-allowed" 
-                : "bg-[#D4AF37] hover:bg-[#b59228] cursor-pointer"
-            }`}
-          >
-            {product.stock_quantity <= 0 ? "Out of Stock" : "Buy Now"}
-          </button>
+          <div className="mt-8 flex flex-col md:flex-row gap-4">
+            <button
+              onClick={handleAddToCart}
+              disabled={product.stock_quantity <= 0}
+              className={`px-8 py-4 rounded-lg font-bold text-[#D4AF37] border border-[#D4AF37] tracking-wide text-lg transition duration-300 w-full md:w-auto hover:bg-[#D4AF37] hover:text-black cursor-pointer ${
+                product.stock_quantity <= 0 ? "opacity-50 cursor-not-allowed" : ""
+              }`}
+            >
+              Add to Cart
+            </button>
+            <button
+              onClick={handleBuy}
+              disabled={product.stock_quantity <= 0}
+              className={`px-8 py-4 rounded-lg font-bold text-black tracking-wide text-lg transition duration-300 w-full md:w-auto ${
+                product.stock_quantity <= 0 
+                  ? "bg-zinc-700 text-zinc-400 cursor-not-allowed" 
+                  : "bg-[#D4AF37] hover:bg-[#b59228] cursor-pointer"
+              }`}
+            >
+              {product.stock_quantity <= 0 ? "Out of Stock" : "Buy Now"}
+            </button>
+          </div>
         </div>
       </div>
 
