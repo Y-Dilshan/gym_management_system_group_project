@@ -10,6 +10,7 @@ import productRoutes from "./routes/productRoutes.js";
 import trainerRoutes from "./routes/trainerRouter.js";
 import trainerApplicationRoutes from "./routes/trainerapplicationroutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -28,6 +29,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/trainers", trainerRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/bookings", bookingRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -39,3 +41,4 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+

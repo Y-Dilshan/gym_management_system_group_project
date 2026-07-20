@@ -7,6 +7,8 @@ import {
   getUserById,
   updateUser,
   deleteUser,
+  googleLogin,
+  getAdminStats,
 } from "../controllers/userController.js";
 import { auth } from "../middleware/auth.js";
 
@@ -15,6 +17,8 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/admin/create", auth, createUserByAdmin);
 router.post("/login", login);
+router.post("/google-login", googleLogin);
+router.get("/admin/stats", auth, getAdminStats);
 router.get("/", getUsers);
 router.get("/:id", getUserById);
 router.put("/:id", updateUser);
