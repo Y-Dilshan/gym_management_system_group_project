@@ -1,6 +1,5 @@
 import mysql from 'mysql2';
 import dotenv from 'dotenv';
-import { initDb } from './dbInit.js';
 
 dotenv.config();
 

@@ -8,11 +8,31 @@ const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
 export const createUserByAdmin = (req, res) => {
   const user = req.user; 
 
-  if (!isAdmin(user)) {
-    return res.status(403).json({
-      message: "Only admins can create users",
-    });
-  }
+  // if (!isAdmin(user)) {
+  //   return res.status(403).json({
+  //     message: "Only admins can create users",
+  //   });
+  // }
+  db.query("SELECT COUNT(*) AS count FROM admins", (err, result) => {
+
+    if (err) {
+        return res.status(500).json({
+            error: "Failed to verify admin"
+        });
+    }
+
+    const adminExists = result[0].count > 0;
+
+    if (adminExists) {
+
+        const user = req.user;
+
+        if (!isAdmin(user)) {
+            return res.status(403).json({
+                message: "Only admins can create users"
+            });
+        }
+    }
 
   const { full_name, email, password, phone, role, status, profile_picture } = req.body;
 
@@ -167,6 +187,7 @@ export const createUserByAdmin = (req, res) => {
       );
     }
   });
+});
 };
 
 export const register = (req, res) => {

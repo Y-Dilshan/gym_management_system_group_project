@@ -4,11 +4,11 @@ export const auth = (req, res, next) => {
 
     const header = req.headers.authorization;
 
+   
     if (!header) {
-        return res.status(401).json({
-            message: "No token provided"
-        });
-    }
+    req.user = null;
+    return next();
+}
 
     const token = header.split(" ")[1];
 
