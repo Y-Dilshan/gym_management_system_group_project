@@ -40,30 +40,57 @@ export default function ProductPage() {
     }
   };
 
+  const handleAddToCart = (product) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please sign in to add items to cart");
+      navigate("/signin");
+      return;
+    }
+
+    const cartStr = localStorage.getItem("cart") || "[]";
+    let cart = [];
+    try {
+      cart = JSON.parse(cartStr);
+    } catch (e) {
+      cart = [];
+    }
+
+    const existing = cart.find(item => item.product_id === product.product_id);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({
+        id: product.product_id,
+        product_id: product.product_id,
+        name: product.product_name,
+        price: Number(product.price),
+        image_url: product.image_url,
+        qty: 1
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    window.dispatchEvent(new Event("cart-updated"));
+    toast.success(`${product.product_name} added to cart!`);
+  };
+
   const filteredProducts =
     activeCategory === "all"
       ? products
       : products.filter((p) => p.category === activeCategory);
 
   return (
-    <div className="bg-[#050505]">
-      <div className="fixed w-full">
-        <Header />
+    <div className="bg-[#050505] min-h-screen">
+
+      <div className = "fixed w-full z-40"><Header /></div>
+    
+      <div className="flex flex-col h-[200px] justify-center items-center pt-[100px]">
+        <h1 className="font-['Roboto'] font-bold text-4xl tracking-wide text-white mb-2 leading-tight"> Premium <span className="text-yellow-500">Supplements</span> </h1>
+        <p className="text-gray-400 text-center max-w-xl"> Enhance your fitness journey with premium supplements that support performance, strength, and faster recovery. </p>
       </div>
 
-      <div className="flex flex-col h-[100px] justify-center items-center">
-        <h1 className="font-['Roboto'] font-bold text-3xl tracking-wide text-zinc-900 dark:text-white mb-2 leading-tight">
-          {" "}
-          Premium <span className="text-yellow-500">Supplements</span>{" "}
-        </h1>
-        <p className="text-white text-center">
-          {" "}
-          Enhance your fitness journey with premium supplements that support
-          performance, strength, and faster recovery.{" "}
-        </p>
-      </div>
-
-      <div className="flex h-[80px] justify-center items-center gap-3 overflow-x-auto px-4 bg-[#050505] shadow-2xl ">
+      <div className="flex h-[80px] justify-center items-center gap-3 overflow-x-auto px-4 bg-[#050505] shadow-2xl">
         {categories.map((cat) => (
           <button
             key={cat.value}
@@ -84,7 +111,6 @@ export default function ProductPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-8 lg:px-20 py-10 bg-black">
         {filteredProducts.map((product) => (
           <div
-            // key={product.id}
             key={product.product_id}
             className="
 w-full
@@ -109,8 +135,7 @@ h-[480px]
             <div className="relative h-60 bg-gradient-to-br from-zinc-900 to-zinc-800 flex items-center justify-center">
               {" "}
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_60%_40%,_#D4AF3725,_transparent_70%)]" />
-              <span className="absolute top-3 left-3 bg-[#D4AF37] text-yellow-950 text-[10px] font-medium tracking-widest uppercase px-3 py-1 rounded">
-                {/* {product.badge} */}
+              <span className="absolute top-3 left-3 bg-[#D4AF37] text-yellow-950 text-[10px] font-bold tracking-widest uppercase px-3 py-1 rounded">
                 {product.category}
               </span>
               <img

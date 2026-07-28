@@ -3,8 +3,83 @@ import db from "../config.js";
 // Create Order (for members)
 export const createOrder = (req, res) => {
   const user_id = req.user.user_id;
-  const { product_id, quantity, delivery_address } = req.body;
+  const { product_id, quantity, delivery_address, items } = req.body;
 
+  if (items && Array.isArray(items) && items.length > 0) {
+    // Bulk checkout from cart
+    const productIds = items.map(item => item.product_id);
+    const placeholders = productIds.map(() => "?").join(",");
+    const productSql = `SELECT product_id, price, stock_quantity, product_name FROM products WHERE product_id IN (${placeholders})`;
+
+    db.query(productSql, productIds, (err, products) => {
+      if (err) {
+        console.error("Error fetching products for bulk order:", err);
+        return res.status(500).json({ message: err.message });
+      }
+
+      let total = 0;
+      const productMap = {};
+      products.forEach(p => {
+        productMap[p.product_id] = p;
+      });
+
+      for (const item of items) {
+        const prod = productMap[item.product_id];
+        if (!prod) {
+          return res.status(404).json({ message: `Product ID ${item.product_id} not found` });
+        }
+        if (item.quantity > prod.stock_quantity) {
+          return res.status(400).json({ message: `Not enough stock available for ${prod.product_name}` });
+        }
+        total += prod.price * item.quantity;
+      }
+
+      // Create order
+      const orderSql = `INSERT INTO orders (member_id, total_amount, delivery_address) VALUES (?,?,?)`;
+      db.query(orderSql, [user_id, total, delivery_address], (err, orderResult) => {
+        if (err) {
+          console.error("Error creating order:", err);
+          return res.status(500).json({ message: err.message });
+        }
+
+        const orderId = orderResult.insertId;
+
+        // Insert order items
+        const itemInsertPromises = items.map(item => {
+          const prod = productMap[item.product_id];
+          const subtotal = prod.price * item.quantity;
+          return new Promise((resolve, reject) => {
+            const itemSql = `INSERT INTO order_items (order_id, product_id, quantity, unit_price, subtotal) VALUES (?,?,?,?,?)`;
+            db.query(itemSql, [orderId, item.product_id, item.quantity, prod.price, subtotal], (err) => {
+              if (err) reject(err);
+              else {
+                const updateStockSql = `UPDATE products SET stock_quantity = stock_quantity - ? WHERE product_id = ?`;
+                db.query(updateStockSql, [item.quantity, item.product_id], (err) => {
+                  if (err) reject(err);
+                  else resolve();
+                });
+              }
+            });
+          });
+        });
+
+        Promise.all(itemInsertPromises)
+          .then(() => {
+            res.json({
+              message: "Order created successfully",
+              order_id: orderId,
+            });
+          })
+          .catch(itemErr => {
+            console.error("Error inserting order items:", itemErr);
+            res.status(500).json({ message: itemErr.message });
+          });
+      });
+    });
+    return;
+  }
+
+  // Single Product fallback
   const productSql = "SELECT price, stock_quantity FROM products WHERE product_id = ?";
 
   db.query(productSql, [product_id], (err, result) => {

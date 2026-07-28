@@ -7,8 +7,20 @@ export default function Header() {
   const [showOption, setShowOption] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
 
   const navigate = useNavigate();
+
+  const updateCartCount = () => {
+    const cartStr = localStorage.getItem("cart") || "[]";
+    try {
+      const cart = JSON.parse(cartStr);
+      const count = cart.reduce((acc, item) => acc + (item.qty || 0), 0);
+      setCartCount(count);
+    } catch (e) {
+      setCartCount(0);
+    }
+  };
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -24,6 +36,14 @@ export default function Header() {
       setIsLogged(false);
       setUser(null);
     }
+
+    updateCartCount();
+    window.addEventListener("storage", updateCartCount);
+    window.addEventListener("cart-updated", updateCartCount);
+    return () => {
+      window.removeEventListener("storage", updateCartCount);
+      window.removeEventListener("cart-updated", updateCartCount);
+    };
   }, []);
 
   const handleDashboard = () => {
@@ -77,8 +97,13 @@ export default function Header() {
         <div className="flex items-center gap-8">
           
           {/* Cart */}
-          <button onClick={() => navigate("/products")} className="cursor-pointer"> 
+          <button onClick={() => navigate("/cart")} className="cursor-pointer relative"> 
             <FaCartShopping size={32} className="text-white hover:text-[#d4a017] duration-300"/> 
+            {cartCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 bg-[#d4a017] text-black text-[10px] font-extrabold w-5 h-5 rounded-full flex items-center justify-center border border-black shadow-lg">
+                {cartCount}
+              </span>
+            )}
           </button>
 
           {/* Conditional Profile / Login buttons */}
@@ -88,25 +113,35 @@ export default function Header() {
                 <FaUserCircle size={55} className="text-white hover:text-[#d4a017] duration-300"/>
               </button>
               {showOption && (
-                <div className="absolute right-0 mt-3 w-56 bg-[#1f1f1f] rounded-xl shadow-2xl border border-gray-700 overflow-hidden z-50">
+                <div className="absolute right-0 mt-3 w-64 bg-[#111] rounded-2xl shadow-2xl border border-zinc-800 overflow-hidden z-50">
                   
                   {/* User Section */}
-                  <div className="flex flex-col items-center py-4 border-b border-gray-700">
+                  <div className="flex flex-col items-center py-4 border-b border-zinc-800 bg-zinc-950">
                     <FaUserCircle size={50} className="text-[#d4a017]" />
-                    <h3 className="text-white font-semibold mt-2"> {user?.full_name || "Gym Member"} </h3>
-                    <p className="text-gray-400 text-sm"> {user?.role || "Member"} </p>
+                    <h3 className="text-white font-bold mt-2"> {user?.full_name || "Gym Member"} </h3>
+                    <p className="text-[#d4a017] text-xs font-semibold uppercase tracking-wider"> {user?.role || "Member"} </p>
                   </div>
 
                   {/* Menu */}
-                  <button onClick={handleDashboard} className="w-full py-3 text-white hover:bg-[#d4a017] hover:text-black transition-all duration-300"> My Dashboard </button>
-                  <button onClick={handleLogout} className="w-full py-3 text-red-400 hover:bg-red-500 hover:text-white transition-all duration-300"> Logout </button>
+                  <div className="flex flex-col text-sm">
+                    <button onClick={handleDashboard} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> My Dashboard </button>
+                    {user?.role?.toUpperCase() === "MEMBER" && (
+                      <>
+                        <button onClick={() => { setShowOption(false); navigate("/schedules"); }} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> Workout Schedules </button>
+                        <button onClick={() => { setShowOption(false); navigate("/dietplans"); }} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> Diet Plans </button>
+                        <button onClick={() => { setShowOption(false); navigate("/trainers"); }} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> Book a Trainer </button>
+                        <button onClick={() => { setShowOption(false); navigate("/products"); }} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> Supplements Store </button>
+                      </>
+                    )}
+                    <button onClick={handleLogout} className="w-full text-left px-5 py-3 text-red-400 hover:bg-red-600 hover:text-white transition duration-200 border-t border-zinc-800"> Logout </button>
+                  </div>
                 </div>
               )}
             </div>
           ) : (
             <div className="flex gap-4">
-              <button onClick={() => navigate("/signin")} className="bg-[#050505] text-white px-4 py-2 rounded border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"> Sign in </button>
-              <button onClick={() => navigate("/signup")} className="bg-[#d4a017] text-white px-4 py-2 rounded hover:bg-[#050505] hover:text-white transition duration-300"> Sign Up </button>
+              <button onClick={() => navigate("/signin")} className="bg-[#050505] text-white px-4 py-2 rounded border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer"> Sign in </button>
+              <button onClick={() => navigate("/signup")} className="bg-[#d4a017] text-white px-4 py-2 rounded hover:bg-[#050505] hover:text-white transition duration-300 cursor-pointer"> Sign Up </button>
             </div>
           )}
         </div>

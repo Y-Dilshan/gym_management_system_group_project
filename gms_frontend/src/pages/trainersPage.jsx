@@ -2,7 +2,7 @@ import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { FaCalendarCheck } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const categories = [
   { label: "All", value: "all" },
@@ -14,6 +14,7 @@ const categories = [
 ];
 
 export default function TrainersPage() {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState("all");
   // const [trainers] = useState(trainersData);
 
@@ -123,8 +124,11 @@ export default function TrainersPage() {
                   <span className="text-[#D4AF37]">Specialization:</span>
                   {trainer.specialization}
                 </p>
-                <button className="w-full mt-6 bg-[#D4AF37] text-black font-semibold py-2 md:py-3 rounded-xl hover:bg-[#b8962d] transition flex items-center justify-center gap-2">
-                  <FaCalendarCheck /> Book Session{" "}
+                <button 
+                  onClick={() => navigate("/sessions", { state: { trainer } })}
+                  className="w-full mt-6 bg-[#D4AF37] hover:bg-[#b8962d] text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
+                >
+                  <FaCalendarCheck /> Book Session
                 </button>
               </div>
             </div>

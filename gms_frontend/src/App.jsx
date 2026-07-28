@@ -34,6 +34,7 @@ import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import HomeLandingPage from "./pages/HomeLandingPage.jsx";
+import DietPlansPage from "./pages/dietPlansPage.jsx";
 
 function App() {
   return (
@@ -62,7 +63,11 @@ function App() {
             </ProtectedRoute>
           } />
           
-          <Route path="/dietplans" element={<h1>Diet Plans</h1>} />
+          <Route path="/dietplans" element={
+            <ProtectedRoute>
+              <DietPlansPage />
+            </ProtectedRoute>
+          } />
 
           <Route path="/profile" element={
             <ProtectedRoute>

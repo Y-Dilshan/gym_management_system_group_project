@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-hot-toast";
+import Header from "../components/header.jsx";
+import Footer from "../components/footer.jsx";
 
-export default function PaymentPage({ cart, setPage }) {
+export default function PaymentPage() {
+  const navigate = useNavigate();
+  const [cart, setCart] = useState([]);
+  const [deliveryAddress, setDeliveryAddress] = useState("");
+  const [totalAmount, setTotalAmount] = useState(0);
   const [method, setMethod] = useState("card");
   const [card, setCard] = useState({
     number: "",
@@ -9,12 +17,38 @@ export default function PaymentPage({ cart, setPage }) {
     cvv: "",
   });
   const [done, setDone] = useState(false);
+  const [confirmedOrderId, setConfirmedOrderId] = useState("");
+  const [processing, setProcessing] = useState(false);
+
+  const API = import.meta.env.VITE_BACKEND_URL;
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/signin");
+      return;
+    }
+
+    const cartStr = localStorage.getItem("cart") || "[]";
+    const address = localStorage.getItem("delivery_address") || "";
+    const total = localStorage.getItem("checkout_amount") || "0";
+
+    try {
+      const items = JSON.parse(cartStr);
+      if (items.length === 0 || !address) {
+        toast.error("Invalid checkout details");
+        navigate("/products");
+        return;
+      }
+      setCart(items);
+      setDeliveryAddress(address);
+      setTotalAmount(Number(total));
+    } catch (e) {
+      navigate("/products");
+    }
+  }, []);
 
   const setC = (k, v) => setCard((c) => ({ ...c, [k]: v }));
-
-  const total = cart
-    .reduce((s, i) => s + i.price * i.qty, 9.99)
-    .toFixed(2);
 
   const formatCard = (v) =>
     v
@@ -28,211 +62,252 @@ export default function PaymentPage({ cart, setPage }) {
     return d.length >= 3 ? d.slice(0, 2) + "/" + d.slice(2) : d;
   };
 
+  const handlePayment = async () => {
+    if (method === "card") {
+      if (!card.number || !card.name || !card.expiry || !card.cvv) {
+        toast.error("Please enter complete card details");
+        return;
+      }
+    }
+
+    setProcessing(true);
+    const token = localStorage.getItem("token");
+
+    try {
+      // Map items for backend order format
+      const orderItems = cart.map(item => ({
+        product_id: item.product_id,
+        quantity: item.qty
+      }));
+
+      const res = await fetch(`${API}/orders`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          delivery_address: deliveryAddress,
+          items: orderItems
+        })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        toast.success("Payment successful! Order placed.");
+        setConfirmedOrderId(data.order_id || `PZ-${Math.floor(Math.random() * 90000 + 10000)}`);
+        
+        // Clear Cart
+        localStorage.removeItem("cart");
+        localStorage.removeItem("delivery_address");
+        localStorage.removeItem("checkout_amount");
+        window.dispatchEvent(new Event("cart-updated"));
+
+        setDone(true);
+      } else {
+        toast.error(data.message || "Failed to process order");
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Payment failed. Please try again.");
+    } finally {
+      setProcessing(false);
+    }
+  };
+
   if (done) {
     return (
-      <div className="max-w-[540px] mx-auto my-20 p-6 text-center">
-        <div className="text-6xl mb-4">✅</div>
-
-        <h1 className="text-4xl font-bold tracking-[2px] text-yellow-500 mb-3"> ORDER CONFIRMED! </h1>
-
-        <p className="text-gray-400 mb-2"> Thank you for your purchase. A confirmation has been sent to your email. </p>
-
-        <p className="text-gray-600 text-sm mb-8"> Order #PZ-{Math.floor(Math.random() * 90000 + 10000)} </p>
-
-        <button
-          onClick={() => setPage("cart")}
-          className="px-8 py-3 bg-yellow-500 text-black rounded-lg font-bold tracking-[2px] hover:bg-yellow-400 transition" > BACK TO SHOP </button>
+      <div className="bg-[#050505] min-h-screen text-white flex flex-col justify-between">
+        <Header />
+        <div className="max-w-[540px] mx-auto my-20 p-8 text-center bg-[#111] border border-zinc-800 rounded-3xl shadow-2xl">
+          <div className="text-6xl mb-4">✅</div>
+          <h1 className="text-3xl font-bold tracking-[2px] text-[#D4AF37] mb-3"> ORDER CONFIRMED! </h1>
+          <p className="text-gray-400 mb-4"> Thank you for your purchase. Your supplements will help fuel your fitness goals. </p>
+          <p className="text-zinc-600 text-sm mb-8 font-semibold"> Order ID: #{confirmedOrderId} </p>
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="w-full py-3 bg-[#D4AF37] text-black rounded-xl font-bold tracking-[2px] hover:bg-[#b8962d] transition cursor-pointer"
+          >
+            VIEW IN DASHBOARD
+          </button>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-bold tracking-[2px] text-yellow-500 mb-8">
-        PAYMENT
-      </h1>
+    <div className="bg-[#050505] min-h-screen text-white flex flex-col">
+      <div className="fixed w-full z-40"><Header /></div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
-        {/* Left Side */}
-        <div className="flex flex-col gap-5">
-          <Section title="Payment Method">
-            {/* Payment Method Buttons */}
-            <div className="flex flex-wrap gap-3 mb-5">
-              {[
-                ["card", "💳 Credit / Debit Card"],
-                ["paypal", "🅿️ PayPal"],
-                ["wallet", "📱 Digital Wallet"],
-              ].map(([id, label]) => (
-                <button
-                  key={id}
-                  onClick={() => setMethod(id)}
-                  className={`flex-1 min-w-[180px] px-3 py-3 rounded-lg border text-sm font-semibold transition-all
-                    ${
+      <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-[120px]">
+        <h1 className="text-4xl font-bold tracking-wide mb-8">
+          PAYMENT
+        </h1>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Side: Payment Details */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            <div className="bg-[#111] border border-zinc-800 rounded-2xl p-6 space-y-6">
+              <h2 className="text-xl font-bold text-[#D4AF37]">Payment Method</h2>
+              
+              {/* Tabs */}
+              <div className="flex gap-3">
+                {[
+                  ["card", "💳 Card"],
+                  ["paypal", "🅿️ PayPal"],
+                  ["wallet", "📱 Wallet"]
+                ].map(([id, label]) => (
+                  <button
+                    key={id}
+                    onClick={() => setMethod(id)}
+                    className={`flex-1 py-3 border rounded-xl font-semibold transition cursor-pointer ${
                       method === id
-                        ? "bg-yellow-900 border-yellow-500 text-yellow-500"
-                        : "bg-zinc-800 border-zinc-700 text-gray-400 hover:border-yellow-500"
+                        ? "border-[#D4AF37] bg-yellow-500/5 text-white"
+                        : "border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:border-zinc-700"
                     }`}
-                >
-                  {label}
-                </button>
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Card Form */}
+              {method === "card" && (
+                <div className="space-y-4">
+                  {/* Card Preview */}
+                  <div className="bg-gradient-to-br from-yellow-950 to-zinc-950 border border-yellow-500/20 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-500/5 rounded-full blur-3xl"></div>
+                    <div className="flex justify-between mb-8">
+                      <span className="text-[#D4AF37] font-extrabold tracking-[2px] text-lg">
+                        POWER<span className="text-white font-medium">ZONE</span>
+                      </span>
+                      <span className="text-zinc-600 text-2xl font-bold">VISA</span>
+                    </div>
+
+                    <div className="text-xl tracking-[4px] text-zinc-300 font-mono mb-6">
+                      {card.number || "•••• •••• •••• ••••"}
+                    </div>
+
+                    <div className="flex justify-between text-xs">
+                      <div>
+                        <p className="text-zinc-600 mb-1 tracking-wider uppercase font-semibold">CARD HOLDER</p>
+                        <p className="text-zinc-300 font-bold uppercase">{card.name || "YOUR NAME"}</p>
+                      </div>
+                      <div>
+                        <p className="text-zinc-600 mb-1 tracking-wider uppercase font-semibold">EXPIRES</p>
+                        <p className="text-zinc-300 font-bold">{card.expiry || "MM/YY"}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Card Inputs */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-xs text-zinc-400 mb-1.5">Card Number</label>
+                      <input
+                        type="text"
+                        value={card.number}
+                        onChange={(e) => setC("number", formatCard(e.target.value))}
+                        placeholder="1234 5678 9012 3456"
+                        className="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl text-white outline-none focus:border-[#D4AF37]"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-zinc-400 mb-1.5">Name on Card</label>
+                      <input
+                        type="text"
+                        value={card.name}
+                        onChange={(e) => setC("name", e.target.value)}
+                        placeholder="John Doe"
+                        className="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl text-white outline-none focus:border-[#D4AF37]"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-zinc-400 mb-1.5">Expiry Date</label>
+                        <input
+                          type="text"
+                          value={card.expiry}
+                          onChange={(e) => setC("expiry", formatExpiry(e.target.value))}
+                          placeholder="MM/YY"
+                          className="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl text-white outline-none focus:border-[#D4AF37]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-zinc-400 mb-1.5">CVV</label>
+                        <input
+                          type="password"
+                          value={card.cvv}
+                          onChange={(e) => setC("cvv", e.target.value.replace(/\D/g, "").slice(0, 3))}
+                          placeholder="•••"
+                          className="w-full px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl text-white outline-none focus:border-[#D4AF37]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {method === "paypal" && (
+                <div className="text-center py-10 text-zinc-400 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+                  <p className="text-4xl mb-3">🅿️</p>
+                  <p className="text-sm">Click pay below to sign in and pay securely via PayPal.</p>
+                </div>
+              )}
+
+              {method === "wallet" && (
+                <div className="text-center py-10 text-zinc-400 bg-zinc-900/50 border border-zinc-800 rounded-2xl">
+                  <p className="text-4xl mb-3">📱</p>
+                  <p className="text-sm">Apple Pay, Google Pay, and Samsung Pay supported.</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-wrap gap-4 items-center">
+              {["🔒 SSL Secured", "🛡️ Fraud Protected", "↩️ 30-Day Returns"].map((badge) => (
+                <span key={badge} className="text-xs text-zinc-500 bg-zinc-900/50 border border-zinc-800 rounded-full px-4 py-1.5">
+                  {badge}
+                </span>
               ))}
             </div>
-
-            {/* Card Payment */}
-            {method === "card" && (
-              <div className="flex flex-col gap-4">
-                {/* Card Preview */}
-                <div className="bg-gradient-to-br from-yellow-950 to-zinc-900 border border-yellow-500/30 rounded-xl p-6">
-                  <div className="flex justify-between mb-6">
-                    <span className="text-yellow-500 font-bold tracking-[2px]">
-                      POWER
-                      <span className="text-gray-400">ZONE</span>
-                    </span>
-
-                    <span className="text-gray-500 text-xl">◉◉</span>
-                  </div>
-
-                  <div className="text-xl tracking-[4px] text-gray-300 mb-4">
-                    {card.number || "•••• •••• •••• ••••"}
-                  </div>
-
-                  <div className="flex justify-between text-sm">
-                    <div>
-                      <div className="text-[10px] text-gray-500 mb-1">
-                        CARD HOLDER
-                      </div>
-                      <div className="text-gray-300">
-                        {card.name || "YOUR NAME"}
-                      </div>
-                    </div>
-
-                    <div>
-                      <div className="text-[10px] text-gray-500 mb-1">
-                        EXPIRES
-                      </div>
-                      <div className="text-gray-300">
-                        {card.expiry || "MM/YY"}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <Field
-                  label="Card Number"
-                  value={card.number}
-                  onChange={(v) => setC("number", formatCard(v))}
-                  placeholder="1234 5678 9012 3456"
-                />
-
-                <Field
-                  label="Name on Card"
-                  value={card.name}
-                  onChange={(v) => setC("name", v)}
-                  placeholder="Alex Johnson"
-                />
-
-                <div className="grid grid-cols-2 gap-4">
-                  <Field
-                    label="Expiry Date"
-                    value={card.expiry}
-                    onChange={(v) => setC("expiry", formatExpiry(v))}
-                    placeholder="MM/YY"
-                  />
-
-                  <Field
-                    label="CVV"
-                    value={card.cvv}
-                    onChange={(v) =>
-                      setC("cvv", v.replace(/\D/g, "").slice(0, 4))
-                    }
-                    placeholder="•••"
-                    type="password"
-                  />
-                </div>
-              </div>
-            )}
-
-            {/* PayPal */}
-            {method === "paypal" && (
-              <div className="text-center py-8 px-5 text-gray-400">
-                <div className="text-5xl mb-3">🅿️</div>
-                <p>
-                  You'll be redirected to PayPal to complete your payment
-                  securely.
-                </p>
-              </div>
-            )}
-
-            {/* Wallet */}
-            {method === "wallet" && (
-              <div className="text-center py-8 px-5 text-gray-400">
-                <div className="text-5xl mb-3">📱</div>
-                <p>
-                  Apple Pay, Google Pay, and Samsung Pay supported.
-                </p>
-              </div>
-            )}
-          </Section>
-
-          {/* Security Badges */}
-          <div className="flex flex-wrap gap-4 items-center">
-            {[
-              "🔒 SSL Secured",
-              "🛡️ Fraud Protection",
-              "↩️ 30-Day Returns",
-            ].map((badge) => (
-              <span
-                key={badge}
-                className="text-xs text-gray-500 bg-zinc-800 border border-zinc-700 rounded-full px-3 py-1"
-              >
-                {badge}
-              </span>
-            ))}
           </div>
-        </div>
 
-        {/* Order Summary */}
-        <div>
-          <div className="bg-zinc-900 border border-zinc-700 rounded-xl p-6">
-            <h2 className="text-lg font-semibold text-white tracking-wide mb-4">
-              ORDER SUMMARY
-            </h2>
-
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                className="flex justify-between mb-3 text-sm"
-              >
-                <span className="text-gray-400">
-                  {item.name}
-                  <span className="text-gray-600 ml-1">
-                    ×{item.qty}
-                  </span>
-                </span>
-
-                <span className="text-gray-200">
-                  ${(item.price * item.qty).toFixed(2)}
-                </span>
+          {/* Right Side: Order Summary */}
+          <div>
+            <div className="bg-[#111] border border-zinc-800 rounded-2xl p-6 space-y-6 shadow-xl">
+              <h2 className="text-xl font-bold border-b border-zinc-800 pb-4">Order Summary</h2>
+              
+              <div className="space-y-4 max-h-[250px] overflow-y-auto pr-2">
+                {cart.map((item) => (
+                  <div key={item.product_id} className="flex justify-between items-center text-sm">
+                    <span className="text-zinc-400 line-clamp-1">{item.name} × {item.qty}</span>
+                    <span className="text-zinc-300 font-semibold shrink-0">Rs. {(item.price * item.qty).toLocaleString()}</span>
+                  </div>
+                ))}
               </div>
-            ))}
 
-            <div className="border-t border-zinc-700 pt-4 mt-2">
-              <Row label="Total due today" value={`$${total}`} big />
+              <hr className="border-zinc-800" />
+              
+              <div className="flex justify-between text-lg font-bold">
+                <span>Total Amount</span>
+                <span className="text-[#D4AF37]">Rs. {totalAmount.toLocaleString()}</span>
+              </div>
+
+              <button
+                onClick={handlePayment}
+                disabled={processing}
+                className="w-full bg-[#D4AF37] hover:bg-[#b8962d] text-black font-bold py-4 rounded-xl transition uppercase tracking-wider text-sm cursor-pointer shadow-lg shadow-yellow-500/5 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {processing ? "Processing..." : `PAY Rs. ${totalAmount.toLocaleString()}`}
+              </button>
             </div>
-
-            <button
-              onClick={() => setDone(true)}
-              className="w-full mt-5 py-3.5 bg-yellow-500 hover:bg-yellow-400 text-black rounded-lg font-bold tracking-[2px] transition"
-            >
-              PAY ${total}
-            </button>
-
-            <p className="text-xs text-gray-600 text-center mt-3">
-              By placing your order you agree to our Terms of Service
-            </p>
           </div>
         </div>
       </div>
+
+      <Footer />
     </div>
   );
 }

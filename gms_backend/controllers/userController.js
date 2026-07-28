@@ -8,11 +8,31 @@ const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
 export const createUserByAdmin = (req, res) => {
   const user = req.user; 
 
-  if (!isAdmin(user)) {
-    return res.status(403).json({
-      message: "Only admins can create users",
-    });
-  }
+  // if (!isAdmin(user)) {
+  //   return res.status(403).json({
+  //     message: "Only admins can create users",
+  //   });
+  // }
+  db.query("SELECT COUNT(*) AS count FROM admins", (err, result) => {
+
+    if (err) {
+        return res.status(500).json({
+            error: "Failed to verify admin"
+        });
+    }
+
+    const adminExists = result[0].count > 0;
+
+    if (adminExists) {
+
+        const user = req.user;
+
+        if (!isAdmin(user)) {
+            return res.status(403).json({
+                message: "Only admins can create users"
+            });
+        }
+    }
 
   const { full_name, email, password, phone, role, status, profile_picture } = req.body;
 
@@ -167,6 +187,7 @@ export const createUserByAdmin = (req, res) => {
       );
     }
   });
+});
 };
 
 export const register = (req, res) => {
@@ -378,5 +399,101 @@ export const deleteUser = (req, res) => {
     } else {
       res.status(200).json({ message: "User deleted successfully" });
     }
+  });
+};
+
+export const googleLogin = (req, res) => {
+  const { email, full_name, profile_picture } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const checkSql = "SELECT * FROM users WHERE email = ?";
+  db.query(checkSql, [email], (err, results) => {
+    if (err) {
+      console.error("Error checking Google user:", err);
+      return res.status(500).json({ error: "Google Login failed" });
+    }
+
+    if (results.length > 0) {
+      const user = results[0];
+      const token = jwt.sign(
+        { user_id: user.user_id, role: user.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "1d" }
+      );
+      const { password, ...userWithoutPassword } = user;
+      return res.status(200).json({
+        message: "Login successful",
+        token,
+        user: userWithoutPassword,
+      });
+    } else {
+      const insertSql = "INSERT INTO users (full_name, email, role, status, profile_picture) VALUES (?, ?, 'MEMBER', 'ACTIVE', ?)";
+      db.query(insertSql, [full_name || email.split("@")[0], email, profile_picture || null], (insertErr, result) => {
+        if (insertErr) {
+          console.error("Error creating Google user:", insertErr);
+          return res.status(500).json({ error: "Failed to create account" });
+        }
+
+        const newUserId = result.insertId;
+        db.query("SELECT * FROM users WHERE user_id = ?", [newUserId], (fetchErr, fetchResults) => {
+          if (fetchErr || fetchResults.length === 0) {
+            return res.status(500).json({ error: "Failed to load profile" });
+          }
+
+          const newUser = fetchResults[0];
+          const token = jwt.sign(
+            { user_id: newUser.user_id, role: newUser.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "1d" }
+          );
+          const { password, ...userWithoutPassword } = newUser;
+          return res.status(201).json({
+            message: "Registration and login successful",
+            token,
+            user: userWithoutPassword,
+          });
+        });
+      });
+    }
+  });
+};
+
+export const getAdminStats = (req, res) => {
+  const user = req.user;
+  if (!isAdmin(user)) {
+    return res.status(403).json({ message: "Forbidden" });
+  }
+
+  const queries = {
+    users: "SELECT COUNT(*) AS count FROM users",
+    products: "SELECT COUNT(*) AS count FROM products",
+    orders: "SELECT COUNT(*) AS count FROM orders",
+    revenue: "SELECT SUM(total_amount) AS revenue FROM orders WHERE order_status != 'CANCELLED'"
+  };
+
+  db.query(queries.users, (err, usersRes) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    db.query(queries.products, (err, productsRes) => {
+      if (err) return res.status(500).json({ error: err.message });
+
+      db.query(queries.orders, (err, ordersRes) => {
+        if (err) return res.status(500).json({ error: err.message });
+
+        db.query(queries.revenue, (err, revenueRes) => {
+          if (err) return res.status(500).json({ error: err.message });
+
+          return res.status(200).json({
+            totalUsers: usersRes[0].count,
+            totalProducts: productsRes[0].count,
+            totalOrders: ordersRes[0].count,
+            totalRevenue: revenueRes[0].revenue || 0
+          });
+        });
+      });
+    });
   });
 };

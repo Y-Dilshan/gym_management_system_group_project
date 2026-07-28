@@ -19,6 +19,7 @@ db.getConnection((err, connection) => {
     } else {
         console.log('Database connected successfully');
         connection.release();
+        initDb(db);
     }
 });
 
