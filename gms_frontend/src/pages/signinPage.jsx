@@ -4,10 +4,13 @@ import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { Toaster, toast } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState("");
   const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [customGoogleEmail, setCustomGoogleEmail] = useState("");
   const [customGoogleName, setCustomGoogleName] = useState("");
@@ -57,7 +60,8 @@ export default function SigninPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/login",
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/users/login",
         {
           email,
           password,
@@ -66,18 +70,21 @@ export default function SigninPage() {
 
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      
-      const role = response.data.user.role ? response.data.user.role.toUpperCase() : "MEMBER";
 
       toast.success("Login successful!");
+      console.log(response.data);
+
+      const user = response.data.user;
+      const role = (user.role || "MEMBER").toUpperCase();
 
       if (role === "ADMIN") {
-        navigate('/admin');
+        navigate("/admin");
       } else if (role === "TRAINER") {
-        navigate('/booksessions');
+        navigate("/booksessions");
       } else {
-        navigate('/');
+        navigate("/home");
       }
+
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.error || "Login failed");
@@ -116,9 +123,43 @@ export default function SigninPage() {
             Sign In
           </button>
           
-          <button onClick={() => setShowGoogleModal(true)} className="cursor-pointer border border-zinc-700 w-full h-[45px] rounded-xl bg-zinc-900 text-white flex items-center justify-center gap-2 hover:bg-[#333333] transition duration-300">
-            <FcGoogle className="text-xl" /> Sign in with Google
-          </button>
+          <div className="w-full flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const decoded = jwtDecode(credentialResponse.credential);
+                  const response = await axios.post(
+                    import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+                    {
+                      email: decoded.email,
+                      full_name: decoded.name,
+                      profile_picture: decoded.picture
+                    }
+                  );
+
+                  localStorage.setItem("token", response.data.token);
+                  localStorage.setItem("user", JSON.stringify(response.data.user));
+
+                  toast.success("Google Login successful!");
+
+                  const role = (response.data.user.role || "MEMBER").toUpperCase();
+                  if (role === "ADMIN") {
+                    navigate("/admin");
+                  } else if (role === "TRAINER") {
+                    navigate("/booksessions");
+                  } else {
+                    navigate("/home");
+                  }
+                } catch (error) {
+                  console.error(error);
+                  toast.error(error.response?.data?.error || "Google login failed");
+                }
+              }}
+              onError={() => {
+                toast.error("Google Sign-In failed");
+              }}
+            />
+          </div>
         </div>
 
         <div className="w-full text-center flex flex-col gap-2 mt-4 text-sm text-zinc-400">

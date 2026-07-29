@@ -33,6 +33,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import HomeLandingPage from "./pages/HomeLandingPage.jsx";
 import DietPlansPage from "./pages/dietPlansPage.jsx";
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
           <Route path="/checkout" element={<CheckoutPage />} />
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
+          <Route path="/home" element={<HomeLandingPage/>}/>
           
           <Route path="/product/:id" element={
             <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'TRAINER']}>

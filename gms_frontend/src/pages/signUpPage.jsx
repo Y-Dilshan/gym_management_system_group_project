@@ -4,7 +4,9 @@ import { GoArrowLeft } from "react-icons/go";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -55,7 +57,8 @@ export default function SignUpPage() {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post(import.meta.env.VITE_BACKEND_URL + "/users/register",
+      const response = await axios.post(
+        import.meta.env.VITE_BACKEND_URL + "/users/register",
         {
           full_name: fullName,
           email: email,
@@ -64,7 +67,7 @@ export default function SignUpPage() {
         },
       );
 
-      toast.success('Your account created successfully!');
+      toast.success("Your account created successfully!");
       navigate("/signin");
     } catch (error) {
       console.log(error.response?.data);
@@ -82,28 +85,52 @@ export default function SignUpPage() {
      <div
         className="flex-1 relative bg-cover bg-center overflow-hidden flex justify-center items-center p-[50px] min-h-[400px]"
         style={{
-          backgroundImage:
-            "url('sign_up page.jpg')",
-        }}>
+          backgroundImage: "url('sign_up page.jpg')",
+        }}
+      >
         <div className="absolute inset-0 bg-black/45"></div>
 
-        <button onClick={handleBack} className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover" > ← Back </button>
+        <button
+          onClick={handleBack}
+          className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover"
+        >
+          {" "}
+          ← Back{" "}
+        </button>
 
         <div className="relative z-10 w-full max-w-[520px] flex flex-col justify-center">
           {/* Logo */}
           <div className="flex items-center gap-5 mb-[50px]">
-            <img src="/logo.png" alt="Power Zone Logo" className="w-[90px] h-[90px] rounded-xl object-cover shadow-[0_0_20px_rgba(229,185,62,0.4)]" />
+            <img
+              src="/logo.png"
+              alt="Power Zone Logo"
+              className="w-[90px] h-[90px] rounded-xl object-cover shadow-[0_0_20px_rgba(229,185,62,0.4)]"
+            />
 
-            <h1 className="text-[#E5B93E] text-[56px] font-bold m-0"> Power Zone </h1>
+            <h1 className="text-[#E5B93E] text-[56px] font-bold m-0">
+              {" "}
+              Power Zone{" "}
+            </h1>
           </div>
 
           {/* Text Content */}
           <div className="flex flex-col [text-shadow:0_0_10px_rgba(229,185,62,0.5)]">
-            <p className="text-white text-[34px] font-medium m-0"> Start your journey </p>
+            <p className="text-white text-[34px] font-medium m-0">
+              {" "}
+              Start your journey{" "}
+            </p>
 
-            <h2 className="text-[#E5B93E] text-[68px] leading-[1.1] font-bold m-0"> Build the body <br /> you deserve. </h2>
+            <h2 className="text-[#E5B93E] text-[68px] leading-[1.1] font-bold m-0">
+              {" "}
+              Build the body <br /> you deserve.{" "}
+            </h2>
 
-            <p className="text-white text-[24px] leading-[1.6] mt-[10px] max-w-[500px]"> Join thousands of members who've transformed their lives with expert coaching, premium equipment, and a community that pushes you further. </p>
+            <p className="text-white text-[24px] leading-[1.6] mt-[10px] max-w-[500px]">
+              {" "}
+              Join thousands of members who've transformed their lives with
+              expert coaching, premium equipment, and a community that pushes
+              you further.{" "}
+            </p>
 
             {/* Features */}
             <div className="text-white text-[22px] leading-[2] mt-[10px]">
@@ -187,10 +214,42 @@ export default function SignUpPage() {
 
               <div className="flex text-white pt-[15px] flex-col gap-2">
                 <span className="text-center text-xs text-zinc-400">or sign up with</span>
-                <button onClick={() => setShowGoogleModal(true)} className="cursor-pointer flex items-center justify-center gap-2 border border-zinc-700 w-full h-[40px] rounded-xl bg-zinc-900 hover:bg-[#333333] transition duration-300">
-                  <FcGoogle className="text-xl" />
-                  Sign up with Google
-                </button>
+                <div className="w-full flex justify-center">
+                  <GoogleLogin
+                    onSuccess={async (credentialResponse) => {
+                      try {
+                        const decoded = jwtDecode(credentialResponse.credential);
+                        const response = await axios.post(
+                          import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+                          {
+                            email: decoded.email,
+                            full_name: decoded.name,
+                            profile_picture: decoded.picture
+                          }
+                        );
+
+                        localStorage.setItem("token", response.data.token);
+                        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+                        toast.success("Account logged in via Google!");
+                        const role = (response.data.user.role || "MEMBER").toUpperCase();
+                        if (role === "ADMIN") {
+                          navigate("/admin");
+                        } else if (role === "TRAINER") {
+                          navigate("/booksessions");
+                        } else {
+                          navigate("/home");
+                        }
+                      } catch (error) {
+                        console.error(error);
+                        toast.error(error.response?.data?.error || "Google sign up failed");
+                      }
+                    }}
+                    onError={() => {
+                      toast.error("Google Sign-Up failed");
+                    }}
+                  />
+                </div>
               </div>
             </div>
 

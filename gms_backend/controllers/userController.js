@@ -430,32 +430,46 @@ export const googleLogin = (req, res) => {
         user: userWithoutPassword,
       });
     } else {
-      const insertSql = "INSERT INTO users (full_name, email, role, status, profile_picture) VALUES (?, ?, 'MEMBER', 'ACTIVE', ?)";
-      db.query(insertSql, [full_name || email.split("@")[0], email, profile_picture || null], (insertErr, result) => {
-        if (insertErr) {
-          console.error("Error creating Google user:", insertErr);
-          return res.status(500).json({ error: "Failed to create account" });
+      // Hashing a random dummy password in case database requires NOT NULL on password field
+      const randomPassword = "GOOGLE_AUTH_" + Math.random().toString(36).slice(-8);
+      bcrypt.hash(randomPassword, SALT_ROUNDS, (hashErr, hashedPassword) => {
+        if (hashErr) {
+          console.error("Error hashing dummy password:", hashErr);
+          return res.status(500).json({ error: "Failed to process security details" });
         }
 
-        const newUserId = result.insertId;
-        db.query("SELECT * FROM users WHERE user_id = ?", [newUserId], (fetchErr, fetchResults) => {
-          if (fetchErr || fetchResults.length === 0) {
-            return res.status(500).json({ error: "Failed to load profile" });
-          }
+        const insertSql =
+          "INSERT INTO users (full_name, email, password, role, status, profile_picture) VALUES (?, ?, ?, 'MEMBER', 'ACTIVE', ?)";
+        db.query(
+          insertSql,
+          [full_name || email.split("@")[0], email, hashedPassword, profile_picture || null],
+          (insertErr, result) => {
+            if (insertErr) {
+              console.error("Error creating Google user:", insertErr);
+              return res.status(500).json({ error: "Failed to create account" });
+            }
 
-          const newUser = fetchResults[0];
-          const token = jwt.sign(
-            { user_id: newUser.user_id, role: newUser.role },
-            process.env.JWT_SECRET,
-            { expiresIn: "1d" }
-          );
-          const { password, ...userWithoutPassword } = newUser;
-          return res.status(201).json({
-            message: "Registration and login successful",
-            token,
-            user: userWithoutPassword,
-          });
-        });
+            const newUserId = result.insertId;
+            db.query("SELECT * FROM users WHERE user_id = ?", [newUserId], (fetchErr, fetchResults) => {
+              if (fetchErr || fetchResults.length === 0) {
+                return res.status(500).json({ error: "Failed to load profile" });
+              }
+
+              const newUser = fetchResults[0];
+              const token = jwt.sign(
+                { user_id: newUser.user_id, role: newUser.role },
+                process.env.JWT_SECRET,
+                { expiresIn: "1d" }
+              );
+              const { password, ...userWithoutPassword } = newUser;
+              return res.status(201).json({
+                message: "Registration and login successful",
+                token,
+                user: userWithoutPassword,
+              });
+            });
+          }
+        );
       });
     }
   });
