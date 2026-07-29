@@ -35,7 +35,7 @@ export const createOrder = (req, res) => {
       }
 
       // Create order
-      const orderSql = `INSERT INTO orders (member_id, total_amount, delivery_address) VALUES (?,?,?)`;
+      const orderSql = `INSERT INTO orders (user_id, total_amount, delivery_address) VALUES (?,?,?)`;
       db.query(orderSql, [user_id, total, delivery_address], (err, orderResult) => {
         if (err) {
           console.error("Error creating order:", err);
