@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { GoogleLogin } from '@react-oauth/google';
+import { jwtDecode } from 'jwt-decode';
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -212,10 +214,42 @@ export default function SignUpPage() {
 
               <div className="flex text-white pt-[15px] flex-col gap-2">
                 <span className="text-center text-xs text-zinc-400">or sign up with</span>
-                <button onClick={() => setShowGoogleModal(true)} className="cursor-pointer flex items-center justify-center gap-2 border border-zinc-700 w-full h-[40px] rounded-xl bg-zinc-900 hover:bg-[#333333] transition duration-300">
-                  <FcGoogle className="text-xl" />
-                  Sign up with Google
-                </button>
+                <div className="w-full flex justify-center">
+                  <GoogleLogin
+                    onSuccess={async (credentialResponse) => {
+                      try {
+                        const decoded = jwtDecode(credentialResponse.credential);
+                        const response = await axios.post(
+                          import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+                          {
+                            email: decoded.email,
+                            full_name: decoded.name,
+                            profile_picture: decoded.picture
+                          }
+                        );
+
+                        localStorage.setItem("token", response.data.token);
+                        localStorage.setItem("user", JSON.stringify(response.data.user));
+
+                        toast.success("Account logged in via Google!");
+                        const role = (response.data.user.role || "MEMBER").toUpperCase();
+                        if (role === "ADMIN") {
+                          navigate("/admin");
+                        } else if (role === "TRAINER") {
+                          navigate("/booksessions");
+                        } else {
+                          navigate("/home");
+                        }
+                      } catch (error) {
+                        console.error(error);
+                        toast.error(error.response?.data?.error || "Google sign up failed");
+                      }
+                    }}
+                    onError={() => {
+                      toast.error("Google Sign-Up failed");
+                    }}
+                  />
+                </div>
               </div>
             </div>
 

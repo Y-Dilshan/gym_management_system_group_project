@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { GoSignIn } from "react-icons/go";
 import { SlUserFollowing } from "react-icons/sl";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FiLogOut } from "react-icons/fi";
 import BMI from "../components/bmi.jsx";
 
 export default function HomePage() {
@@ -162,43 +163,39 @@ export default function HomePage() {
             </Link>
           </div>
 
-          <div className="flex gap-3 md:gap-5">
-            {/* <Link to="/signin"> <button onClick={handleSignin} className="bg-[#050505] text-white px-4 py-2 rounded w-[150px] h-[35px] flex items-center justify-center gap-2 text-[16px] border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"> Sign in <GoSignIn /> </button> </Link> */}
-            <Link to="/signin">
-              {" "}
-              <button
-                onClick={handleSignin}
-                className="bg-[#050505] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"
-              >
-                {" "}
-                Sign in <GoSignIn />{" "}
-              </button>{" "}
-            </Link>
-            <Link to="/signup">
-              {" "}
-              {/* <button
-                onClick={handleSignUp}
-                className="bg-[#d4a017] text-white px-4 py-2 rounded w-[150px] h-[35px] text-[16px] flex items-center justify-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"
-              >
-                {" "}
-                Sign Up <SlUserFollowing />{" "}
-              </button> */}
-              <button
-                onClick={handleSignUp}
-                className="
-  bg-[#d4a017] text-white
-  px-3 py-1 md:px-4 md:py-2
-  rounded
-  text-sm md:text-[16px]
-  flex items-center gap-2
-  hover:bg-[#050505]
-  hover:text-white
-  transition duration-300
-  "
-              >
-                Sign Up <SlUserFollowing />
-              </button>
-            </Link>
+          <div className="flex items-center gap-3 md:gap-5">
+            {isLogged ? (
+              <>
+                <span className="hidden sm:block text-white text-sm md:text-[16px]">
+                  Hi, {user?.full_name ? user.full_name.split(" ")[0] : "Member"}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  className="bg-[#050505] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer"
+                >
+                  Logout <FiLogOut />
+                </button>
+              </>
+            ) : (
+              <>
+                <Link to="/signin">
+                  <button
+                    onClick={handleSignin}
+                    className="bg-[#050505] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"
+                  >
+                    Sign in <GoSignIn />
+                  </button>
+                </Link>
+                <Link to="/signup">
+                  <button
+                    onClick={handleSignUp}
+                    className="bg-[#d4a017] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"
+                  >
+                    Sign Up <SlUserFollowing />
+                  </button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>

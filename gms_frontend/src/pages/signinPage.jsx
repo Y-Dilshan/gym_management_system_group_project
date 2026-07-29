@@ -123,9 +123,43 @@ export default function SigninPage() {
             Sign In
           </button>
           
-          <button onClick={() => setShowGoogleModal(true)} className="cursor-pointer border border-zinc-700 w-full h-[45px] rounded-xl bg-zinc-900 text-white flex items-center justify-center gap-2 hover:bg-[#333333] transition duration-300">
-            <FcGoogle className="text-xl" /> Sign in with Google
-          </button>
+          <div className="w-full flex justify-center">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const decoded = jwtDecode(credentialResponse.credential);
+                  const response = await axios.post(
+                    import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+                    {
+                      email: decoded.email,
+                      full_name: decoded.name,
+                      profile_picture: decoded.picture
+                    }
+                  );
+
+                  localStorage.setItem("token", response.data.token);
+                  localStorage.setItem("user", JSON.stringify(response.data.user));
+
+                  toast.success("Google Login successful!");
+
+                  const role = (response.data.user.role || "MEMBER").toUpperCase();
+                  if (role === "ADMIN") {
+                    navigate("/admin");
+                  } else if (role === "TRAINER") {
+                    navigate("/booksessions");
+                  } else {
+                    navigate("/home");
+                  }
+                } catch (error) {
+                  console.error(error);
+                  toast.error(error.response?.data?.error || "Google login failed");
+                }
+              }}
+              onError={() => {
+                toast.error("Google Sign-In failed");
+              }}
+            />
+          </div>
         </div>
 
         <div className="w-full text-center flex flex-col gap-2 mt-4 text-sm text-zinc-400">
