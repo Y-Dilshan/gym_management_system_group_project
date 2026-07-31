@@ -1,3 +1,4 @@
+import axios from "axios"; 
 import Footer from "../components/footer.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -6,12 +7,17 @@ import { SlUserFollowing } from "react-icons/sl";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import BMI from "../components/bmi.jsx";
+import { toast } from "react-hot-toast"; 
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
+  const [contactEmail, setContactEmail] = useState("");
+const [contactName, setContactName] = useState("");
+const [contactMessage, setContactMessage] = useState("");
+const [contactLoading, setContactLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -67,6 +73,32 @@ export default function HomePage() {
 
   const handleSignUp = () => {
     navigate("/signup");
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    if (!contactEmail || !contactName || !contactMessage) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setContactLoading(true);
+    try {
+      const res = await axios.post("http://localhost:3000/api/contact", {
+        name: contactName,
+        email: contactEmail,
+        message: contactMessage,
+      });
+      toast.success(res.data.message || "Your message has been sent successfully!");
+      setContactEmail("");
+      setContactName("");
+      setContactMessage("");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "Failed to send message");
+    } finally {
+      setContactLoading(false);
+    }
   };
 
   const services = [
@@ -312,40 +344,53 @@ export default function HomePage() {
       <div id="contacts" className="mt-[50px]">
         <div>
           <h1 className="text-4xl font-bold text-center text-[#d4a017] py-[50px]">
-            {" "}
-            Contact Us{" "}
+            Contact Us
           </h1>
         </div>
 
-        <div className="flex justify-center pt-[20px]">
-          <input
-            type="text"
-            placeholder="Enter your email"
-            className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px]"
-          />
-        </div>
+        <form onSubmit={handleContactSubmit} className="flex flex-col gap-5 items-center">
+          <div className="flex justify-center">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              required
+              className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+            />
+          </div>
 
-        <div className="flex justify-center pt-[20px]">
-          <input
-            type="text"
-            placeholder="Enter your name"
-            className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px]"
-          />
-        </div>
+          <div className="flex justify-center">
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              required
+              className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+            />
+          </div>
 
-        <div className="flex justify-center pt-[20px]">
-          <textarea
-            type="text"
-            placeholder="Message"
-            className="w-[800px] h-[150px] bg-white items-center justify-center rounded-[15px] pl-[20px]"
-          />
-        </div>
+          <div className="flex justify-center">
+            <textarea
+              placeholder="Message"
+              value={contactMessage}
+              onChange={(e) => setContactMessage(e.target.value)}
+              required
+              className="w-[800px] h-[150px] bg-white items-center justify-center rounded-[15px] p-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+            />
+          </div>
 
-        <div className=" flex justify-center pt-[20px]">
-          <button className="flex items-center justify-center gap-2 border text-white text-2xl border-[#d4a017] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#d4a017] hover:text-black cursor-pointer">
-            Submit{" "}
-          </button>
-        </div>
+          <div className="flex justify-center w-full">
+            <button 
+              type="submit" 
+              disabled={contactLoading}
+              className="flex items-center justify-center gap-2 border text-white text-2xl border-[#d4a017] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer font-semibold"
+            >
+              {contactLoading ? "Sending..." : "Submit"}
+            </button>
+          </div>
+        </form>
       </div>
 
       {/*BMI*/}

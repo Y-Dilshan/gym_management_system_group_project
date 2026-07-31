@@ -35,6 +35,7 @@ import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import HomeLandingPage from "./pages/HomeLandingPage.jsx";
 import DietPlansPage from "./pages/dietPlansPage.jsx";
+import AdminMessagesPage from "./pages/admin/AdminMessagesPage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
 import ResetPassword from "./pages/ResetPassword.jsx";
 
@@ -122,6 +123,7 @@ function App() {
             <Route path="/admin/add-trainer" element={<AddTrainerPage />} />
             <Route path="schedules" element={<AdminSchedules />} />
             <Route path="revenue" element={<AdminRevenuePage />} />
+            <Route path="messages" element={<AdminMessagesPage />} />
             <Route path="settings" element={<AdminSettingsPage />} />
           </Route>
 

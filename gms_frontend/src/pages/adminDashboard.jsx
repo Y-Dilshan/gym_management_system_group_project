@@ -9,6 +9,7 @@ import {
   FaShoppingCart,
   FaDollarSign,
   FaCalendarAlt,
+  FaEnvelope,
 } from "react-icons/fa";
 import { LiaThListSolid } from "react-icons/lia";
 import {
@@ -154,6 +155,7 @@ export default function AdminDashboard() {
                 <NavLink to="/admin/trainers" className={navLinkClass}> <MdSportsGymnastics size={20} /> Trainers </NavLink>
                 <NavLink to="/admin/schedules" className={navLinkClass}> <AiFillSchedule size={20} /> Schedules & Bookings </NavLink>
                 <NavLink to="/admin/trainer-applications" className={navLinkClass}> <FaUsers size={20} /> Applications </NavLink>
+                <NavLink to="/admin/messages" className={navLinkClass}> <FaEnvelope size={18} /> Messages </NavLink>
               </div>
             </div>
 
