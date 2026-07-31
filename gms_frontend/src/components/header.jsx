@@ -68,12 +68,33 @@ export default function Header() {
     navigate("/");
   };
 
+  const handleNavClick = (sectionId) => {
+    if (window.location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        if (sectionId === "top") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          const el = document.getElementById(sectionId);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 150);
+    } else {
+      if (sectionId === "top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        const el = document.getElementById(sectionId);
+        if (el) el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <nav className="bg-black h-[100px] px-[100px] shadow-2xl shadow-[#333333] border-b border-gray-700">
       <div className="flex items-center justify-between h-full">
         
         {/* Logo */}
-        <div className="flex items-center gap-4 text-white">
+        <div onClick={() => handleNavClick("top")} className="flex items-center gap-4 text-white cursor-pointer">
           <img src="/logo.png" alt="logo" className="w-[80px] h-[80px] object-contain"/>
 
           <div>
@@ -84,10 +105,10 @@ export default function Header() {
 
         {/* Navigation */}
         <div className="flex items-center gap-10 text-xl text-white">
-          <Link to="/" className="hover:text-[#d4a017] duration-300"> Home </Link>
-          <Link to="/#about" className="hover:text-[#d4a017] duration-300"> About </Link>
-          <Link to="/#our_services" className="hover:text-[#d4a017] duration-300"> Our Services </Link>
-          <Link to="/#contacts" className="hover:text-[#d4a017] duration-300"> Contacts </Link>
+          <button onClick={() => handleNavClick("top")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> Home </button>
+          <button onClick={() => handleNavClick("about")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> About </button>
+          <button onClick={() => handleNavClick("our_services")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> Our Services </button>
+          <button onClick={() => handleNavClick("contacts")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> Contacts </button>
           <Link to="/trainers" className="hover:text-[#d4a017] duration-300"> Trainers </Link>
           <Link to="/schedules" className="hover:text-[#d4a017] duration-300"> Schedules </Link>
           <Link to="/products" className="hover:text-[#d4a017] duration-300"> Supplements </Link>
@@ -125,6 +146,7 @@ export default function Header() {
                   {/* Menu */}
                   <div className="flex flex-col text-sm">
                     <button onClick={handleDashboard} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> My Dashboard </button>
+                    <button onClick={() => { setShowOption(false); navigate("/profile"); }} className="w-full text-left px-5 py-3 text-[#d4a017] hover:bg-[#d4a017] hover:text-black font-semibold transition duration-200"> ✏️ Edit Profile </button>
                     {user?.role?.toUpperCase() === "MEMBER" && (
                       <>
                         <button onClick={() => { setShowOption(false); navigate("/schedules"); }} className="w-full text-left px-5 py-3 text-white hover:bg-[#d4a017] hover:text-black transition duration-200"> Workout Schedules </button>

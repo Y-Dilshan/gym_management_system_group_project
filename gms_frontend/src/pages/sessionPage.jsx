@@ -103,6 +103,9 @@ export default function SessionsPage() {
         toast.success(`Session requested with ${trainer.full_name || trainer.name} on ${bookingDate} at ${selectedSlot}!`);
         setSelectedSlot("");
         loadBookedSlots();
+        setTimeout(() => {
+          navigate("/dashboard", { state: { activeView: "bookings" } });
+        }, 1200);
       } else {
         toast.error(data.error || "Failed to place booking");
       }

@@ -57,7 +57,7 @@ export default function SchedulesPage() {
 
   return (
     <div className="bg-[#050505] min-h-screen text-white flex flex-col">
-      <div className="fixed w-full z-40"><Header /></div>
+      <div className="fixed top-0 left-0 w-full z-50"><Header /></div>
 
       <div className="flex-1 max-w-7xl mx-auto w-full px-6 py-[120px]">
         {/* Title */}

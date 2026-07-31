@@ -1,5 +1,5 @@
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FaUserCircle, FaCalendarAlt, FaAppleAlt } from "react-icons/fa";
 import { FaCartShopping, FaDumbbell } from "react-icons/fa6";
@@ -7,12 +7,13 @@ import gymImage from "../assets/hero.png";
 
 export default function MemberDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [loadingBookings, setLoadingBookings] = useState(true);
-  const [activeView, setActiveView] = useState("dashboard"); // dashboard, bookings, orders
+  const [activeView, setActiveView] = useState(location.state?.activeView || "dashboard"); // dashboard, bookings, orders
 
   // Reschedule Form State
   const [rescheduleId, setRescheduleId] = useState(null);
@@ -41,7 +42,11 @@ export default function MemberDashboard() {
     } else {
       navigate("/signin");
     }
-  }, []);
+
+    if (location.state?.activeView) {
+      setActiveView(location.state.activeView);
+    }
+  }, [location]);
 
   const loadUserDetails = async (userId) => {
     try {
