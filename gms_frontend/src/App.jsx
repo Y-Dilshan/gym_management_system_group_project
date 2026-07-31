@@ -35,6 +35,9 @@ import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import HomeLandingPage from "./pages/HomeLandingPage.jsx";
 import DietPlansPage from "./pages/dietPlansPage.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
+
 
 function App() {
   return (
@@ -56,6 +59,9 @@ function App() {
           <Route path="/payment" element={<PaymentPage />} />
           <Route path="/schedules" element={<SchedulesPage />} />
           <Route path="/home" element={<HomeLandingPage/>}/>
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+
           
           <Route path="/product/:id" element={
             <ProtectedRoute allowedRoles={['MEMBER', 'ADMIN', 'TRAINER']}>
