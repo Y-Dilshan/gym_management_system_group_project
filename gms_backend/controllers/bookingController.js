@@ -48,13 +48,13 @@ export const getBookings = (req, res) => {
   }
 
   const sql = `
-    SELECT b.booking_id, b.booking_date, b.time_slot, b.status, b.created_at,
-           u_m.full_name AS member_name, u_m.email AS member_email, u_m.phone AS member_phone,
-           u_t.full_name AS trainer_name, t.specialization AS trainer_specialization
+    SELECT b.booking_id, b.booking_date, b.time_slot, b.status, b.booking_date AS created_at,
+           COALESCE(u_m.full_name, 'Member') AS member_name, u_m.email AS member_email, u_m.phone AS member_phone,
+           COALESCE(u_t.full_name, 'Trainer') AS trainer_name, COALESCE(t.specialization, 'General Fitness') AS trainer_specialization
     FROM bookings b
-    JOIN users u_m ON b.member_id = u_m.user_id
-    JOIN trainers t ON b.trainer_id = t.trainer_id
-    JOIN users u_t ON t.user_id = u_t.user_id
+    LEFT JOIN users u_m ON b.member_id = u_m.user_id
+    LEFT JOIN trainers t ON b.trainer_id = t.trainer_id
+    LEFT JOIN users u_t ON t.user_id = u_t.user_id
     ORDER BY b.booking_date DESC, b.time_slot ASC
   `;
 
@@ -72,11 +72,13 @@ export const getMyBookings = (req, res) => {
   const member_id = req.user.user_id;
 
   const sql = `
-    SELECT b.booking_id, b.booking_date, b.time_slot, b.status, b.created_at, b.trainer_id,
-           u_t.full_name AS trainer_name, t.specialization AS trainer_specialization, u_t.profile_picture
+    SELECT b.booking_id, b.booking_date, b.time_slot, b.status, b.booking_date AS created_at, b.trainer_id,
+           COALESCE(u_t.full_name, 'Trainer') AS trainer_name,
+           COALESCE(t.specialization, 'General Fitness') AS trainer_specialization,
+           u_t.profile_picture
     FROM bookings b
-    JOIN trainers t ON b.trainer_id = t.trainer_id
-    JOIN users u_t ON t.user_id = u_t.user_id
+    LEFT JOIN trainers t ON b.trainer_id = t.trainer_id
+    LEFT JOIN users u_t ON t.user_id = u_t.user_id
     WHERE b.member_id = ?
     ORDER BY b.booking_date DESC, b.time_slot ASC
   `;
@@ -108,10 +110,10 @@ export const getTrainerBookings = (req, res) => {
     const trainer_id = results[0].trainer_id;
 
     const sql = `
-      SELECT b.booking_id, b.booking_date, b.time_slot, b.status, b.created_at,
-             u_m.full_name AS member_name, u_m.email AS member_email, u_m.phone AS member_phone
+      SELECT b.booking_id, b.booking_date, b.time_slot, b.status, b.booking_date AS created_at,
+             COALESCE(u_m.full_name, 'Member') AS member_name, u_m.email AS member_email, u_m.phone AS member_phone
       FROM bookings b
-      JOIN users u_m ON b.member_id = u_m.user_id
+      LEFT JOIN users u_m ON b.member_id = u_m.user_id
       WHERE b.trainer_id = ?
       ORDER BY b.booking_date DESC, b.time_slot ASC
     `;
@@ -121,7 +123,7 @@ export const getTrainerBookings = (req, res) => {
         console.error("Error fetching trainer bookings:", err);
         return res.status(500).json({ error: "Failed to fetch trainer bookings" });
       }
-      res.status(200).json({ bookings: bookingsRes });
+      res.status(200).json({ bookings: bookingsRes, trainer_id });
     });
   });
 };
@@ -159,10 +161,8 @@ export const updateBookingStatus = (req, res) => {
     if (role === "ADMIN") {
       allowed = true;
     } else if (role === "TRAINER" && (normalizedStatus === "ACCEPTED" || normalizedStatus === "REJECTED")) {
-      // Must belong to this trainer
-      allowed = true; // Handled by trainer endpoint mapping or simpler user check
+      allowed = true;
     } else if (role === "MEMBER" && normalizedStatus === "CANCELLED") {
-      // Must belong to this member
       if (booking.member_id === user_id) {
         allowed = true;
       }
@@ -178,10 +178,17 @@ export const updateBookingStatus = (req, res) => {
         console.error("Error updating booking status:", updateErr);
         return res.status(500).json({ error: "Failed to update booking status" });
       }
+
+      // If accepted by trainer, automatically assign member to this trainer in users table!
+      if (normalizedStatus === "ACCEPTED") {
+        db.query("UPDATE users SET trainer_id = ? WHERE user_id = ?", [booking.trainer_id, booking.member_id]);
+      }
+
       res.status(200).json({ message: `Booking status updated to ${normalizedStatus} successfully` });
     });
   });
 };
+
 
 // 6. Reschedule / Update Booking details (Member only)
 export const updateBooking = (req, res) => {
