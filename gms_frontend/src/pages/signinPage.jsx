@@ -169,7 +169,7 @@ export default function SigninPage() {
           </div>
           <div>
             Forgot Password?{" "}
-            <button className="cursor-pointer text-[#D4AF37] hover:underline"> Reset here </button>
+            <button onClick={() => navigate("/forgot-password")} className="cursor-pointer text-[#D4AF37] hover:underline"> Reset here </button>
           </div>
         </div>
       </div>
