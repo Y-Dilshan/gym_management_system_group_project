@@ -1,6 +1,10 @@
 import db from "../config.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
+
+
 
 const SALT_ROUNDS = 10;
 const isAdmin = (user) => user && user.role.toLowerCase() === "admin";
@@ -507,6 +511,113 @@ export const getAdminStats = (req, res) => {
             totalRevenue: revenueRes[0].revenue || 0
           });
         });
+      });
+    });
+  });
+};
+// 1. FORGOT PASSWORD - Send Reset Email
+export const forgotPassword = (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  // Check if user exists
+  db.query("SELECT * FROM users WHERE email = ?", [email], (err, users) => {
+    if (err) {
+      console.error("Error finding user:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (users.length === 0) {
+      return res.status(404).json({ error: "User with this email does not exist." });
+    }
+
+    // Generate secure token & expiry (15 minutes)
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
+
+    // Update user with token and expiry
+    const updateSql = "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?";
+    db.query(updateSql, [resetToken, resetTokenExpiry, email], async (updateErr) => {
+      if (updateErr) {
+        console.error("Error updating reset token:", updateErr);
+        return res.status(500).json({ error: "Failed to save reset token" });
+      }
+
+      // Configure Email Transporter
+      const transporter = nodemailer.createTransport({
+        service: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Password Reset Request",
+        html: `
+          <h3>Password Reset Request</h3>
+          <p>You requested to reset your password. Click the link below to set a new password:</p>
+          <a href="${resetUrl}" target="_blank" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+          <p>This link is valid for 15 minutes.</p>
+        `,
+      };
+
+      try {
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "Password reset link sent to your email!" });
+      } catch (mailErr) {
+        console.error("Error sending email:", mailErr);
+        res.status(500).json({ error: "Failed to send reset email." });
+      }
+    });
+  });
+};
+
+// 2. RESET PASSWORD - Verify Token & Update Password
+export const resetPassword = (req, res) => {
+  const { token, newPassword } = req.body;
+
+  if (!token || !newPassword) {
+    return res.status(400).json({ error: "Token and new password are required" });
+  }
+
+  // Find user with valid non-expired token
+  const findSql = "SELECT * FROM users WHERE reset_token = ? AND reset_token_expiry > NOW()";
+  db.query(findSql, [token], (err, users) => {
+    if (err) {
+      console.error("Error checking token:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+
+    if (users.length === 0) {
+      return res.status(400).json({ error: "Invalid or expired password reset token." });
+    }
+
+    const user = users[0];
+
+    // Hash the new password
+    bcrypt.hash(newPassword, SALT_ROUNDS, (hashErr, hashedPassword) => {
+      if (hashErr) {
+        console.error("Error hashing password:", hashErr);
+        return res.status(500).json({ error: "Failed to hash password" });
+      }
+
+      // Update password and clear token
+      const updateSql = "UPDATE users SET password = ?, reset_token = NULL, reset_token_expiry = NULL WHERE user_id = ?";
+      db.query(updateSql, [hashedPassword, user.user_id], (updateErr) => {
+        if (updateErr) {
+          console.error("Error updating password:", updateErr);
+          return res.status(500).json({ error: "Failed to reset password" });
+        }
+
+        res.status(200).json({ message: "Password successfully updated! You can now log in." });
       });
     });
   });
