@@ -12,37 +12,45 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const userString = localStorage.getItem("user");
-    if (userString) {
-      try {
-        const parsed = JSON.parse(userString);
-        setUser(parsed);
-        setFullName(parsed.full_name || "");
-        setEmail(parsed.email || "");
-        setPhone(parsed.phone || "");
-      } catch (e) {
-        console.error(e);
-        // Corrupted/unparsable user data — clear it and send the user
-        // back to sign in instead of leaving `user` null forever.
-        localStorage.removeItem("user");
-        navigate("/signin");
-      }
-    } else {
+    
+    if (!token || !userString) {
       navigate("/signin");
+      return;
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    try {
+      const parsed = JSON.parse(userString);
+      setUser(parsed);
+      setFullName(parsed.full_name || "");
+      setEmail(parsed.email || "");
+      setPhone(parsed.phone || "");
+    } catch (e) {
+      console.error(e);
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/signin");
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
 
   const handleSave = async (e) => {
     e.preventDefault();
 
-    // Guard against submitting before `user` has loaded (or if it was
-    // never successfully loaded) — previously this would crash on
-    // `user.role` / `user.user_id` below.
+    // API URL validation
+    if (!API) {
+      toast.error("API URL not configured");
+      return;
+    }
+
+    // User validation
     if (!user) {
       toast.error("Your session has expired. Please sign in again.");
       navigate("/signin");
@@ -56,6 +64,13 @@ export default function ProfilePage() {
 
     if (!trimmedName || !trimmedEmail) {
       toast.error("Name and Email are required");
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
@@ -78,7 +93,15 @@ export default function ProfilePage() {
         payload.password = trimmedPassword;
       }
 
-      const res = await fetch(`${API}/users/${user.user_id}`, {
+      // Get user ID with fallback
+      const userId = user.user_id || user.id || user._id;
+      if (!userId) {
+        toast.error("User ID not found. Please sign in again.");
+        navigate("/signin");
+        return;
+      }
+
+      const res = await fetch(`${API}/users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -100,14 +123,12 @@ export default function ProfilePage() {
         setUser(updatedUser);
         setPassword("");
       } else {
-        // The error response might not be JSON (e.g. a proxy/500 HTML
-        // page), so parse it defensively instead of letting it throw.
         let message = "Failed to update profile";
         try {
           const data = await res.json();
           message = data.error || message;
         } catch {
-          // ignore parse failure, fall back to default message
+          // ignore parse failure
         }
         toast.error(message);
       }
@@ -117,6 +138,25 @@ export default function ProfilePage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="bg-[#050505] min-h-screen text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#D4AF37] mx-auto"></div>
+          <p className="mt-4 text-zinc-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Get dashboard route based on role
+  const getDashboardRoute = () => {
+    if (user?.role === 'ADMIN') return "/admin";
+    if (user?.role === 'TRAINER') return "/booksessions";
+    return "/dashboard";
   };
 
   return (
@@ -132,7 +172,7 @@ export default function ProfilePage() {
           {/* Avatar and Info Header */}
           <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-zinc-800">
             <div className="w-24 h-24 rounded-full bg-[#D4AF37] text-black font-extrabold text-3xl flex items-center justify-center border-4 border-yellow-500/20">
-              {fullName?.charAt(0) || "M"}
+              {fullName?.charAt(0) || user?.full_name?.charAt(0) || "U"}
             </div>
             <div className="text-center sm:text-left">
               <h2 className="text-2xl font-bold">{fullName || "Gym Member"}</h2>
@@ -195,7 +235,7 @@ export default function ProfilePage() {
             <div className="flex justify-end pt-4 gap-4">
               <button
                 type="button"
-                onClick={() => navigate("/dashboard")}
+                onClick={() => navigate(getDashboardRoute())}
                 className="px-6 py-3 border border-zinc-800 hover:bg-zinc-800 rounded-xl text-sm font-semibold transition"
               >
                 Back to Dashboard
