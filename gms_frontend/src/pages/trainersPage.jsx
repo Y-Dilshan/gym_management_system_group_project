@@ -23,6 +23,22 @@ export default function TrainersPage() {
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
+  const getTrainerImage = (path) => {
+    if (!path) return "/trainer1.jpg";
+
+    if (
+      path.startsWith("data:") ||
+      path.startsWith("http://") ||
+      path.startsWith("https://")
+    ) {
+      return path;
+    }
+
+    const baseUrl = API.replace(/\/api\/?$/, "");
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    return `${baseUrl}${cleanPath}`;
+  };
+
   useEffect(() => {
     loadTrainers();
   }, []);
@@ -92,13 +108,12 @@ export default function TrainersPage() {
               className="bg-zinc-900 rounded-2xl overflow-hidden border border-[#D4AF37]/20"
             >
               <div className="h-64 md:h-72 lg:h-80 overflow-hidden">
-                {/* <img src={trainer.profile_picture} alt={trainer.full_name} className="w-full h-full object-cover"/> */}
                 <img
-                  src={
-                    trainer.profile_picture
-                      ? `${API}${trainer.profile_picture}`
-                      : "/trainer.png"
-                  }
+                  src={getTrainerImage(trainer.profile_picture)}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "/trainer1.jpg";
+                  }}
                   alt={trainer.full_name}
                   className="w-full h-full object-cover"
                 />
