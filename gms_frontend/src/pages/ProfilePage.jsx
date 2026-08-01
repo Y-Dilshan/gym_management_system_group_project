@@ -10,16 +10,17 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [profilePicture, setProfilePicture] = useState("");
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
-  useEffect(() => {
+    useEffect(() => {
     const token = localStorage.getItem("token");
     const userString = localStorage.getItem("user");
-    
+
     if (!token || !userString) {
       navigate("/signin");
       return;
@@ -31,6 +32,7 @@ export default function ProfilePage() {
       setFullName(parsed.full_name || "");
       setEmail(parsed.email || "");
       setPhone(parsed.phone || "");
+      setProfilePicture(parsed.profile_picture || "");
     } catch (e) {
       console.error(e);
       localStorage.removeItem("user");
@@ -40,6 +42,23 @@ export default function ProfilePage() {
       setLoading(false);
     }
   }, [navigate]);
+
+
+  // Handle image file selection from local device
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size must be under 5MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicture(reader.result); // Base64 Data URL
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -84,9 +103,10 @@ export default function ProfilePage() {
         phone: trimmedPhone,
         role: user.role,
         status: user.status,
-        profile_picture:
-          user.profile_picture ||
-          `https://api.dicebear.com/7.x/adventurer/svg?seed=${trimmedEmail}`
+profile_picture:
+  profilePicture.trim() ||
+  user.profile_picture ||
+  `https://api.dicebear.com/7.x/adventurer/svg?seed=${trimmedEmail}`
       };
 
       if (trimmedPassword) {
@@ -140,6 +160,15 @@ export default function ProfilePage() {
     }
   };
 
+  const getAvatarSrc = (path) => {
+    if (!path) return null;
+    if (path.startsWith("data:") || path.startsWith("http://") || path.startsWith("https://")) {
+      return path;
+    }
+    const baseUrl = API.replace(/\/api\/?$/, "");
+    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    return `${baseUrl}${cleanPath}`;
+  }
   // Loading state
   if (loading) {
     return (
@@ -171,9 +200,21 @@ export default function ProfilePage() {
         <div className="bg-[#111] border border-zinc-800 rounded-3xl p-8 space-y-6 shadow-2xl">
           {/* Avatar and Info Header */}
           <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-zinc-800">
-            <div className="w-24 h-24 rounded-full bg-[#D4AF37] text-black font-extrabold text-3xl flex items-center justify-center border-4 border-yellow-500/20">
-              {fullName?.charAt(0) || user?.full_name?.charAt(0) || "U"}
-            </div>
+            {profilePicture ? (
+              <img
+                src={getAvatarSrc(profilePicture)}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = "/trainer1.jpg";
+                }}
+                alt={fullName}
+                className="w-24 h-24 rounded-full object-cover border-4 border-[#D4AF37]/30 shadow-lg"
+              />
+            ) : (
+              <div className="w-24 h-24 rounded-full bg-[#D4AF37] text-black font-extrabold text-3xl flex items-center justify-center border-4 border-yellow-500/20">
+                {fullName?.charAt(0) || "M"}
+              </div>
+            )}
             <div className="text-center sm:text-left">
               <h2 className="text-2xl font-bold">{fullName || "Gym Member"}</h2>
               <p className="text-xs text-zinc-400 mt-1 uppercase font-semibold tracking-wider text-[#D4AF37]">
@@ -229,6 +270,38 @@ export default function ProfilePage() {
                   placeholder="••••••••"
                   className="w-full px-4 py-3 bg-zinc-950 border border-zinc-800 rounded-xl text-white outline-none focus:border-[#D4AF37]"
                 />
+              </div>
+
+              {/* Upload Profile Picture from Device */}
+              <div className="md:col-span-2 space-y-3">
+                <label className="block text-xs text-zinc-400 uppercase font-bold tracking-wider">
+                  Profile Picture
+                </label>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Option A: Select File From Device */}
+                  <div className="bg-zinc-950 border border-zinc-800 p-4 rounded-xl">
+                    <span className="block text-xs text-zinc-400 mb-2 font-semibold">Choose File from Device</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-[#D4AF37] file:text-black hover:file:bg-[#b8962d] cursor-pointer"
+                    />
+                  </div>
+
+                  {/* Option B: Enter Image URL */}
+                  <div className="bg-zinc-950 border border-zinc-800 p-4 rounded-xl">
+                    <span className="block text-xs text-zinc-400 mb-2 font-semibold">Or Paste Image URL</span>
+                    <input
+                      type="text"
+                      value={profilePicture}
+                      onChange={(e) => setProfilePicture(e.target.value)}
+                      placeholder="https://example.com/photo.jpg"
+                      className="w-full px-3 py-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-xs text-white outline-none focus:border-[#D4AF37]"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
 

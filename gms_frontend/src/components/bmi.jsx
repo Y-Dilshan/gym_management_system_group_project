@@ -114,7 +114,16 @@ export default function BMI() {
               <label className="text-xs text-gray-400 font-medium uppercase tracking-wider">Age</label>
               <span className="text-sm font-semibold text-white">{age} yrs</span>
             </div>
-            <input type="range" min="10" max="80" step="1" value={age} onChange={(e) => setAge(Number(e.target.value))} className="w-full h-1.5 rounded-full appearance-none cursor-pointer" style={{ accentColor: GOLD }}/>
+<input
+  type="range"
+  min="10"
+  max="80"
+  step="1"
+  value={age}
+  onChange={(e) => setAge(Number(e.target.value))}
+  className="w-full h-1.5 bg-zinc-700 rounded-full appearance-none cursor-pointer"
+  style={{ accentColor: GOLD }}
+/>
           </div>
 
           {/* Gender + Activity */}
