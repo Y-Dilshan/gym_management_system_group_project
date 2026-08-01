@@ -10,7 +10,7 @@ import AdminDashboard from "./pages/adminDashboard.jsx";
 import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
 
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
-import ApplyAsTrainer from "./pages/ApplyAsTrainer.jsx";
+import ApplyAsTrainer from "./pages/ApplyasTrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
 import AdminProductPage from "./pages/admin/adminProductPage.jsx";
@@ -29,7 +29,7 @@ import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import AdminRevenuePage from "./pages/admin/adminReveuePage.jsx";
 import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
+import ProfilePage from "./pages/profilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
