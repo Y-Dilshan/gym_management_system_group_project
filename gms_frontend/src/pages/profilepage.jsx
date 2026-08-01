@@ -26,15 +26,35 @@ export default function ProfilePage() {
         setPhone(parsed.phone || "");
       } catch (e) {
         console.error(e);
+        // Corrupted/unparsable user data — clear it and send the user
+        // back to sign in instead of leaving `user` null forever.
+        localStorage.removeItem("user");
+        navigate("/signin");
       }
     } else {
       navigate("/signin");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim()) {
+
+    // Guard against submitting before `user` has loaded (or if it was
+    // never successfully loaded) — previously this would crash on
+    // `user.role` / `user.user_id` below.
+    if (!user) {
+      toast.error("Your session has expired. Please sign in again.");
+      navigate("/signin");
+      return;
+    }
+
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail) {
       toast.error("Name and Email are required");
       return;
     }
@@ -44,16 +64,18 @@ export default function ProfilePage() {
 
     try {
       const payload = {
-        full_name: fullName,
-        email: email,
-        phone: phone,
+        full_name: trimmedName,
+        email: trimmedEmail,
+        phone: trimmedPhone,
         role: user.role,
         status: user.status,
-        profile_picture: user.profile_picture || `https://api.dicebear.com/7.x/adventurer/svg?seed=${email}`
+        profile_picture:
+          user.profile_picture ||
+          `https://api.dicebear.com/7.x/adventurer/svg?seed=${trimmedEmail}`
       };
 
-      if (password.trim()) {
-        payload.password = password;
+      if (trimmedPassword) {
+        payload.password = trimmedPassword;
       }
 
       const res = await fetch(`${API}/users/${user.user_id}`, {
@@ -69,17 +91,25 @@ export default function ProfilePage() {
         toast.success("Profile updated successfully!");
         const updatedUser = {
           ...user,
-          full_name: fullName,
-          email: email,
-          phone: phone,
+          full_name: trimmedName,
+          email: trimmedEmail,
+          phone: trimmedPhone,
           profile_picture: payload.profile_picture
         };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
         setPassword("");
       } else {
-        const data = await res.json();
-        toast.error(data.error || "Failed to update profile");
+        // The error response might not be JSON (e.g. a proxy/500 HTML
+        // page), so parse it defensively instead of letting it throw.
+        let message = "Failed to update profile";
+        try {
+          const data = await res.json();
+          message = data.error || message;
+        } catch {
+          // ignore parse failure, fall back to default message
+        }
+        toast.error(message);
       }
     } catch (err) {
       console.error(err);
