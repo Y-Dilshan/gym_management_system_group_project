@@ -10,13 +10,15 @@ export default function AdminMessagesPage() {
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
 
+  const API = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     fetchMessages();
   }, []);
 
   const fetchMessages = () => {
     axios
-      .get("http://localhost:3000/api/contact")
+      .get(`${API}/contact`)
       .then((res) => {
         setMessages(res.data);
         setLoading(false);
@@ -35,7 +37,7 @@ export default function AdminMessagesPage() {
 
     setSending(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/contact/reply", {
+      const res = await axios.post(`${API}/contact/reply`, {
         email: msg.email,
         name: msg.name,
         originalMessage: msg.message,

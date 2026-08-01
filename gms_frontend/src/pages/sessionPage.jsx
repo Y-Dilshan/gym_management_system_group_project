@@ -126,7 +126,7 @@ export default function SessionsPage() {
           <div className="bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 mb-10">
             <div className="md:flex">
               <img
-                src={trainer.profile_picture ? `http://localhost:3000${trainer.profile_picture}` : "/trainer.png"}
+                src={trainer.profile_picture ? `${(API || "").replace(/\/api\/?$/, "")}${trainer.profile_picture}` : "/trainer.png"}
                 alt={trainer.full_name || trainer.name}
                 className="w-full md:w-80 h-80 object-cover"
               />
