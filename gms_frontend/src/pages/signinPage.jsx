@@ -92,8 +92,12 @@ export default function SigninPage() {
   };
 
   return (
-    <div className="bg-[url('login_page.jpg')] w-full h-screen flex justify-center items-center object-cover">
-      <div className="w-[450px] h-[550px] bg-[#1a1a1a]/95 border border-zinc-800 backdrop-blur-md shadow-2xl pt-10 relative rounded-2xl p-8 flex flex-col justify-between">
+    <div
+      className="w-full min-h-screen bg-cover bg-center flex justify-center items-center p-4 relative"
+      style={{ backgroundImage: "url('/login_page.jpg')" }}
+    >
+      <div className="absolute inset-0 bg-black/60 z-0"></div>
+      <div className="relative z-10 w-full max-w-md bg-[#1a1a1a]/95 border border-zinc-800 backdrop-blur-md shadow-2xl rounded-2xl p-6 sm:p-8 flex flex-col justify-between my-8 min-h-[520px]">
         
         {/* Back Button */}
         <button onClick={handleBack} className="flex items-center gap-2 text-zinc-400 hover:text-[#D4AF37] transition duration-300 absolute left-8 top-8 cursor-pointer">

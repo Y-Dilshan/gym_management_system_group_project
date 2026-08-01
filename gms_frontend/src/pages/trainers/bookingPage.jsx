@@ -224,20 +224,20 @@ export default function TrainerDashboardPage() {
       <Header />
 
       {/* Hero */}
-      <div className="text-center py-12 bg-zinc-950 border-b border-zinc-800">
-        <h1 className="text-5xl font-bold">
+      <div className="text-center py-8 md:py-12 bg-zinc-950 border-b border-zinc-800 px-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
           Trainer <span className="text-[#D4AF37]">Dashboard</span>
         </h1>
-        <p className="text-gray-400 mt-4">
+        <p className="text-zinc-400 text-sm md:text-base mt-3">
           Manage your assigned members, bookings, and profile details
         </p>
       </div>
 
       {/* Tabs Menu */}
-      <div className="max-w-7xl mx-auto w-full px-6 mt-8 flex justify-center gap-6">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 mt-6 md:mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-3 md:gap-6">
         <button
           onClick={() => setActiveTab("bookings")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer relative ${
+          className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition cursor-pointer text-sm md:text-base relative ${
             activeTab === "bookings"
               ? "bg-[#D4AF37] text-black"
               : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
@@ -253,7 +253,7 @@ export default function TrainerDashboardPage() {
 
         <button
           onClick={() => setActiveTab("members")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer ${
+          className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition cursor-pointer text-sm md:text-base ${
             activeTab === "members"
               ? "bg-[#D4AF37] text-black"
               : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
@@ -264,7 +264,7 @@ export default function TrainerDashboardPage() {
 
         <button
           onClick={() => setActiveTab("profile")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer ${
+          className={`flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-semibold transition cursor-pointer text-sm md:text-base ${
             activeTab === "profile"
               ? "bg-[#D4AF37] text-black"
               : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"

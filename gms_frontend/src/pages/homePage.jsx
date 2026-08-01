@@ -159,103 +159,107 @@ const [contactLoading, setContactLoading] = useState(false);
   };
 
   return (
-    <div className=" bg-[#050505]">
+    <div className="bg-[#050505] min-h-screen">
       {/* navbar */}
       <div className="fixed top-0 left-0 w-full z-50">
         <Header />
       </div>
 
       {/*home*/}
-      <div className="w-full h-screen bg-[url('home.jpg')] bg-cover bg-center pt-[50px]">
-        <div className="w-full mt-50">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#d4a017] px-4">
-            {" "}
-            Unleash Your Potential{" "}
+      <div
+        className="w-full min-h-screen bg-cover bg-center flex items-center justify-center pt-[100px] pb-16 relative"
+        style={{ backgroundImage: "url('/home.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/60 z-0"></div>
+        <div className="relative z-10 w-full max-w-4xl px-4 text-center">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#d4a017] tracking-tight leading-tight">
+            Unleash Your Potential
           </h1>
-          <p className="text-base md:text-xl lg:text-2xl text-center text-white mt-6 px-6 max-w-[800px] mx-auto">
-            {" "}
+          <p className="text-sm sm:text-lg md:text-2xl text-zinc-200 mt-6 px-2 max-w-3xl mx-auto leading-relaxed">
             Join the ultimate fitness experience designed to build strength,
             improve endurance, and boost your confidence through expert guidance
-            and modern training methods.{" "}
+            and modern training methods.
           </p>
-          <div className="flex items-center justify-center py-[50px]">
+          <div className="flex items-center justify-center mt-10">
             <button
               onClick={handleGetStarted}
-              className="bg-[#d4a017] text-black  rounded-3xl w-[180px] md:w-[220px] h-[50px] text-xl md:text-3xl flex items-center justify-center gap-2 text-[30px] border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold "
+              className="bg-[#d4a017] text-black rounded-3xl px-8 py-3.5 text-lg md:text-2xl flex items-center justify-center gap-2 border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold shadow-lg cursor-pointer"
             >
-              {" "}
-              Get Started{" "}
+              Get Started
             </button>
           </div>
         </div>
       </div>
 
       {/*about*/}
-      <div id="about">
-        <h1 className="text-4xl font-bold text-center text-[#d4a017] py-[50px]">
+      <div id="about" className="py-16 px-4 md:px-8 max-w-6xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#d4a017] mb-10">
           About Us
         </h1>
-        <div className="flex flex-col lg:flex-row items-center justify-center mt-[30px] gap-10 px-6">
-          <p className="text-center text-lg text-white mt-4 px-4 max-w-[800px] ml-[100px]">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
+          <p className="text-center lg:text-left text-base md:text-lg text-zinc-300 leading-relaxed max-w-xl">
             Welcome to our fitness gym, where we help people of all levels
             achieve their health and fitness goals. With modern equipment,
             expert trainers, and personalized programs, we create a supportive
             and motivating environment for everyone. We believe fitness is more
-            than just exercise it’s about building confidence, discipline, and a
+            than just exercise — it’s about building confidence, discipline, and a
             healthier lifestyle. Join us and start your journey toward a
             stronger, better you.
           </p>
           <img
-            src="about.jpg "
+            src="/about.jpg"
             alt="about us"
-            className="w-[480px] h-[280px] object-cover mt-[30px] mr-[100px]"
+            className="w-full max-w-md lg:w-[480px] h-[280px] md:h-[320px] object-cover rounded-2xl shadow-xl border border-zinc-800"
           />
         </div>
       </div>
 
       {/* Our Services */}
 
-      <div id="our_services">
-        <h1 className="text-4xl font-bold text-center text-[#d4a017] py-[50px]">
-          {" "}
-          Our Services{" "}
+      <div id="our_services" className="py-16 px-4 md:px-12 max-w-7xl mx-auto">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#d4a017] mb-12">
+          Our Services
         </h1>
-        <div className="relative px-20">
+        <div className="relative px-2 sm:px-12">
           <button
             onClick={prevCard}
-            className="absolute left-4 top-1/2 z-20 bg-black text-white p-4 rounded-full"
+            className="absolute -left-2 sm:left-0 top-1/2 -translate-y-1/2 z-20 bg-black/80 hover:bg-[#d4a017] hover:text-black border border-zinc-700 text-white p-3 md:p-4 rounded-full transition shadow-lg cursor-pointer"
+            aria-label="Previous service"
           >
-            {" "}
-            <FaChevronLeft />{" "}
+            <FaChevronLeft size={18} />
           </button>
+          
           <div className="overflow-hidden">
             <div
-              className="flex gap-8 transition-transform duration-700 "
+              className="flex gap-6 transition-transform duration-500 ease-in-out"
               style={{
-                transform: `translateX(-${current * 22}%)`,
+                transform: `translateX(-${current * 100}%)`,
               }}
             >
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className="min-w-[32%] bg-[#111] rounded-3xl overflow-hidden shadow-lg font-semibold hover:scale-110 transition duration-400"
+                  className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] shrink-0 bg-[#111] border border-zinc-800 rounded-3xl overflow-hidden shadow-lg font-semibold transition duration-300 hover:border-[#d4a017]"
                 >
                   <img
                     src={service.image}
-                    className="h-[280px] w-full object-cover"
+                    alt={service.title}
+                    className="h-[220px] md:h-[260px] w-full object-cover"
                   />
-                  <div className="p-6">
-                    <h2 className="text-3xl text-[#d4a017] font-bold">
-                      {" "}
-                      {service.title}{" "}
-                    </h2>
-                    <p className="text-white mt-4">{service.description}</p>
+                  <div className="p-6 flex flex-col justify-between">
+                    <div>
+                      <h2 className="text-2xl text-[#d4a017] font-bold">
+                        {service.title}
+                      </h2>
+                      <p className="text-zinc-400 mt-3 text-sm font-normal min-h-[60px]">
+                        {service.description}
+                      </p>
+                    </div>
                     <button
                       onClick={() => navigate(service.link)}
-                      className="mt-6 w-full bg-[#d4a017] text-black py-3 rounded-xl font-bold hover:bg-yellow-500 cursor-pointer"
+                      className="mt-6 w-full bg-[#d4a017] text-black py-3 rounded-xl font-bold hover:bg-yellow-500 transition cursor-pointer"
                     >
-                      {" "}
-                      See More{" "}
+                      See More
                     </button>
                   </div>
                 </div>
@@ -265,60 +269,59 @@ const [contactLoading, setContactLoading] = useState(false);
 
           <button
             onClick={nextCard}
-            className="absolute right-4 top-1/2 z-20 bg-black text-white p-4 rounded-full"
+            className="absolute -right-2 sm:right-0 top-1/2 -translate-y-1/2 z-20 bg-black/80 hover:bg-[#d4a017] hover:text-black border border-zinc-700 text-white p-3 md:p-4 rounded-full transition shadow-lg cursor-pointer"
+            aria-label="Next service"
           >
-            {" "}
-            <FaChevronRight />{" "}
+            <FaChevronRight size={18} />
           </button>
         </div>
       </div>
 
       {/*Contact Us*/}
-      <div id="contacts" className="mt-[50px]">
-        <div>
-          <h1 className="text-4xl font-bold text-center text-[#d4a017] py-[50px]">
-            Contact Us
-          </h1>
-        </div>
+      <div id="contacts" className="py-16 px-4">
+        <h1 className="text-3xl md:text-4xl font-bold text-center text-[#d4a017] mb-10">
+          Contact Us
+        </h1>
 
-        <form onSubmit={handleContactSubmit} className="flex flex-col gap-5 items-center">
-          <div className="flex justify-center">
+        <form onSubmit={handleContactSubmit} className="max-w-2xl mx-auto flex flex-col gap-5">
+          <div className="w-full">
             <input
               type="email"
               placeholder="Enter your email"
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
               required
-              className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+              className="w-full h-[50px] bg-white rounded-xl px-5 text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
             />
           </div>
 
-          <div className="flex justify-center">
+          <div className="w-full">
             <input
               type="text"
               placeholder="Enter your name"
               value={contactName}
               onChange={(e) => setContactName(e.target.value)}
               required
-              className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+              className="w-full h-[50px] bg-white rounded-xl px-5 text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
             />
           </div>
 
-          <div className="flex justify-center">
+          <div className="w-full">
             <textarea
               placeholder="Message"
               value={contactMessage}
               onChange={(e) => setContactMessage(e.target.value)}
               required
-              className="w-[800px] h-[150px] bg-white items-center justify-center rounded-[15px] p-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+              rows={4}
+              className="w-full bg-white rounded-xl p-5 text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
             />
           </div>
 
-          <div className="flex justify-center w-full">
+          <div className="w-full">
             <button 
               type="submit" 
               disabled={contactLoading}
-              className="flex items-center justify-center gap-2 border text-white text-2xl border-[#d4a017] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer font-semibold"
+              className="w-full border-2 border-[#d4a017] text-white text-xl py-3 rounded-xl hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer font-bold disabled:opacity-50"
             >
               {contactLoading ? "Sending..." : "Submit"}
             </button>
@@ -327,15 +330,15 @@ const [contactLoading, setContactLoading] = useState(false);
       </div>
 
       {/*BMI*/}
-      <div className="mt-[50px]">
+      <div className="py-8">
         <BMI />
       </div>
 
       {/* Footer */}
-
-      <div className="pt-[50px]">
+      <div className="pt-8">
         <Footer />
       </div>
     </div>
   );
 }
+

@@ -154,16 +154,16 @@ export default function AdminUsersPage() {
   );
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-[#111111] to-[#1C1C1C] border border-[#D4AF37]/20 rounded-2xl shadow-2xl p-6 mb-8 flex items-center justify-between">
+      <div className="bg-gradient-to-r from-[#111111] to-[#1C1C1C] border border-[#D4AF37]/20 rounded-2xl shadow-2xl p-6 mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold text-white tracking-wide">Users Management</h1>
-          <p className="text-gray-400 mt-2">Manage registered users, trainers, and permissions</p>
+          <h1 className="text-2xl sm:text-4xl font-bold text-white tracking-wide">Users Management</h1>
+          <p className="text-gray-400 mt-1 text-xs sm:text-sm">Manage registered users, trainers, and permissions</p>
         </div>
         <button
           onClick={() => setShowAddModal(true)}
-          className="bg-[#D4AF37] text-black px-6 py-3 rounded-xl font-semibold hover:scale-105 transition cursor-pointer"
+          className="bg-[#D4AF37] text-black px-5 py-2.5 rounded-xl font-semibold hover:scale-105 transition cursor-pointer text-sm shrink-0"
         >
           + Add User
         </button>
@@ -172,14 +172,14 @@ export default function AdminUsersPage() {
       {/* Users Table */}
       <div className="bg-[#141414] border border-[#D4AF37]/20 rounded-3xl overflow-hidden shadow-[0_0_30px_rgba(212,175,55,0.08)]">
         {/* Table Header */}
-        <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
-          <h2 className="text-2xl font-semibold text-white">Users List</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-6 py-5 border-b border-[#2A2A2A] gap-4">
+          <h2 className="text-xl sm:text-2xl font-semibold text-white">Users List</h2>
           <input 
             type="text" 
             placeholder="Search Users..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"
+            className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none text-sm w-full sm:w-auto"
           />
         </div>
 

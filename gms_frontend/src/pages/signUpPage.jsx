@@ -83,57 +83,52 @@ export default function SignUpPage() {
     <div className="flex flex-col lg:flex-row min-h-screen">
       {/* Left Side */}
      <div
-        className="flex-1 relative bg-cover bg-center overflow-hidden flex justify-center items-center p-[50px] min-h-[400px]"
+        className="flex-1 relative bg-cover bg-center overflow-hidden flex justify-center items-center p-6 sm:p-12 min-h-[400px]"
         style={{
-          backgroundImage: "url('sign_up page.jpg')",
+          backgroundImage: "url('/sign_up page.jpg')",
         }}
       >
-        <div className="absolute inset-0 bg-black/45"></div>
+        <div className="absolute inset-0 bg-black/60"></div>
 
         <button
           onClick={handleBack}
-          className="absolute top-7 left-7 z-10 text-white no-underline text-[22px] font-semibold cursor-pointer hover"
+          className="absolute top-6 left-6 z-10 text-white no-underline text-lg font-semibold cursor-pointer hover:text-[#E5B93E] transition"
         >
-          {" "}
-          ← Back{" "}
+          ← Back
         </button>
 
-        <div className="relative z-10 w-full max-w-[520px] flex flex-col justify-center">
+        <div className="relative z-10 w-full max-w-[520px] flex flex-col justify-center py-10">
           {/* Logo */}
-          <div className="flex items-center gap-5 mb-[50px]">
+          <div className="flex items-center gap-4 mb-8">
             <img
               src="/logo.png"
               alt="Power Zone Logo"
-              className="w-[90px] h-[90px] rounded-xl object-cover shadow-[0_0_20px_rgba(229,185,62,0.4)]"
+              className="w-[60px] h-[60px] md:w-[80px] md:h-[80px] rounded-xl object-cover shadow-[0_0_20px_rgba(229,185,62,0.4)]"
             />
 
-            <h1 className="text-[#E5B93E] text-[56px] font-bold m-0">
-              {" "}
-              Power Zone{" "}
+            <h1 className="text-[#E5B93E] text-3xl sm:text-4xl md:text-5xl font-bold m-0">
+              Power Zone
             </h1>
           </div>
 
           {/* Text Content */}
           <div className="flex flex-col [text-shadow:0_0_10px_rgba(229,185,62,0.5)]">
-            <p className="text-white text-[34px] font-medium m-0">
-              {" "}
-              Start your journey{" "}
+            <p className="text-white text-xl sm:text-2xl font-medium m-0">
+              Start your journey
             </p>
 
-            <h2 className="text-[#E5B93E] text-[68px] leading-[1.1] font-bold m-0">
-              {" "}
-              Build the body <br /> you deserve.{" "}
+            <h2 className="text-[#E5B93E] text-3xl sm:text-5xl md:text-6xl leading-tight font-bold my-2">
+              Build the body <br className="hidden sm:inline" /> you deserve.
             </h2>
 
-            <p className="text-white text-[24px] leading-[1.6] mt-[10px] max-w-[500px]">
-              {" "}
+            <p className="text-zinc-200 text-sm sm:text-lg leading-relaxed mt-2 max-w-[500px]">
               Join thousands of members who've transformed their lives with
               expert coaching, premium equipment, and a community that pushes
-              you further.{" "}
+              you further.
             </p>
 
             {/* Features */}
-            <div className="text-white text-[22px] leading-[2] mt-[10px]">
+            <div className="text-zinc-200 text-sm sm:text-base leading-relaxed mt-4 space-y-1">
               <p>• 24/7 access to all facilities</p>
               <p>• Personal training session on signup</p>
               <p>• 100+ weekly group classes</p>

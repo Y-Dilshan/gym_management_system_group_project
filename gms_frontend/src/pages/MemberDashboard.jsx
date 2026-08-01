@@ -189,6 +189,8 @@ export default function MemberDashboard() {
     navigate("/");
   };
 
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const getBMICategory = (bmi) => {
     if (bmi < 18.5) return "Underweight";
     if (bmi < 24.9) return "Healthy Range";
@@ -197,30 +199,44 @@ export default function MemberDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white flex">
+    <div className="min-h-screen bg-black text-white flex flex-col lg:flex-row relative">
       
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-black/80 z-40 lg:hidden"
+        />
+      )}
+
       {/* Sidebar */}
-      <aside className="w-[280px] bg-[#0B0B0B] border-r border-yellow-500/10 flex flex-col shrink-0">
+      <aside className={`fixed lg:static top-0 left-0 z-50 h-full w-[280px] bg-[#0B0B0B] border-r border-yellow-500/10 flex flex-col shrink-0 transition-transform duration-300 ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+      }`}>
         
         {/* Logo */}
-        <div className="px-6 pt-7 pb-6 border-b border-yellow-500/10">
+        <div className="px-6 pt-7 pb-6 border-b border-yellow-500/10 flex justify-between items-center">
           <div className="flex items-center gap-3">
-            <img src="/logo.png" alt="Power Zone" className="w-12 h-12" />
+            <img src="/logo.png" alt="Power Zone" className="w-10 h-10 md:w-12 md:h-12" />
             <div>
-              <h1 className="text-[20px] font-bold leading-none">
+              <h1 className="text-[18px] md:text-[20px] font-bold leading-none">
                 <span className="text-white">POWER </span>
                 <span className="text-yellow-400">ZONE</span>
               </h1>
-              <p className="text-[11px] text-gray-400 tracking-[2px] mt-1">PREMIUM GYM</p>
+              <p className="text-[10px] md:text-[11px] text-gray-400 tracking-[2px] mt-1">PREMIUM GYM</p>
             </div>
           </div>
+
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-zinc-400 hover:text-white text-xl">
+            ✕
+          </button>
         </div>
 
         {/* Menu */}
-        <div className="px-6 pt-8 space-y-2">
+        <div className="px-6 pt-6 space-y-2 overflow-y-auto">
           <button 
-            onClick={() => setActiveView("dashboard")} 
-            className={`w-full py-3.5 rounded-xl font-bold text-left px-5 transition ${
+            onClick={() => { setActiveView("dashboard"); setSidebarOpen(false); }} 
+            className={`w-full py-3 rounded-xl font-bold text-left px-5 text-sm transition ${
               activeView === "dashboard" ? "bg-[#D4AF37] text-black" : "text-zinc-400 hover:bg-white/5 hover:text-white"
             }`}
           >
@@ -228,8 +244,8 @@ export default function MemberDashboard() {
           </button>
 
           <button 
-            onClick={() => setActiveView("bookings")} 
-            className={`w-full py-3.5 rounded-xl font-bold text-left px-5 transition ${
+            onClick={() => { setActiveView("bookings"); setSidebarOpen(false); }} 
+            className={`w-full py-3 rounded-xl font-bold text-left px-5 text-sm transition ${
               activeView === "bookings" ? "bg-[#D4AF37] text-black" : "text-zinc-400 hover:bg-white/5 hover:text-white"
             }`}
           >
@@ -237,8 +253,8 @@ export default function MemberDashboard() {
           </button>
 
           <button 
-            onClick={() => setActiveView("orders")} 
-            className={`w-full py-3.5 rounded-xl font-bold text-left px-5 transition ${
+            onClick={() => { setActiveView("orders"); setSidebarOpen(false); }} 
+            className={`w-full py-3 rounded-xl font-bold text-left px-5 text-sm transition ${
               activeView === "orders" ? "bg-[#D4AF37] text-black" : "text-zinc-400 hover:bg-white/5 hover:text-white"
             }`}
           >
@@ -246,8 +262,8 @@ export default function MemberDashboard() {
           </button>
 
           <button 
-            onClick={() => setActiveView("schedules")} 
-            className={`w-full py-3.5 rounded-xl font-bold text-left px-5 transition ${
+            onClick={() => { setActiveView("schedules"); setSidebarOpen(false); }} 
+            className={`w-full py-3 rounded-xl font-bold text-left px-5 text-sm transition ${
               activeView === "schedules" ? "bg-[#D4AF37] text-black" : "text-zinc-400 hover:bg-white/5 hover:text-white"
             }`}
           >
@@ -255,21 +271,21 @@ export default function MemberDashboard() {
           </button>
 
           <div className="border-t border-zinc-800 my-4 pt-4 space-y-2">
-            <button onClick={() => navigate("/products")} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
+            <button onClick={() => { setSidebarOpen(false); navigate("/products"); }} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
               <FaCartShopping size={14} className="text-[#D4AF37]" /> Supplement Store
             </button>
-            <button onClick={() => navigate("/schedules")} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
+            <button onClick={() => { setSidebarOpen(false); navigate("/schedules"); }} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
               <FaDumbbell size={14} className="text-[#D4AF37]" /> Workout Schedules
             </button>
-            <button onClick={() => navigate("/dietplans")} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
+            <button onClick={() => { setSidebarOpen(false); navigate("/dietplans"); }} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
               <FaAppleAlt size={14} className="text-[#D4AF37]" /> Diet Plans
             </button>
-            <button onClick={() => navigate("/profile")} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
+            <button onClick={() => { setSidebarOpen(false); navigate("/profile"); }} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
               <FaUserCircle size={14} className="text-[#D4AF37]" /> Edit Profile
             </button>
           </div>
 
-          <button onClick={handleLogout} className="w-full py-3 px-5 rounded-xl text-left text-red-500 hover:bg-red-950/20 font-bold transition">
+          <button onClick={handleLogout} className="w-full py-3 px-5 rounded-xl text-left text-red-500 hover:bg-red-950/20 text-sm font-bold transition">
             Logout
           </button>
         </div>
@@ -277,12 +293,12 @@ export default function MemberDashboard() {
         <div className="flex-1"></div>
 
         {/* Ad Card */}
-        <div className="px-5 pb-5">
+        <div className="px-5 pb-5 hidden lg:block">
           <div className="bg-[#111111] rounded-3xl overflow-hidden border border-yellow-500/10">
-            <img src="/logo.png" alt="Gym" className="w-150 h-32 object-cover" />
+            <img src="/logo.png" alt="Gym" className="w-full h-24 object-contain p-2" />
             <div className="p-4">
-              <h2 className="text-base font-bold leading-tight">BE STRONGER</h2>
-              <h2 className="text-base font-bold text-yellow-400 leading-tight">THAN EXCUSES</h2>
+              <h2 className="text-sm font-bold leading-tight">BE STRONGER</h2>
+              <h2 className="text-sm font-bold text-yellow-400 leading-tight">THAN EXCUSES</h2>
               <p className="text-gray-400 mt-1 text-xs">POWER 
                                 <span className="text-yellow-400"> ZONE</span> 💪</p>
             </div>
@@ -294,24 +310,29 @@ export default function MemberDashboard() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Navbar */}
-        <header className="h-20 border-b border-zinc-800 bg-[#0A0A0A] flex items-center justify-between px-10 shrink-0">
-          <div className="flex gap-8 font-semibold text-zinc-400">
-            <span onClick={() => setActiveView("dashboard")} className={`cursor-pointer ${activeView === "dashboard" ? "text-yellow-400" : "hover:text-white"}`}>Dashboard</span>
-            {user?.role?.toUpperCase() !== "TRAINER" && (
-              <>
-                <span onClick={() => navigate("/trainers")} className="hover:text-white cursor-pointer">Trainers</span>
-                <span onClick={() => navigate("/schedules")} className="hover:text-white cursor-pointer">Schedules</span>
-              </>
-            )}
-            <span onClick={() => navigate("/dietplans")} className="hover:text-white cursor-pointer">Diet Plans</span>
+        <header className="h-16 md:h-20 border-b border-zinc-800 bg-[#0A0A0A] flex items-center justify-between px-4 md:px-8 shrink-0">
+          <div className="flex items-center gap-4">
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden text-yellow-400 text-2xl p-1">
+              ☰
+            </button>
+            <div className="hidden sm:flex gap-6 font-semibold text-zinc-400 text-sm md:text-base">
+              <span onClick={() => setActiveView("dashboard")} className={`cursor-pointer ${activeView === "dashboard" ? "text-yellow-400" : "hover:text-white"}`}>Dashboard</span>
+              {user?.role?.toUpperCase() !== "TRAINER" && (
+                <>
+                  <span onClick={() => navigate("/trainers")} className="hover:text-white cursor-pointer">Trainers</span>
+                  <span onClick={() => navigate("/schedules")} className="hover:text-white cursor-pointer">Schedules</span>
+                </>
+              )}
+              <span onClick={() => navigate("/dietplans")} className="hover:text-white cursor-pointer">Diet Plans</span>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <button onClick={() => navigate("/cart")} className="p-2 text-zinc-400 hover:text-white transition">
-              <FaCartShopping size={20} />
+              <FaCartShopping size={18} />
             </button>
-            <span className="text-sm font-semibold">{user?.full_name || "Member"}</span>
-            <div className="w-9 h-9 rounded-full bg-[#D4AF37] text-black font-extrabold flex items-center justify-center border-2 border-yellow-500">
+            <span className="text-xs md:text-sm font-semibold truncate max-w-[120px]">{user?.full_name || "Member"}</span>
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full bg-[#D4AF37] text-black font-extrabold flex items-center justify-center border-2 border-yellow-500 text-xs md:text-sm shrink-0">
               {user?.full_name?.charAt(0) || "M"}
             </div>
           </div>

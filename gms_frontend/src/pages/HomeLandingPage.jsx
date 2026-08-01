@@ -117,19 +117,23 @@ export default function HomeLandingPage() {
       </nav>
 
       {/* welcome hero */}
-      <div className="w-full h-screen bg-[url('home.jpg')] bg-cover bg-center pt-[50px] flex items-center">
-        <div className="w-full">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-center text-[#d4a017] px-4">
+      <div
+        className="w-full min-h-screen bg-cover bg-center flex items-center justify-center pt-[100px] pb-16 relative"
+        style={{ backgroundImage: "url('/home.jpg')" }}
+      >
+        <div className="absolute inset-0 bg-black/60 z-0"></div>
+        <div className="relative z-10 w-full max-w-4xl px-4 text-center">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-[#d4a017] tracking-tight leading-tight">
             Welcome back, {firstName}
           </h1>
-          <p className="text-base md:text-xl lg:text-2xl text-center text-white mt-6 px-6 max-w-[800px] mx-auto">
+          <p className="text-sm sm:text-lg md:text-2xl text-zinc-200 mt-6 px-2 max-w-3xl mx-auto leading-relaxed">
             Pick up right where you left off. Your schedule, your trainer, and
             your plan are all one click away.
           </p>
-          <div className="flex items-center justify-center py-[50px]">
+          <div className="flex items-center justify-center mt-10">
             <button
               onClick={() => navigate("/dashboard")}
-              className="bg-[#d4a017] text-black rounded-3xl w-[220px] md:w-[260px] h-[50px] text-xl md:text-2xl flex items-center justify-center gap-2 border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold"
+              className="bg-[#d4a017] text-black rounded-3xl px-8 py-3.5 text-lg md:text-2xl flex items-center justify-center gap-2 border border-[#d4a017] hover:bg-[#D4AF37] hover:text-white transition duration-300 font-bold shadow-lg cursor-pointer"
             >
               Go to Dashboard
             </button>
