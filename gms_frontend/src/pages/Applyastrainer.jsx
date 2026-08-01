@@ -59,7 +59,7 @@ export default function ApplyAsTrainer() {
         });
       }
     } catch {
-      toast.eror("Cannot connect to server. Please try again.");
+      toast.error("Cannot connect to server. Please try again.");
     }
   };
 

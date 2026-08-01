@@ -151,10 +151,13 @@ export const updateTrainer = (req, res) => {
     phone,
     status,
     profile_picture,
+    specialization,
     specification,
     bio,
     experience_years,
   } = req.body;
+
+  const activeSpecialization = specialization || specification || "";
 
   //get user id from trainer table
   db.query(
@@ -172,7 +175,7 @@ export const updateTrainer = (req, res) => {
 
       //update users table
       const userSql =
-        "UPDATE users SET full_name = ?, email = ?, phone =?, status = ? WHERE user_id = ?";
+        "UPDATE users SET full_name = ?, email = ?, phone = ?, status = ?, profile_picture = ? WHERE user_id = ?";
 
       db.query(
         userSql,
@@ -187,7 +190,7 @@ export const updateTrainer = (req, res) => {
             "UPDATE trainers SET specialization = ?, bio = ?, experience_years = ? WHERE trainer_id = ?";
           db.query(
             trainerSql,
-            [specialization, bio, experience_years, id],
+            [activeSpecialization, bio, experience_years, id],
             (trainerErr) => {
               if (trainerErr) {
                 console.error("Error updating trainer profile:", trainerErr);

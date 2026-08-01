@@ -26,6 +26,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ← ser
 
 app.use(cors());
 
+// Health check / Root route
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "success", message: "Gym Management System Backend API is running!" });
+});
+
 // Routes
 app.use("/api/trainer-applications", trainerApplicationRoutes);
 app.use("/api/users", userRoutes);

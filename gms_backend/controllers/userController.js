@@ -555,7 +555,8 @@ export const forgotPassword = (req, res) => {
         },
       });
 
-      const resetUrl = `http://localhost:5173/reset-password?token=${resetToken}`;
+      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+      const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
       const mailOptions = {
         from: process.env.EMAIL_USER,
