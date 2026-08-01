@@ -14,7 +14,6 @@ import ApplyAsTrainer from "./pages/Applyastrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
 import AdminUsersPage from "./pages/admin/adminUsersPage.jsx";
 import AdminProductPage from "./pages/admin/adminProductPage.jsx";
-// import AdminProductsPage from "./pages/admin/AdminProductsPage.jsx";
 import AdminTrainers from "./pages/admin/adminTrainers.jsx";
 import AdminSchedules from "./pages/admin/adminSchedules.jsx";
 import DeleteForm from "./components/deleteForm.jsx";
