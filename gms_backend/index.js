@@ -8,7 +8,7 @@ import { fileURLToPath } from "url";
 import userRoutes from "./routes/userRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
 import trainerRoutes from "./routes/trainerRouter.js";
-import trainerApplicationRoutes from "./routes/trainerapplicationroutes.js";
+import trainerApplicationRoutes from "./routes/trainerApplicationRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
@@ -25,6 +25,11 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ← ser
 // app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // ← serves profile pictures
 
 app.use(cors());
+
+// Health check / Root route
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "success", message: "Gym Management System Backend API is running!" });
+});
 
 // Routes
 app.use("/api/trainer-applications", trainerApplicationRoutes);
@@ -43,7 +48,7 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 

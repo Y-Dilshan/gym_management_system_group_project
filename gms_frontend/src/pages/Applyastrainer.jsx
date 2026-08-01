@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
-const API = "http://localhost:3000/api";
+const API = import.meta.env.VITE_BACKEND_URL;
 
 export default function ApplyAsTrainer() {
   const [form, setForm] = useState({
@@ -59,7 +59,7 @@ export default function ApplyAsTrainer() {
         });
       }
     } catch {
-      toast.eror("Cannot connect to server. Please try again.");
+      toast.error("Cannot connect to server. Please try again.");
     }
   };
 

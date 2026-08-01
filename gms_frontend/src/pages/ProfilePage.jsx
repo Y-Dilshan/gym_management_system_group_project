@@ -13,26 +13,36 @@ export default function ProfilePage() {
   const [profilePicture, setProfilePicture] = useState("");
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const API = import.meta.env.VITE_BACKEND_URL;
 
-  useEffect(() => {
+    useEffect(() => {
+    const token = localStorage.getItem("token");
     const userString = localStorage.getItem("user");
-    if (userString) {
-      try {
-        const parsed = JSON.parse(userString);
-        setUser(parsed);
-        setFullName(parsed.full_name || "");
-        setEmail(parsed.email || "");
-        setPhone(parsed.phone || "");
-        setProfilePicture(parsed.profile_picture || "");
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
+
+    if (!token || !userString) {
       navigate("/signin");
+      return;
     }
-  }, []);
+
+    try {
+      const parsed = JSON.parse(userString);
+      setUser(parsed);
+      setFullName(parsed.full_name || "");
+      setEmail(parsed.email || "");
+      setPhone(parsed.phone || "");
+      setProfilePicture(parsed.profile_picture || "");
+    } catch (e) {
+      console.error(e);
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      navigate("/signin");
+    } finally {
+      setLoading(false);
+    }
+  }, [navigate]);
+
 
   // Handle image file selection from local device
   const handleFileChange = (e) => {
@@ -52,8 +62,34 @@ export default function ProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim()) {
+
+    // API URL validation
+    if (!API) {
+      toast.error("API URL not configured");
+      return;
+    }
+
+    // User validation
+    if (!user) {
+      toast.error("Your session has expired. Please sign in again.");
+      navigate("/signin");
+      return;
+    }
+
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPhone = phone.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail) {
       toast.error("Name and Email are required");
+      return;
+    }
+
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      toast.error("Please enter a valid email address");
       return;
     }
 
@@ -62,19 +98,30 @@ export default function ProfilePage() {
 
     try {
       const payload = {
-        full_name: fullName,
-        email: email,
-        phone: phone,
+        full_name: trimmedName,
+        email: trimmedEmail,
+        phone: trimmedPhone,
         role: user.role,
         status: user.status,
-        profile_picture: profilePicture.trim() || user.profile_picture || `https://api.dicebear.com/7.x/adventurer/svg?seed=${email}`
+profile_picture:
+  profilePicture.trim() ||
+  user.profile_picture ||
+  `https://api.dicebear.com/7.x/adventurer/svg?seed=${trimmedEmail}`
       };
 
-      if (password.trim()) {
-        payload.password = password;
+      if (trimmedPassword) {
+        payload.password = trimmedPassword;
       }
 
-      const res = await fetch(`${API}/users/${user.user_id}`, {
+      // Get user ID with fallback
+      const userId = user.user_id || user.id || user._id;
+      if (!userId) {
+        toast.error("User ID not found. Please sign in again.");
+        navigate("/signin");
+        return;
+      }
+
+      const res = await fetch(`${API}/users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -87,17 +134,23 @@ export default function ProfilePage() {
         toast.success("Profile updated successfully!");
         const updatedUser = {
           ...user,
-          full_name: fullName,
-          email: email,
-          phone: phone,
+          full_name: trimmedName,
+          email: trimmedEmail,
+          phone: trimmedPhone,
           profile_picture: payload.profile_picture
         };
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
         setPassword("");
       } else {
-        const data = await res.json();
-        toast.error(data.error || "Failed to update profile");
+        let message = "Failed to update profile";
+        try {
+          const data = await res.json();
+          message = data.error || message;
+        } catch {
+          // ignore parse failure
+        }
+        toast.error(message);
       }
     } catch (err) {
       console.error(err);
@@ -115,6 +168,24 @@ export default function ProfilePage() {
     const baseUrl = API.replace(/\/api\/?$/, "");
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
     return `${baseUrl}${cleanPath}`;
+  }
+  // Loading state
+  if (loading) {
+    return (
+      <div className="bg-[#050505] min-h-screen text-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#D4AF37] mx-auto"></div>
+          <p className="mt-4 text-zinc-400">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Get dashboard route based on role
+  const getDashboardRoute = () => {
+    if (user?.role === 'ADMIN') return "/admin";
+    if (user?.role === 'TRAINER') return "/booksessions";
+    return "/dashboard";
   };
 
   return (
@@ -237,8 +308,8 @@ export default function ProfilePage() {
             <div className="flex justify-end pt-4 gap-4">
               <button
                 type="button"
-                onClick={() => navigate("/dashboard")}
-                className="px-6 py-3 border border-zinc-800 hover:bg-zinc-800 rounded-xl text-sm font-semibold transition cursor-pointer"
+                onClick={() => navigate(getDashboardRoute())}
+                className="px-6 py-3 border border-zinc-800 hover:bg-zinc-800 rounded-xl text-sm font-semibold transition"
               >
                 Back to Dashboard
               </button>

@@ -85,7 +85,8 @@ const [contactLoading, setContactLoading] = useState(false);
 
     setContactLoading(true);
     try {
-      const res = await axios.post("http://localhost:3000/api/contact", {
+      const API = import.meta.env.VITE_BACKEND_URL;
+      const res = await axios.post(`${API}/contact`, {
         name: contactName,
         email: contactEmail,
         message: contactMessage,

@@ -18,7 +18,8 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/users/forgot-password", { email });
+      const API = import.meta.env.VITE_BACKEND_URL;
+      const res = await axios.post(`${API}/users/forgot-password`, { email });
       setMessage(res.data.message);
     } catch (err) {
       setError(err.response?.data?.error || "Something went wrong. Please try again.");
