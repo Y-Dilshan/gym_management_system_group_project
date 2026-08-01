@@ -170,11 +170,11 @@ export default function AdminOrdersPage() {
         {/* Table Header */}
         <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
           <h2 className="text-2xl font-semibold text-white">Orders List</h2>
-          <input 
+          {/* <input 
             type="text" 
             placeholder="Search Orders..." 
             className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"
-          />
+          /> */}
         </div>
 
         {/* Table */}

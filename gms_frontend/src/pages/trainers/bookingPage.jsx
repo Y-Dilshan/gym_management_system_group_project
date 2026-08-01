@@ -10,7 +10,7 @@ export default function TrainerDashboardPage() {
   const [trainer, setTrainer] = useState(null);
   const [members, setMembers] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [activeTab, setActiveTab] = useState("members");
+  const [activeTab, setActiveTab] = useState("bookings");
   const [loadingMembers, setLoadingMembers] = useState(true);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
@@ -217,6 +217,8 @@ export default function TrainerDashboardPage() {
 
   const acceptedSlots = bookings.filter(b => b.status === 'ACCEPTED').map(b => b.time_slot);
 
+  const pendingBookingsCount = bookings.filter(b => b.status === "PENDING").length;
+
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
       <Header />
@@ -234,6 +236,22 @@ export default function TrainerDashboardPage() {
       {/* Tabs Menu */}
       <div className="max-w-7xl mx-auto w-full px-6 mt-8 flex justify-center gap-6">
         <button
+          onClick={() => setActiveTab("bookings")}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer relative ${
+            activeTab === "bookings"
+              ? "bg-[#D4AF37] text-black"
+              : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
+          }`}
+        >
+          <FaCalendarCheck /> Bookings & Slots
+          {pendingBookingsCount > 0 && (
+            <span className="bg-red-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full ml-1 animate-pulse">
+              {pendingBookingsCount} Pending
+            </span>
+          )}
+        </button>
+
+        <button
           onClick={() => setActiveTab("members")}
           className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer ${
             activeTab === "members"
@@ -241,18 +259,7 @@ export default function TrainerDashboardPage() {
               : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
           }`}
         >
-          <FaUsers /> Assigned Members
-        </button>
-
-        <button
-          onClick={() => setActiveTab("bookings")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer ${
-            activeTab === "bookings"
-              ? "bg-[#D4AF37] text-black"
-              : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
-          }`}
-        >
-          <FaCalendarCheck /> Bookings & Slots
+          <FaUsers /> Assigned Members ({members.length})
         </button>
 
         <button

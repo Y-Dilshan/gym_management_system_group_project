@@ -109,8 +109,12 @@ export default function Header() {
           <button onClick={() => handleNavClick("about")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> About </button>
           <button onClick={() => handleNavClick("our_services")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> Our Services </button>
           <button onClick={() => handleNavClick("contacts")} className="hover:text-[#d4a017] duration-300 cursor-pointer"> Contacts </button>
-          <Link to="/trainers" className="hover:text-[#d4a017] duration-300"> Trainers </Link>
-          <Link to="/schedules" className="hover:text-[#d4a017] duration-300"> Schedules </Link>
+          {user?.role?.toUpperCase() !== "TRAINER" && (
+            <>
+              <Link to="/trainers" className="hover:text-[#d4a017] duration-300"> Trainers </Link>
+              <Link to="/schedules" className="hover:text-[#d4a017] duration-300"> Schedules </Link>
+            </>
+          )}
           <Link to="/products" className="hover:text-[#d4a017] duration-300"> Supplements </Link>
         </div>
 

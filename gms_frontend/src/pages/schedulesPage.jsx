@@ -44,7 +44,7 @@ export default function SchedulesPage() {
   const [activeDay, setActiveDay] = useState("Monday");
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
-  const handleClassBooking = (className, trainerName) => {
+  const handleClassBooking = (cls) => {
     const token = localStorage.getItem("token");
     if (!token) {
       toast.error("Please sign in to register for classes");
@@ -52,7 +52,31 @@ export default function SchedulesPage() {
       return;
     }
 
-    toast.success(`You have successfully registered for the ${className} class!`);
+    const existing = JSON.parse(localStorage.getItem("my_schedules") || "[]");
+    const isAlreadyBooked = existing.some(
+      (item) => item.id === cls.id && item.day === activeDay
+    );
+
+    if (isAlreadyBooked) {
+      toast.error(`You have already reserved a spot for ${cls.name} on ${activeDay}!`);
+      return;
+    }
+
+    const newBooking = {
+      id: cls.id,
+      name: cls.name,
+      trainer: cls.trainer,
+      time: cls.time,
+      day: activeDay,
+      level: cls.level,
+      description: cls.description,
+      bookedAt: new Date().toISOString()
+    };
+
+    const updated = [newBooking, ...existing];
+    localStorage.setItem("my_schedules", JSON.stringify(updated));
+
+    toast.success(`Reserved spot for ${cls.name} on ${activeDay}! Check it in your User Dashboard.`);
   };
 
   return (
@@ -128,7 +152,7 @@ export default function SchedulesPage() {
                   </div>
 
                   <button
-                    onClick={() => handleClassBooking(cls.name, cls.trainer)}
+                    onClick={() => handleClassBooking(cls)}
                     disabled={isFull}
                     className={`px-6 py-3 rounded-xl font-bold tracking-wider text-xs transition uppercase ${
                       isFull
