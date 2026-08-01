@@ -71,46 +71,34 @@ export default function ProductByPage() {
     toast.success(`${product.product_name} added to cart!`);
   };
 
-  const handleBuy = async () => {
-    if (!address.trim()) {
-      toast.error("Please enter delivery address");
-      return;
-    }
-
+  const handleBuy = () => {
     const token = localStorage.getItem("token");
     if (!token) {
-      toast.error("Please sign in to place an order");
+      toast.error("Please sign in to proceed to checkout");
       navigate("/signin");
       return;
     }
 
-    try {
-      const res = await fetch(`${API}/orders`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          product_id: product.product_id,
-          quantity: parseInt(quantity),
-          delivery_address: address,
-        }),
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast.success("Order placed successfully!");
-        setAddress("");
-        setQuantity(1);
-        loadproduct();
-      } else {
-        toast.error(data.message || "Failed to place order");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong");
+    if (product.stock_quantity <= 0) {
+      toast.error("Product is currently out of stock");
+      return;
     }
+
+    const buyNowItem = [
+      {
+        id: product.product_id,
+        product_id: product.product_id,
+        name: product.product_name,
+        price: Number(product.price),
+        image_url: product.image_url,
+        qty: parseInt(quantity)
+      }
+    ];
+
+    localStorage.setItem("cart", JSON.stringify(buyNowItem));
+    window.dispatchEvent(new Event("cart-updated"));
+
+    navigate("/checkout");
   };
 
   if (loading) {
@@ -174,7 +162,7 @@ export default function ProductByPage() {
               </p>
             </div>
 
-            {/* Quantity + Address input form */}
+            {/* Quantity input form */}
             <div className="mt-6 bg-zinc-900 border border-zinc-800 rounded-xl p-5 space-y-5">
               <div>
                 <label className="block mb-2 text-sm font-medium text-zinc-300">
@@ -187,19 +175,6 @@ export default function ProductByPage() {
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
                   className="text-white bg-zinc-800 p-2.5 rounded-lg w-32 border border-zinc-700 outline-none focus:ring-2 focus:ring-yellow-500"
-                />
-              </div>
-
-              <div>
-                <label className="block mb-2 text-sm font-medium text-zinc-300">
-                  Delivery Address
-                </label>
-                <textarea
-                  placeholder="Enter delivery address"
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  rows={3}
-                  className="w-full p-3 rounded-lg bg-zinc-800 text-white border border-zinc-700 outline-none focus:ring-2 focus:ring-yellow-500 resize-none"
                 />
               </div>
             </div>

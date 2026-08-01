@@ -138,14 +138,14 @@ const [contactLoading, setContactLoading] = useState(false);
       title: "Personal Training",
       image: "/services5.jpg",
       description: "One-on-one coaching sessions designed for your goals.",
-      link: "/personal-training",
+      link: "/trainers",
     },
 
     {
       title: "Modern Equipment",
       image: "/services6.jpg",
       description: "Train using the latest professional gym equipment.",
-      link: "/equipment",
+      link: "/products",
     },
   ];
 
