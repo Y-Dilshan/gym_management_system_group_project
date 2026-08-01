@@ -1,5 +1,5 @@
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FaUserCircle, FaCalendarAlt, FaAppleAlt } from "react-icons/fa";
 import { FaCartShopping, FaDumbbell } from "react-icons/fa6";
@@ -7,12 +7,14 @@ import gymImage from "../assets/hero.png";
 
 export default function MemberDashboard() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [classSchedules, setClassSchedules] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [loadingBookings, setLoadingBookings] = useState(true);
-  const [activeView, setActiveView] = useState("dashboard"); // dashboard, bookings, orders
+  const [activeView, setActiveView] = useState(location.state?.activeView || "dashboard"); // dashboard, bookings, orders, schedules
 
   // Reschedule Form State
   const [rescheduleId, setRescheduleId] = useState(null);
@@ -35,13 +37,30 @@ export default function MemberDashboard() {
         loadUserDetails(parsed.user_id);
         loadOrders();
         loadBookings();
+        loadClassSchedules();
       } catch (err) {
         console.error(err);
       }
     } else {
       navigate("/signin");
     }
-  }, []);
+
+    if (location.state?.activeView) {
+      setActiveView(location.state.activeView);
+    }
+  }, [location]);
+
+  const loadClassSchedules = () => {
+    const saved = JSON.parse(localStorage.getItem("my_schedules") || "[]");
+    setClassSchedules(saved);
+  };
+
+  const handleCancelClassSchedule = (id, day) => {
+    const updated = classSchedules.filter((s) => !(s.id === id && s.day === day));
+    setClassSchedules(updated);
+    localStorage.setItem("my_schedules", JSON.stringify(updated));
+    toast.success("Class reservation cancelled");
+  };
 
   const loadUserDetails = async (userId) => {
     try {
@@ -226,6 +245,15 @@ export default function MemberDashboard() {
             My Supplement Orders
           </button>
 
+          <button 
+            onClick={() => setActiveView("schedules")} 
+            className={`w-full py-3.5 rounded-xl font-bold text-left px-5 transition ${
+              activeView === "schedules" ? "bg-[#D4AF37] text-black" : "text-zinc-400 hover:bg-white/5 hover:text-white"
+            }`}
+          >
+            My Class Schedules
+          </button>
+
           <div className="border-t border-zinc-800 my-4 pt-4 space-y-2">
             <button onClick={() => navigate("/products")} className="w-full py-2 px-5 text-left text-sm text-zinc-400 hover:text-white flex items-center gap-2">
               <FaCartShopping size={14} className="text-[#D4AF37]" /> Supplement Store
@@ -251,11 +279,12 @@ export default function MemberDashboard() {
         {/* Ad Card */}
         <div className="px-5 pb-5">
           <div className="bg-[#111111] rounded-3xl overflow-hidden border border-yellow-500/10">
-            <img src={gymImage} alt="Gym" className="w-full h-32 object-cover" />
+            <img src="/logo.png" alt="Gym" className="w-150 h-32 object-cover" />
             <div className="p-4">
               <h2 className="text-base font-bold leading-tight">BE STRONGER</h2>
               <h2 className="text-base font-bold text-yellow-400 leading-tight">THAN EXCUSES</h2>
-              <p className="text-gray-400 mt-1 text-xs">Push Harder 💪</p>
+              <p className="text-gray-400 mt-1 text-xs">POWER 
+                                <span className="text-yellow-400"> ZONE</span> 💪</p>
             </div>
           </div>
         </div>
@@ -268,8 +297,12 @@ export default function MemberDashboard() {
         <header className="h-20 border-b border-zinc-800 bg-[#0A0A0A] flex items-center justify-between px-10 shrink-0">
           <div className="flex gap-8 font-semibold text-zinc-400">
             <span onClick={() => setActiveView("dashboard")} className={`cursor-pointer ${activeView === "dashboard" ? "text-yellow-400" : "hover:text-white"}`}>Dashboard</span>
-            <span onClick={() => navigate("/trainers")} className="hover:text-white cursor-pointer">Trainers</span>
-            <span onClick={() => navigate("/schedules")} className="hover:text-white cursor-pointer">Schedules</span>
+            {user?.role?.toUpperCase() !== "TRAINER" && (
+              <>
+                <span onClick={() => navigate("/trainers")} className="hover:text-white cursor-pointer">Trainers</span>
+                <span onClick={() => navigate("/schedules")} className="hover:text-white cursor-pointer">Schedules</span>
+              </>
+            )}
             <span onClick={() => navigate("/dietplans")} className="hover:text-white cursor-pointer">Diet Plans</span>
           </div>
 
@@ -313,7 +346,7 @@ export default function MemberDashboard() {
               </div>
 
               {/* Stats Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-6">
                 <div className="bg-[#111] rounded-2xl p-6 border border-zinc-800">
                   <span className="text-2xl">📅</span>
                   <p className="text-zinc-400 mt-4 text-xs font-semibold">Trainer Sessions</p>
@@ -321,6 +354,14 @@ export default function MemberDashboard() {
                     {bookings.filter(b => b.status === 'ACCEPTED').length} Active
                   </h2>
                   <p className="text-[10px] text-zinc-500 mt-1">Booked with professional trainers</p>
+                </div>
+                <div className="bg-[#111] rounded-2xl p-6 border border-zinc-800 cursor-pointer hover:border-yellow-500/30 transition" onClick={() => setActiveView("schedules")}>
+                  <span className="text-2xl">🏋️‍♂️</span>
+                  <p className="text-zinc-400 mt-4 text-xs font-semibold">Class Schedules</p>
+                  <h2 className="text-[#D4AF37] text-2xl font-bold mt-1">
+                    {classSchedules.length} Reserved
+                  </h2>
+                  <p className="text-[10px] text-zinc-500 mt-1">Group workout classes</p>
                 </div>
                 <div className="bg-[#111] rounded-2xl p-6 border border-zinc-800">
                   <span className="text-2xl">⚡</span>
@@ -558,6 +599,55 @@ export default function MemberDashboard() {
                 </div>
               ) : (
                 <div className="text-zinc-500 text-center py-10">No orders logged. Explore our supplement selection to fuel your diet plans!</div>
+              )}
+            </div>
+          )}
+
+          {/* Active View: Schedules */}
+          {activeView === "schedules" && (
+            <div className="bg-[#111] border border-zinc-800 rounded-3xl p-8 space-y-6">
+              <div className="flex justify-between items-center border-b border-zinc-800 pb-4">
+                <h2 className="text-2xl font-bold text-white">My Workout Class Schedules</h2>
+                <button 
+                  onClick={() => navigate("/schedules")} 
+                  className="bg-[#D4AF37] text-black px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#b8962d] transition cursor-pointer"
+                >
+                  Book More Classes
+                </button>
+              </div>
+
+              {classSchedules.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {classSchedules.map((item, index) => (
+                    <div key={index} className="bg-zinc-950 border border-zinc-900 rounded-2xl p-5 flex flex-col justify-between space-y-4">
+                      <div>
+                        <div className="flex justify-between items-start">
+                          <h3 className="font-bold text-lg text-[#D4AF37]">{item.name}</h3>
+                          <span className="bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                            {item.day}
+                          </span>
+                        </div>
+                        <p className="text-xs text-zinc-400 mt-2">Trainer: <span className="text-white font-semibold">{item.trainer}</span></p>
+                        <p className="text-xs text-zinc-400">Time: <span className="text-white font-semibold">{item.time}</span></p>
+                        {item.description && <p className="text-xs text-zinc-500 mt-2">{item.description}</p>}
+                      </div>
+
+                      <div className="border-t border-zinc-900 pt-3 flex justify-between items-center">
+                        <span className="text-[11px] text-zinc-500">Level: <strong className="text-zinc-300">{item.level}</strong></span>
+                        <button
+                          onClick={() => handleCancelClassSchedule(item.id, item.day)}
+                          className="px-3 py-1 bg-red-950/20 border border-red-500/10 hover:bg-red-500 hover:text-white text-red-400 rounded-lg text-xs font-bold transition cursor-pointer"
+                        >
+                          Cancel Spot
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-zinc-500 text-center py-10">
+                  No class schedules reserved yet. Explore our Workout Schedules page to reserve your spots!
+                </div>
               )}
             </div>
           )}

@@ -11,6 +11,8 @@ import trainerRoutes from "./routes/trainerRouter.js";
 import trainerApplicationRoutes from "./routes/trainerapplicationroutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -31,6 +33,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/trainers", trainerRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/contact", contactRoutes);
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

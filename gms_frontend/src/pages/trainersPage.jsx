@@ -50,12 +50,12 @@ export default function TrainersPage() {
 
   return (
     <div className="min-h-screen bg-black">
-      <div className="w-full fixed">
+      <div className="w-full fixed top-0 left-0 z-50">
         <Header />
       </div>
 
       {/* Hero Section */}
-      <div className="py-12 flex flex-col justify-center items-center">
+      <div className="pt-[120px] pb-12 flex flex-col justify-center items-center">
         <h1 className="font-bold text-3xl md:text-4xl lg:text-5xl text-white mb-3 text-center px-4">
           {" "}
           Meet Our <span className="text-[#D4AF37]">Expert Trainers</span>{" "}

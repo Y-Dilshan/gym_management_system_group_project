@@ -65,20 +65,7 @@ export default function AdminOrdersPage() {
     loadOrders();
   }, []);
 
-  const handleUpdateStatus = async (id, currentStatus) => {
-    const nextStatus = prompt(
-      `Enter new status (PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED):`,
-      currentStatus
-    );
-    if (!nextStatus) return;
-
-    const upperStatus = nextStatus.trim().toUpperCase();
-    const validStatuses = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"];
-    if (!validStatuses.includes(upperStatus)) {
-      toast.error("Invalid status value");
-      return;
-    }
-
+  const handleUpdateStatus = async (id, upperStatus) => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API}/orders/${id}`, {
@@ -92,7 +79,7 @@ export default function AdminOrdersPage() {
 
       const data = await res.json();
       if (res.ok) {
-        toast.success("Order status updated successfully");
+        toast.success(`Order #${id} status updated to ${upperStatus}`);
         loadOrders();
       } else {
         toast.error(data.message || "Failed to update status");
@@ -170,11 +157,11 @@ export default function AdminOrdersPage() {
         {/* Table Header */}
         <div className="flex justify-between items-center px-8 py-6 border-b border-[#2A2A2A]">
           <h2 className="text-2xl font-semibold text-white">Orders List</h2>
-          <input 
+          {/* <input 
             type="text" 
             placeholder="Search Orders..." 
             className="bg-[#1F1F1F] text-white px-4 py-2 rounded-xl border border-[#333333] focus:border-[#D4AF37] outline-none"
-          />
+          /> */}
         </div>
 
         {/* Table */}
@@ -207,32 +194,32 @@ export default function AdminOrdersPage() {
                     <td className="px-6 py-5 max-w-[200px] truncate"> {order.delivery_address} </td>
                     <td className="px-6 py-5"> {new Date(order.order_date).toLocaleDateString()} </td>
                     <td className="px-6 py-5">
-                      <span className={`px-4 py-2 rounded-full text-xs font-semibold border ${
-                        order.order_status === "DELIVERED"
-                          ? "bg-green-500/20 text-green-400 border-green-500/30"
-                          : order.order_status === "CANCELLED"
-                          ? "bg-red-500/20 text-red-400 border-red-500/30"
-                          : "bg-yellow-500/20 text-yellow-400 border-yellow-500/30"
-                      }`}>
-                        {order.order_status}
-                      </span>
+                      <select
+                        value={order.order_status}
+                        onChange={(e) => handleUpdateStatus(order.order_id, e.target.value)}
+                        className={`px-3 py-2 rounded-xl text-xs font-bold border outline-none cursor-pointer ${
+                          order.order_status === "DELIVERED"
+                            ? "bg-green-950/80 text-green-400 border-green-500/40"
+                            : order.order_status === "CANCELLED"
+                            ? "bg-red-950/80 text-red-400 border-red-500/40"
+                            : "bg-yellow-950/80 text-yellow-400 border-yellow-500/40"
+                        }`}
+                      >
+                        <option value="PENDING" className="bg-zinc-900 text-yellow-400">PENDING</option>
+                        <option value="PROCESSING" className="bg-zinc-900 text-blue-400">PROCESSING</option>
+                        <option value="SHIPPED" className="bg-zinc-900 text-blue-400">SHIPPED</option>
+                        <option value="DELIVERED" className="bg-zinc-900 text-green-400">DELIVERED</option>
+                        <option value="CANCELLED" className="bg-zinc-900 text-red-400">CANCELLED</option>
+                      </select>
                     </td>
                     <td className="px-6 py-5 text-[#D4AF37] font-bold">Rs. {Number(order.total_amount).toLocaleString()}</td>
                     <td className="px-6 py-5">
-                      <div className="flex gap-3">
-                        <button 
-                          onClick={() => handleUpdateStatus(order.order_id, order.order_status)} 
-                          className="bg-blue-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-blue-700 transition"
-                        >
-                          Status
-                        </button>
-                        <button 
-                          onClick={() => handleDeleteOrder(order.order_id)} 
-                          className="bg-red-600 text-white px-4 py-2 rounded-xl font-semibold hover:bg-red-700 transition"
-                        >
-                          Delete
-                        </button>
-                      </div>
+                      <button 
+                        onClick={() => handleDeleteOrder(order.order_id)} 
+                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-xl font-semibold text-xs transition cursor-pointer"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

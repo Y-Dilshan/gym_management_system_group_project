@@ -1,5 +1,6 @@
 import db from "../config.js";
 import bcrypt from "bcrypt";
+import nodemailer from "nodemailer";
 
 // Apply as a Trainer
 
@@ -188,7 +189,7 @@ export const approveApplication = (req, res) => {
                 const trainerSql = `INSERT INTO trainers (user_id, specialization, bio, experience_years) VALUES (?, ?, ?, ?)`;
                 db.query(
                   trainerSql,
-                  [newUserId,app.specialization,app.bio,app.experience_years,],
+                  [newUserId, app.specialization, app.bio, app.experience_years],
                   (trainerErr, trainerResult) => {
                     if (trainerErr) {
                       console.error(
@@ -196,15 +197,29 @@ export const approveApplication = (req, res) => {
                         trainerErr,
                       );
 
-                      db.query("DELETE FROM users WHERE user_id = ?", [newUserId,]);
+                      db.query("DELETE FROM users WHERE user_id = ?", [newUserId]);
                       return res
                         .status(500)
                         .json({ error: "Failed to create trainer profile" });
                     }
 
-                    db.query(`UPDATE trainer_applications 
-                                 SET status = 'approved', reviewed_at = NOW() 
-                                 WHERE application_id = ?`,
+                    const newTrainerId = trainerResult.insertId;
+
+                    // Update users table with trainer_id
+                    db.query(
+                      "UPDATE users SET trainer_id = ? WHERE user_id = ?",
+                      [newTrainerId, newUserId],
+                      (updateUserErr) => {
+                        if (updateUserErr) {
+                          console.error("Error updating users trainer_id:", updateUserErr);
+                        }
+                      }
+                    );
+
+                    db.query(
+                      `UPDATE trainer_applications 
+                       SET status = 'approved', reviewed_at = NOW() 
+                       WHERE application_id = ?`,
                       [id],
                       (updateErr) => {
                         if (updateErr)
@@ -214,6 +229,42 @@ export const approveApplication = (req, res) => {
                           );
                       },
                     );
+
+                    // Send login credentials via email to trainer
+                    const transporter = nodemailer.createTransport({
+                      service: "Gmail",
+                      auth: {
+                        user: process.env.EMAIL_USER,
+                        pass: process.env.EMAIL_PASS,
+                      },
+                    });
+
+                    const mailOptions = {
+                      from: process.env.EMAIL_USER,
+                      to: app.email,
+                      subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
+                      html: `
+                        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                          <h2 style="color: #D4AF37;">Congratulations ${app.full_name}!</h2>
+                          <p>Your application to join <strong>Power Zone Gym</strong> as a Personal Trainer has been <span style="color: green; font-weight: bold;">APPROVED</span>!</p>
+                          
+                          <p>Below are your temporary login credentials:</p>
+                          <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
+                            <p style="margin: 5px 0;"><strong>Email:</strong> ${app.email}</p>
+                            <p style="margin: 5px 0;"><strong>Temporary Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; font-size: 14px; border-radius: 4px;">${password}</code></p>
+                          </div>
+
+                          <p>Please log in to your account and change your password for security.</p>
+                          <br/>
+                          <p>Best regards,<br/><strong>Power Zone Gym Admin Team</strong></p>
+                        </div>
+                      `,
+                    };
+
+                    transporter.sendMail(mailOptions, (mailErr) => {
+                      if (mailErr) console.error("Error sending credentials email to trainer:", mailErr);
+                      else console.log("Credentials email sent successfully to trainer:", app.email);
+                    });
 
                     res.status(201).json({
                       message:
@@ -225,6 +276,7 @@ export const approveApplication = (req, res) => {
                         password: password,
                       },
                     });
+
                   },
                 );
               },

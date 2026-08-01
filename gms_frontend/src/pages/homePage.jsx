@@ -1,3 +1,5 @@
+import axios from "axios"; 
+import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -6,12 +8,17 @@ import { SlUserFollowing } from "react-icons/sl";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { FiLogOut } from "react-icons/fi";
 import BMI from "../components/bmi.jsx";
+import { toast } from "react-hot-toast"; 
 
 export default function HomePage() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
+  const [contactEmail, setContactEmail] = useState("");
+const [contactName, setContactName] = useState("");
+const [contactMessage, setContactMessage] = useState("");
+const [contactLoading, setContactLoading] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -69,6 +76,32 @@ export default function HomePage() {
     navigate("/signup");
   };
 
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    if (!contactEmail || !contactName || !contactMessage) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+
+    setContactLoading(true);
+    try {
+      const res = await axios.post("http://localhost:3000/api/contact", {
+        name: contactName,
+        email: contactEmail,
+        message: contactMessage,
+      });
+      toast.success(res.data.message || "Your message has been sent successfully!");
+      setContactEmail("");
+      setContactName("");
+      setContactMessage("");
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.error || "Failed to send message");
+    } finally {
+      setContactLoading(false);
+    }
+  };
+
   const services = [
     {
       title: "Schedules",
@@ -105,14 +138,14 @@ export default function HomePage() {
       title: "Personal Training",
       image: "/services5.jpg",
       description: "One-on-one coaching sessions designed for your goals.",
-      link: "/personal-training",
+      link: "/trainers",
     },
 
     {
       title: "Modern Equipment",
       image: "/services6.jpg",
       description: "Train using the latest professional gym equipment.",
-      link: "/equipment",
+      link: "/products",
     },
   ];
 
@@ -127,78 +160,9 @@ export default function HomePage() {
   return (
     <div className=" bg-[#050505]">
       {/* navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 bg-black shadow-lg h-[80px] md:h-[100px] px-5 md:px-10 lg:px-20">
-        <div className="flex items-center justify-between h-full">
-          <div>
-            <img
-              src="logo.png"
-              alt="logo"
-              className="w-[70px] h-[70px] md:w-[100px] md:h-[100px]"
-            />
-          </div>
-          <div className="hidden md:flex items-center gap-6 text-lg text-white">
-            <a className="hover:text-[#d4a017]" href="#">
-              {" "}
-              Home{" "}
-            </a>
-            <a className="hover:text-[#d4a017]" href="#about">
-              {" "}
-              About{" "}
-            </a>
-            <a className="hover:text-[#d4a017]" href="#our_services">
-              {" "}
-              Our Services{" "}
-            </a>
-            <a className="hover:text-[#d4a017]" href="#contacts">
-              {" "}
-              Contacts{" "}
-            </a>
-            <Link className="hover:text-[#d4a017]" to="/trainers">
-              {" "}
-              Trainers{" "}
-            </Link>
-            <Link className="hover:text-[#d4a017]" to="/schedules">
-              {" "}
-              Schedules{" "}
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-3 md:gap-5">
-            {isLogged ? (
-              <>
-                <span className="hidden sm:block text-white text-sm md:text-[16px]">
-                  Hi, {user?.full_name ? user.full_name.split(" ")[0] : "Member"}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-[#050505] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer"
-                >
-                  Logout <FiLogOut />
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/signin">
-                  <button
-                    onClick={handleSignin}
-                    className="bg-[#050505] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 border border-[#d4a017] hover:bg-[#d4a017] hover:text-black transition duration-300"
-                  >
-                    Sign in <GoSignIn />
-                  </button>
-                </Link>
-                <Link to="/signup">
-                  <button
-                    onClick={handleSignUp}
-                    className="bg-[#d4a017] text-white px-3 py-1 md:px-4 md:py-2 rounded text-sm md:text-[16px] flex items-center gap-2 hover:bg-[#050505] hover:text-white transition duration-300"
-                  >
-                    Sign Up <SlUserFollowing />
-                  </button>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <div className="fixed top-0 left-0 w-full z-50">
+        <Header />
+      </div>
 
       {/*home*/}
       <div className="w-full h-screen bg-[url('home.jpg')] bg-cover bg-center pt-[50px]">
@@ -312,40 +276,53 @@ export default function HomePage() {
       <div id="contacts" className="mt-[50px]">
         <div>
           <h1 className="text-4xl font-bold text-center text-[#d4a017] py-[50px]">
-            {" "}
-            Contact Us{" "}
+            Contact Us
           </h1>
         </div>
 
-        <div className="flex justify-center pt-[20px]">
-          <input
-            type="text"
-            placeholder="Enter your email"
-            className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px]"
-          />
-        </div>
+        <form onSubmit={handleContactSubmit} className="flex flex-col gap-5 items-center">
+          <div className="flex justify-center">
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={contactEmail}
+              onChange={(e) => setContactEmail(e.target.value)}
+              required
+              className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+            />
+          </div>
 
-        <div className="flex justify-center pt-[20px]">
-          <input
-            type="text"
-            placeholder="Enter your name"
-            className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px]"
-          />
-        </div>
+          <div className="flex justify-center">
+            <input
+              type="text"
+              placeholder="Enter your name"
+              value={contactName}
+              onChange={(e) => setContactName(e.target.value)}
+              required
+              className="w-[800px] h-[50px] bg-white items-center justify-center rounded-[15px] pl-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+            />
+          </div>
 
-        <div className="flex justify-center pt-[20px]">
-          <textarea
-            type="text"
-            placeholder="Message"
-            className="w-[800px] h-[150px] bg-white items-center justify-center rounded-[15px] pl-[20px]"
-          />
-        </div>
+          <div className="flex justify-center">
+            <textarea
+              placeholder="Message"
+              value={contactMessage}
+              onChange={(e) => setContactMessage(e.target.value)}
+              required
+              className="w-[800px] h-[150px] bg-white items-center justify-center rounded-[15px] p-[20px] text-black outline-none focus:ring-2 focus:ring-[#d4a017]"
+            />
+          </div>
 
-        <div className=" flex justify-center pt-[20px]">
-          <button className="flex items-center justify-center gap-2 border text-white text-2xl border-[#d4a017] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#d4a017] hover:text-black cursor-pointer">
-            Submit{" "}
-          </button>
-        </div>
+          <div className="flex justify-center w-full">
+            <button 
+              type="submit" 
+              disabled={contactLoading}
+              className="flex items-center justify-center gap-2 border text-white text-2xl border-[#d4a017] border-[2px] w-[800px] h-[50px] rounded-2xl hover:bg-[#d4a017] hover:text-black transition duration-300 cursor-pointer font-semibold"
+            >
+              {contactLoading ? "Sending..." : "Submit"}
+            </button>
+          </div>
+        </form>
       </div>
 
       {/*BMI*/}

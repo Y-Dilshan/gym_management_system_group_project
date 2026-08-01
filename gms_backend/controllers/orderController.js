@@ -1,4 +1,5 @@
 import db from "../config.js";
+import nodemailer from "nodemailer";
 
 // Create Order (for members)
 export const createOrder = (req, res) => {
@@ -195,13 +196,15 @@ export const updateOrderStatus = (req, res) => {
   const { order_status } = req.body;
 
   const validStatuses = ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED', 'CANCELLED'];
-  if (!order_status || !validStatuses.includes(order_status.toUpperCase())) {
-    return res.status(400).json({ message: "Invalid status" });
+  const newStatus = order_status ? order_status.toUpperCase() : '';
+
+  if (!newStatus || !validStatuses.includes(newStatus)) {
+    return res.status(400).json({ message: "Invalid status value" });
   }
 
   const sql = "UPDATE orders SET order_status = ? WHERE order_id = ?";
 
-  db.query(sql, [order_status.toUpperCase(), id], (err, result) => {
+  db.query(sql, [newStatus, id], (err, result) => {
     if (err) {
       console.error("Error updating order status:", err);
       return res.status(500).json({ message: "Failed to update status" });
@@ -211,9 +214,62 @@ export const updateOrderStatus = (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    res.status(200).json({ message: "Order status updated successfully" });
+    // Automatically send Email when status is changed to DELIVERED
+    if (newStatus === "DELIVERED") {
+      const getCustomerSql = `
+        SELECT o.order_id, o.total_amount, o.delivery_address, u.email, u.full_name
+        FROM orders o
+        JOIN users u ON o.user_id = u.user_id
+        WHERE o.order_id = ?
+      `;
+
+      db.query(getCustomerSql, [id], async (fetchErr, customerResults) => {
+        if (!fetchErr && customerResults.length > 0) {
+          const customer = customerResults[0];
+
+          try {
+            const transporter = nodemailer.createTransport({
+              service: "Gmail",
+              auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+              },
+            });
+
+            const mailOptions = {
+              from: process.env.EMAIL_USER,
+              to: customer.email,
+              subject: `📦 Order Delivered! - Power Zone Gym (Order #${customer.order_id})`,
+              html: `
+                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e0e0e0; rounded: 10px;">
+                  <h2 style="color: #D4AF37;">Great news, ${customer.full_name}! 🎉</h2>
+                  <p>Your order <strong>#${customer.order_id}</strong> has been successfully <strong>DELIVERED</strong>.</p>
+                  
+                  <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0;">
+                    <p style="margin: 5px 0;"><strong>Order ID:</strong> #${customer.order_id}</p>
+                    <p style="margin: 5px 0;"><strong>Total Amount:</strong> Rs. ${Number(customer.total_amount).toLocaleString()}</p>
+                    <p style="margin: 5px 0;"><strong>Delivery Address:</strong> ${customer.delivery_address || 'Provided Address'}</p>
+                  </div>
+                  
+                  <p>Thank you for shopping with <strong>Power Zone Gym</strong>!</p>
+                  <p style="font-size: 12px; color: #888;">If you have any questions regarding your order, please feel free to reach out.</p>
+                </div>
+              `,
+            };
+
+            await transporter.sendMail(mailOptions);
+            console.log(`Delivery email successfully sent to ${customer.email}`);
+          } catch (emailErr) {
+            console.error("Error sending delivery notification email:", emailErr);
+          }
+        }
+      });
+    }
+
+    res.status(200).json({ message: `Order status updated to ${newStatus} successfully` });
   });
 };
+
 
 // Delete Order (for admin)
 export const deleteOrder = (req, res) => {

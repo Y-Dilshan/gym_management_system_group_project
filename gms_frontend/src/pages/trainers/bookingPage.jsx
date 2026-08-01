@@ -10,7 +10,7 @@ export default function TrainerDashboardPage() {
   const [trainer, setTrainer] = useState(null);
   const [members, setMembers] = useState([]);
   const [bookings, setBookings] = useState([]);
-  const [activeTab, setActiveTab] = useState("members");
+  const [activeTab, setActiveTab] = useState("bookings");
   const [loadingMembers, setLoadingMembers] = useState(true);
   const [loadingBookings, setLoadingBookings] = useState(true);
 
@@ -43,7 +43,6 @@ export default function TrainerDashboardPage() {
           bio: parsed.bio || "",
           experience_years: parsed.experience_years || "",
         });
-        loadAssignedMembers(parsed.trainer_id);
         loadTrainerBookings();
       } catch (err) {
         console.error(err);
@@ -60,6 +59,7 @@ export default function TrainerDashboardPage() {
   }, [activeTab]);
 
   const loadAssignedMembers = async (trainerId) => {
+    if (!trainerId) return;
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${API}/trainers/${trainerId}/members`, {
@@ -70,8 +70,6 @@ export default function TrainerDashboardPage() {
       const data = await res.json();
       if (res.ok) {
         setMembers(data.members || []);
-      } else {
-        toast.error("Failed to load assigned members");
       }
     } catch (err) {
       console.error(err);
@@ -92,6 +90,9 @@ export default function TrainerDashboardPage() {
       const data = await res.json();
       if (res.ok) {
         setBookings(data.bookings || []);
+        if (data.trainer_id) {
+          loadAssignedMembers(data.trainer_id);
+        }
       }
     } catch (err) {
       console.error(err);
@@ -100,6 +101,7 @@ export default function TrainerDashboardPage() {
       setLoadingBookings(false);
     }
   };
+
 
   const handleBookingStatusChange = async (bookingId, newStatus) => {
     try {
@@ -161,11 +163,61 @@ export default function TrainerDashboardPage() {
     }
   };
 
-  const allSlots = [
+  const defaultSlots = [
     "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", 
     "12:00 PM", "01:00 PM", "02:00 PM", "03:00 PM", "04:00 PM", "05:00 PM"
   ];
+
+  const [slots, setSlots] = useState(() => {
+    const saved = localStorage.getItem("trainer_custom_slots");
+    return saved ? JSON.parse(saved) : defaultSlots;
+  });
+
+  const [blockedSlots, setBlockedSlots] = useState(() => {
+    const saved = localStorage.getItem("trainer_blocked_slots");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  const [newSlotTime, setNewSlotTime] = useState("");
+
+  const handleToggleBlockSlot = (slot) => {
+    let updated;
+    if (blockedSlots.includes(slot)) {
+      updated = blockedSlots.filter(s => s !== slot);
+      toast.success(`Slot ${slot} is now Available`);
+    } else {
+      updated = [...blockedSlots, slot];
+      toast.success(`Slot ${slot} marked as Unavailable / Off`);
+    }
+    setBlockedSlots(updated);
+    localStorage.setItem("trainer_blocked_slots", JSON.stringify(updated));
+  };
+
+  const handleAddSlot = (e) => {
+    e.preventDefault();
+    if (!newSlotTime.trim()) return;
+    const formatted = newSlotTime.trim();
+    if (slots.includes(formatted)) {
+      toast.error("This slot already exists!");
+      return;
+    }
+    const updated = [...slots, formatted];
+    setSlots(updated);
+    localStorage.setItem("trainer_custom_slots", JSON.stringify(updated));
+    setNewSlotTime("");
+    toast.success(`Added new time slot: ${formatted}`);
+  };
+
+  const handleRemoveSlot = (slotToRemove) => {
+    const updated = slots.filter(s => s !== slotToRemove);
+    setSlots(updated);
+    localStorage.setItem("trainer_custom_slots", JSON.stringify(updated));
+    toast.success(`Removed slot: ${slotToRemove}`);
+  };
+
   const acceptedSlots = bookings.filter(b => b.status === 'ACCEPTED').map(b => b.time_slot);
+
+  const pendingBookingsCount = bookings.filter(b => b.status === "PENDING").length;
 
   return (
     <div className="min-h-screen bg-black text-white flex flex-col">
@@ -184,6 +236,22 @@ export default function TrainerDashboardPage() {
       {/* Tabs Menu */}
       <div className="max-w-7xl mx-auto w-full px-6 mt-8 flex justify-center gap-6">
         <button
+          onClick={() => setActiveTab("bookings")}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer relative ${
+            activeTab === "bookings"
+              ? "bg-[#D4AF37] text-black"
+              : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
+          }`}
+        >
+          <FaCalendarCheck /> Bookings & Slots
+          {pendingBookingsCount > 0 && (
+            <span className="bg-red-500 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full ml-1 animate-pulse">
+              {pendingBookingsCount} Pending
+            </span>
+          )}
+        </button>
+
+        <button
           onClick={() => setActiveTab("members")}
           className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer ${
             activeTab === "members"
@@ -191,18 +259,7 @@ export default function TrainerDashboardPage() {
               : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
           }`}
         >
-          <FaUsers /> Assigned Members
-        </button>
-
-        <button
-          onClick={() => setActiveTab("bookings")}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition cursor-pointer ${
-            activeTab === "bookings"
-              ? "bg-[#D4AF37] text-black"
-              : "bg-zinc-900 text-gray-300 hover:bg-zinc-800"
-          }`}
-        >
-          <FaCalendarCheck /> Bookings & Slots
+          <FaUsers /> Assigned Members ({members.length})
         </button>
 
         <button
@@ -270,28 +327,80 @@ export default function TrainerDashboardPage() {
         {/* Tab 2: Bookings & Slots */}
         {activeTab === "bookings" && (
           <div className="space-y-8">
-            {/* Time Slots */}
-            <div className="bg-zinc-900 rounded-2xl p-8 border border-zinc-800">
-              <h2 className="text-2xl font-bold text-white mb-6">Your Accepted Time Slots (Active Today)</h2>
+            {/* Time Slots Management */}
+            <div className="bg-zinc-900 rounded-2xl p-8 border border-zinc-800 space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Your Time Slots & Availability</h2>
+                  <p className="text-zinc-400 text-sm mt-1">Click a slot to toggle Available / Unavailable, or add/remove custom slots</p>
+                </div>
+
+                {/* Add New Slot Form */}
+                <form onSubmit={handleAddSlot} className="flex gap-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. 06:00 PM"
+                    value={newSlotTime}
+                    onChange={(e) => setNewSlotTime(e.target.value)}
+                    className="bg-zinc-800 text-white px-4 py-2 rounded-xl text-sm border border-zinc-700 focus:border-[#D4AF37] outline-none"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-[#D4AF37] text-black font-bold text-xs px-4 py-2 rounded-xl hover:bg-yellow-500 transition cursor-pointer"
+                  >
+                    + Add Slot
+                  </button>
+                </form>
+              </div>
+
               <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
-                {allSlots.map((slot) => {
+                {slots.map((slot) => {
                   const isBooked = acceptedSlots.includes(slot);
+                  const isBlocked = blockedSlots.includes(slot);
+
                   return (
                     <div
                       key={slot}
-                      className={`rounded-xl p-4 text-center font-semibold transition ${
+                      className={`relative rounded-2xl p-4 text-center font-semibold border transition flex flex-col justify-between items-center min-h-[100px] ${
                         isBooked
-                          ? "bg-red-900/40 border border-red-500/30 text-red-300"
-                          : "bg-green-900/40 border border-green-500/30 text-green-300"
+                          ? "bg-red-950/40 border-red-500/40 text-red-300"
+                          : isBlocked
+                          ? "bg-zinc-950 border-zinc-700 text-zinc-500"
+                          : "bg-emerald-950/40 border-emerald-500/40 text-emerald-300"
                       }`}
                     >
-                      <p>{slot}</p>
-                      <p className="text-xs mt-2">{isBooked ? "Reserved" : "Available"}</p>
+                      {/* Delete Slot Button */}
+                      {!isBooked && (
+                        <button
+                          onClick={() => handleRemoveSlot(slot)}
+                          title="Remove slot"
+                          className="absolute top-2 right-2 text-zinc-500 hover:text-red-400 p-1 text-xs cursor-pointer"
+                        >
+                          ✕
+                        </button>
+                      )}
+
+                      <p className="text-lg font-bold mt-1">{slot}</p>
+
+                      <button
+                        onClick={() => !isBooked && handleToggleBlockSlot(slot)}
+                        disabled={isBooked}
+                        className={`mt-2 text-xs px-3 py-1 rounded-full font-bold transition ${
+                          isBooked
+                            ? "bg-red-500/20 text-red-400 cursor-not-allowed"
+                            : isBlocked
+                            ? "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 cursor-pointer"
+                            : "bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 cursor-pointer"
+                        }`}
+                      >
+                        {isBooked ? "Reserved" : isBlocked ? "Off (Click to Enable)" : "Available (Click to Block)"}
+                      </button>
                     </div>
                   );
                 })}
               </div>
             </div>
+
 
             {/* Booked Sessions */}
             <div className="bg-zinc-900 rounded-2xl border border-zinc-800 overflow-hidden">
