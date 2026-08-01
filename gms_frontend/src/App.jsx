@@ -28,7 +28,6 @@ import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import AdminRevenuePage from "./pages/admin/adminReveuePage.jsx";
 import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
-// import ProfilePage from "./pages/profilePage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
