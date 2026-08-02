@@ -10,14 +10,39 @@ export default function HomeHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
+  const [avatarError, setAvatarError] = useState(false);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  const updateAuthUser = () => {
     const auth = getValidAuth();
     setIsLogged(auth.isLogged);
     setUser(auth.user);
+    setAvatarError(false);
+  };
+
+  useEffect(() => {
+    updateAuthUser();
+
+    window.addEventListener("storage", updateAuthUser);
+    window.addEventListener("user-updated", updateAuthUser);
+    return () => {
+      window.removeEventListener("storage", updateAuthUser);
+      window.removeEventListener("user-updated", updateAuthUser);
+    };
   }, []);
+
+  const getAvatarSrc = (path) => {
+    if (!path || typeof path !== "string") return null;
+    const cleanStr = path.trim();
+    if (!cleanStr) return null;
+    if (cleanStr.startsWith("data:") || cleanStr.startsWith("http://") || cleanStr.startsWith("https://")) {
+      return cleanStr;
+    }
+    const baseUrl = (import.meta.env.VITE_API_URL || "https://gym-management-system-group-project.onrender.com").replace(/\/api\/?$/, "");
+    const cleanPath = cleanStr.startsWith("/") ? cleanStr : `/${cleanStr}`;
+    return `${baseUrl}${cleanPath}`;
+  };
 
   const handleDashboard = () => {
     setShowOption(false);
@@ -100,14 +125,32 @@ export default function HomeHeader() {
           {isLogged ? (
             <div className="relative">
               <button onClick={() => setShowOption(!showOption)} className="cursor-pointer flex items-center"> 
-                <FaUserCircle className="text-3xl md:text-4xl text-white hover:text-[#d4a017] duration-300"/>
+                {user?.profile_picture && !avatarError && getAvatarSrc(user.profile_picture) ? (
+                  <img
+                    src={getAvatarSrc(user.profile_picture)}
+                    alt={user?.full_name || "Profile"}
+                    className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-[#d4a017] hover:scale-105 duration-300 shadow-md"
+                    onError={() => setAvatarError(true)}
+                  />
+                ) : (
+                  <FaUserCircle className="text-3xl md:text-4xl text-white hover:text-[#d4a017] duration-300"/>
+                )}
               </button>
               {showOption && (
                 <div className="absolute right-0 mt-3 w-64 bg-[#111] rounded-2xl shadow-2xl border border-zinc-800 overflow-hidden z-50">
                   
                   {/* User Section */}
                   <div className="flex flex-col items-center py-4 border-b border-zinc-800 bg-zinc-950">
-                    <FaUserCircle size={45} className="text-[#d4a017]" />
+                    {user?.profile_picture && !avatarError && getAvatarSrc(user.profile_picture) ? (
+                      <img
+                        src={getAvatarSrc(user.profile_picture)}
+                        alt={user?.full_name || "Profile"}
+                        className="w-14 h-14 rounded-full object-cover border-2 border-[#d4a017] shadow-lg"
+                        onError={() => setAvatarError(true)}
+                      />
+                    ) : (
+                      <FaUserCircle size={45} className="text-[#d4a017]" />
+                    )}
                     <h3 className="text-white font-bold mt-2 text-sm"> {user?.full_name || "Gym Member"} </h3>
                     <p className="text-[#d4a017] text-xs font-semibold uppercase tracking-wider"> {user?.role || "Member"} </p>
                   </div>
