@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-
-const API = import.meta.env.VITE_BACKEND_URL;
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function ApplyAsTrainer() {
   const [form, setForm] = useState({
@@ -29,7 +28,7 @@ export default function ApplyAsTrainer() {
     setMessage("");
 
     try {
-      const res = await fetch(`${API}/trainer-applications`, {
+      const res = await fetch(`${API_BASE_URL}/trainer-applications`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
