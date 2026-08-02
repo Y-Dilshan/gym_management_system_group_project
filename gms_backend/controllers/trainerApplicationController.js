@@ -210,12 +210,13 @@ export const approveApplication = (req, res) => {
                   }
 
                   markApproved();
-                  const emailSent = await sendCredentialsEmail();
+                  const resObj = await sendCredentialsEmail();
+                  const emailSent = resObj === true || resObj?.success === true;
 
                   return res.status(200).json({
                     message: emailSent
                       ? "Application approved and credentials email sent successfully!"
-                      : "Application approved & password updated. (Credentials email failed to send, check Render server logs).",
+                      : `Application approved & password updated. (Email failed: ${resObj?.error || "check server logs"})`,
                     userId: existingUserId,
                     credentials: { email: app.email, password }
                   });
@@ -254,12 +255,13 @@ export const approveApplication = (req, res) => {
                   );
 
                   markApproved();
-                  const emailSent = await sendCredentialsEmail();
+                  const resObj = await sendCredentialsEmail();
+                  const emailSent = resObj === true || resObj?.success === true;
 
                   res.status(201).json({
                     message: emailSent
                       ? "Application approved. Trainer account created and credentials email sent successfully!"
-                      : "Application approved & trainer account created (Credentials email failed to send, check Render server logs).",
+                      : `Application approved & trainer account created (Email failed: ${resObj?.error || "check server logs"}).`,
                     trainerId: newTrainerId,
                     userId: newUserId,
                     credentials: {
