@@ -1,5 +1,5 @@
 import db from "../config.js";
-import nodemailer from "nodemailer";
+import { sendEmail } from "../utils/mailer.js";
 
 // Create Order (for members)
 export const createOrder = (req, res) => {
@@ -214,8 +214,8 @@ export const updateOrderStatus = (req, res) => {
       return res.status(404).json({ message: "Order not found" });
     }
 
-    // Automatically send Email when status is changed to DELIVERED
-    if (newStatus === "DELIVERED") {
+    // Automatically send Email when status is changed
+    if (["DELIVERED", "SHIPPED", "PROCESSING", "CANCELLED"].includes(newStatus)) {
       const getCustomerSql = `
         SELECT o.order_id, o.total_amount, o.delivery_address, u.email, u.full_name
         FROM orders o
@@ -227,41 +227,33 @@ export const updateOrderStatus = (req, res) => {
         if (!fetchErr && customerResults.length > 0) {
           const customer = customerResults[0];
 
-          try {
-            const transporter = nodemailer.createTransport({
-              service: "Gmail",
-              auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-              },
-            });
+          const statusColors = {
+            DELIVERED: "#22c55e",
+            SHIPPED: "#3b82f6",
+            PROCESSING: "#eab308",
+            CANCELLED: "#ef4444"
+          };
 
-            const mailOptions = {
-              from: process.env.EMAIL_USER,
-              to: customer.email,
-              subject: `📦 Order Delivered! - Power Zone Gym (Order #${customer.order_id})`,
-              html: `
-                <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e0e0e0; rounded: 10px;">
-                  <h2 style="color: #D4AF37;">Great news, ${customer.full_name}! 🎉</h2>
-                  <p>Your order <strong>#${customer.order_id}</strong> has been successfully <strong>DELIVERED</strong>.</p>
-                  
-                  <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0;">
-                    <p style="margin: 5px 0;"><strong>Order ID:</strong> #${customer.order_id}</p>
-                    <p style="margin: 5px 0;"><strong>Total Amount:</strong> Rs. ${Number(customer.total_amount).toLocaleString()}</p>
-                    <p style="margin: 5px 0;"><strong>Delivery Address:</strong> ${customer.delivery_address || 'Provided Address'}</p>
-                  </div>
-                  
-                  <p>Thank you for shopping with <strong>Power Zone Gym</strong>!</p>
-                  <p style="font-size: 12px; color: #888;">If you have any questions regarding your order, please feel free to reach out.</p>
+          await sendEmail({
+            to: customer.email,
+            subject: `📦 Order Status Update: ${newStatus} - Power Zone Gym (Order #${customer.order_id})`,
+            html: `
+              <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e0e0e0; border-radius: 10px;">
+                <h2 style="color: #D4AF37;">Hello ${customer.full_name}! 👋</h2>
+                <p>Your order <strong>#${customer.order_id}</strong> status has been updated to <strong style="color: ${statusColors[newStatus] || '#D4AF37'};">${newStatus}</strong>.</p>
+                
+                <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid ${statusColors[newStatus] || '#D4AF37'}; margin: 20px 0;">
+                  <p style="margin: 5px 0;"><strong>Order ID:</strong> #${customer.order_id}</p>
+                  <p style="margin: 5px 0;"><strong>Status:</strong> <span style="font-weight: bold; color: ${statusColors[newStatus] || '#333'};">${newStatus}</span></p>
+                  <p style="margin: 5px 0;"><strong>Total Amount:</strong> Rs. ${Number(customer.total_amount).toLocaleString()}</p>
+                  <p style="margin: 5px 0;"><strong>Delivery Address:</strong> ${customer.delivery_address || 'Provided Address'}</p>
                 </div>
-              `,
-            };
-
-            await transporter.sendMail(mailOptions);
-            console.log(`Delivery email successfully sent to ${customer.email}`);
-          } catch (emailErr) {
-            console.error("Error sending delivery notification email:", emailErr);
-          }
+                
+                <p>Thank you for shopping with <strong>Power Zone Gym</strong>!</p>
+                <p style="font-size: 12px; color: #888;">If you have any questions regarding your order, please reach out to us.</p>
+              </div>
+            `,
+          });
         }
       });
     }

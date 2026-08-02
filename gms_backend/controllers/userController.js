@@ -2,7 +2,7 @@ import db from "../config.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
+import { sendEmail } from "../utils/mailer.js";
 
 
 
@@ -546,20 +546,10 @@ export const forgotPassword = (req, res) => {
         return res.status(500).json({ error: "Failed to save reset token" });
       }
 
-      // Configure Email Transporter
-      const transporter = nodemailer.createTransport({
-        service: "Gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
       const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
+      const sent = await sendEmail({
         to: email,
         subject: "Password Reset Request",
         html: `
@@ -568,13 +558,11 @@ export const forgotPassword = (req, res) => {
           <a href="${resetUrl}" target="_blank" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
           <p>This link is valid for 15 minutes.</p>
         `,
-      };
+      });
 
-      try {
-        await transporter.sendMail(mailOptions);
+      if (sent) {
         res.status(200).json({ message: "Password reset link sent to your email!" });
-      } catch (mailErr) {
-        console.error("Error sending email:", mailErr);
+      } else {
         res.status(500).json({ error: "Failed to send reset email." });
       }
     });
