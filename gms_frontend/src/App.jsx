@@ -45,7 +45,7 @@ function App() {
         <Toaster position="top-right" />
 
         <Routes>
-          <Route path="/*" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/signin" element={<SigninPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
@@ -130,6 +130,7 @@ function App() {
               <TrainerBookingsPage />
             </ProtectedRoute>
           } />
+          <Route path="*" element={<HomePage />} />
         </Routes>
       </BrowserRouter>
     </div>
