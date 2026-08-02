@@ -142,13 +142,23 @@ export default function HomePage() {
     },
   ];
 
-  const nextCard = () => {
-    setCurrent((prev) => (prev + 1) % services.length);
-  };
+  // const nextCard = () => {
+  //   setCurrent((prev) => (prev + 1) % services.length);
+  // };
 
-  const prevCard = () => {
-    setCurrent((prev) => (prev === 0 ? services.length - 3 : prev - 1));
-  };
+  // const prevCard = () => {
+  //   setCurrent((prev) => (prev === 0 ? services.length - 3 : prev - 1));
+  // };
+  const visibleCards = 3;
+const maxIndex = services.length - visibleCards;
+
+const nextCard = () => {
+  setCurrent((prev) => (prev < maxIndex ? prev + 1 : prev));
+};
+
+const prevCard = () => {
+  setCurrent((prev) => (prev > 0 ? prev - 1 : prev));
+};
 
   return (
     <div className="bg-[#050505] min-h-screen">
@@ -208,7 +218,7 @@ export default function HomePage() {
 
       {/* Our Services */}
 
-      <div id="our_services" className="py-16 px-4 md:px-12 max-w-7xl mx-auto">
+      <div id="our_services" className="pt-24 pb-18 px-4 md:px-12 max-w-7xl mx-auto overflow-visible">
         <h1 className="text-3xl md:text-4xl font-bold text-center text-[#d4a017] mb-12">
           Our Services
         </h1>
@@ -221,18 +231,17 @@ export default function HomePage() {
             <FaChevronLeft size={18} />
           </button>
           
-          <div className="overflow-hidden">
+          <div className="overflow-x-hidden overflow-y-visible py-4">
             <div
-              className="flex gap-6 transition-transform duration-500 ease-in-out"
+              className="flex gap-6 transition-transform duration-500 ease-in-out overflow-visible"
               style={{
-                transform: `translateX(-${current * 100}%)`,
+                transform: `translateX(-${current * 34.5}%)`,
               }}
             >
               {services.map((service, index) => (
                 <div
                   key={index}
-                  className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] shrink-0 bg-[#111] border border-zinc-800 rounded-3xl overflow-hidden shadow-lg font-semibold transition duration-300 hover:border-[#d4a017]"
-                >
+                  className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.333%-1rem)] shrink-0 bg-[#111] border border-zinc-800 rounded-3xl overflow-hidden shadow-lg font-semibold transition-all duration-300 ease-in-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(212,160,23,0.35)] hover:border-[#d4a017] hover:z-50"                >
                   <img
                     src={service.image}
                     alt={service.title}
