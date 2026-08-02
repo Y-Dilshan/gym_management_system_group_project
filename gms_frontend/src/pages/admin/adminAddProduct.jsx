@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
-
-const getProductsEndpoint = () => {
-  const rawUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/api";
-  let base = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
-  if (base.endsWith("/products")) return base;
-  return `${base}/products`;
-};
+import { API_BASE_URL } from "../../utils/api.js";
 
 export default function AdminAddProduct() {
   const [products, setProducts] = useState([]);
@@ -22,8 +16,7 @@ export default function AdminAddProduct() {
 
   const loadProducts = async () => {
     try {
-      const endpoint = getProductsEndpoint();
-      const res = await fetch(endpoint);
+      const res = await fetch(`${API_BASE_URL}/products`);
       const data = await res.json();
 
       setProducts(data.products || []);
@@ -53,8 +46,7 @@ export default function AdminAddProduct() {
     }
 
     try {
-      const endpoint = getProductsEndpoint();
-      const res = await fetch(endpoint, {
+      const res = await fetch(`${API_BASE_URL}/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
