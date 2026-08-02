@@ -27,7 +27,7 @@ import AddTrainerPage from "./pages/admin/adminAddTrainersPage.jsx";
 import AdminMemberships from "./pages/admin/adminMembership.jsx";
 import AdminRevenuePage from "./pages/admin/adminReveuePage.jsx";
 import AdminSettingsPage from "./pages/admin/adminSettingPage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
+import ProfilePage from "./pages/profilepage.jsx";
 import SessionPage from "./pages/sessionPage.jsx";
 import TrainerBookingsPage from "./pages/trainers/bookingPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -45,7 +45,7 @@ function App() {
         <Toaster position="top-right" />
 
         <Routes>
-          <Route path="/*" element={<HomePage />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/signin" element={<SigninPage />} />
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/Applyastrainer" element={<ApplyAsTrainer />} />
@@ -130,6 +130,9 @@ function App() {
               <TrainerBookingsPage />
             </ProtectedRoute>
           } />
+
+          {/* Fallback Catch-All Route */}
+          <Route path="*" element={<HomePage />} />
         </Routes>
       </BrowserRouter>
     </div>

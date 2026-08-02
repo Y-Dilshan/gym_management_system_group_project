@@ -165,10 +165,10 @@ profile_picture:
     if (path.startsWith("data:") || path.startsWith("http://") || path.startsWith("https://")) {
       return path;
     }
-    const baseUrl = API.replace(/\/api\/?$/, "");
+    const baseUrl = (API || "").replace(/\/api\/?$/, "");
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
     return `${baseUrl}${cleanPath}`;
-  }
+  };
   // Loading state
   if (loading) {
     return (
