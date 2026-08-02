@@ -130,8 +130,6 @@ function App() {
               <TrainerBookingsPage />
             </ProtectedRoute>
           } />
-
-          {/* Fallback Catch-All Route */}
           <Route path="*" element={<HomePage />} />
         </Routes>
       </BrowserRouter>

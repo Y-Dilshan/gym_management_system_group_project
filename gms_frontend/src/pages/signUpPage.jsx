@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function SignUpPage() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ export default function SignUpPage() {
   const handleGoogleLoginSubmit = async (googleEmail, googleName) => {
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+        `${API_BASE_URL}/users/google-login`,
         {
           email: googleEmail,
           full_name: googleName || googleEmail.split("@")[0],
@@ -58,7 +59,7 @@ export default function SignUpPage() {
   const handleRegister = async () => {
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/users/register",
+        `${API_BASE_URL}/users/register`,
         {
           full_name: fullName,
           email: email,
@@ -215,7 +216,7 @@ export default function SignUpPage() {
                       try {
                         const decoded = jwtDecode(credentialResponse.credential);
                         const response = await axios.post(
-                          import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+                          `${API_BASE_URL}/users/google-login`,
                           {
                             email: decoded.email,
                             full_name: decoded.name,

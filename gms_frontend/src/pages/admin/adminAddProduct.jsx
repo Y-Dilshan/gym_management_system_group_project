@@ -1,7 +1,12 @@
 import { useEffect, useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
-const API = `${import.meta.env.VITE_BACKEND_URL}/products`;
+const getProductsEndpoint = () => {
+  const rawUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:3000/api";
+  let base = rawUrl.endsWith("/") ? rawUrl.slice(0, -1) : rawUrl;
+  if (base.endsWith("/products")) return base;
+  return `${base}/products`;
+};
 
 export default function AdminAddProduct() {
   const [products, setProducts] = useState([]);
@@ -17,12 +22,13 @@ export default function AdminAddProduct() {
 
   const loadProducts = async () => {
     try {
-      const res = await fetch(API);
+      const endpoint = getProductsEndpoint();
+      const res = await fetch(endpoint);
       const data = await res.json();
 
       setProducts(data.products || []);
     } catch (err) {
-      console.error(err);
+      console.error("Load Products Error:", err);
       toast.error("Failed to load products");
     }
   };
@@ -41,8 +47,14 @@ export default function AdminAddProduct() {
   const createProduct = async () => {
     const token = localStorage.getItem("token");
 
+    if (!form.product_name || !form.category || !form.price) {
+      toast.error("Please fill in required fields (Name, Category, Price)");
+      return;
+    }
+
     try {
-      const res = await fetch(API, {
+      const endpoint = getProductsEndpoint();
+      const res = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -53,8 +65,6 @@ export default function AdminAddProduct() {
 
       const data = await res.json();
 
-    //   toast.success(data.message);
-    //   loadProducts();
       if (res.ok) {
         toast.success("Product Added Successfully");
         loadProducts();
@@ -68,11 +78,11 @@ export default function AdminAddProduct() {
           image_url: "",
         });
       } else {
-        toast.error(data.message);
+        toast.error(data.message || data.error || "Failed to add product");
       }
     } catch (err) {
-      console.error(err);
-      toast.error("Something went wrong");
+      console.error("Create Product Error:", err);
+      toast.error("Network error: Failed to connect to server");
     }
   };
 

@@ -6,6 +6,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { FcGoogle } from "react-icons/fc";
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ export default function SigninPage() {
   const handleGoogleLoginSubmit = async (googleEmail, googleName) => {
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+        `${API_BASE_URL}/users/google-login`,
         {
           email: googleEmail,
           full_name: googleName || googleEmail.split("@")[0],
@@ -61,7 +62,7 @@ export default function SigninPage() {
 
     try {
       const response = await axios.post(
-        import.meta.env.VITE_BACKEND_URL + "/users/login",
+        `${API_BASE_URL}/users/login`,
         {
           email,
           password,
@@ -127,13 +128,13 @@ export default function SigninPage() {
             Sign In
           </button>
           
-          <div className="w-full flex justify-center">
+          <div className="w-[400px] flex justify-center">
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
                 try {
                   const decoded = jwtDecode(credentialResponse.credential);
                   const response = await axios.post(
-                    import.meta.env.VITE_BACKEND_URL + "/users/google-login",
+                    `${API_BASE_URL}/users/google-login`,
                     {
                       email: decoded.email,
                       full_name: decoded.name,

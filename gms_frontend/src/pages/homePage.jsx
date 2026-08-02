@@ -10,6 +10,8 @@ import { FiLogOut } from "react-icons/fi";
 import BMI from "../components/bmi.jsx";
 import { toast } from "react-hot-toast"; 
 
+import { getValidAuth, clearAuth } from "../utils/auth.js";
+
 export default function HomePage() {
   const navigate = useNavigate();
   const [current, setCurrent] = useState(0);
@@ -21,19 +23,9 @@ const [contactMessage, setContactMessage] = useState("");
 const [contactLoading, setContactLoading] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userString = localStorage.getItem("user");
-    if (token && userString) {
-      setIsLogged(true);
-      try {
-        setUser(JSON.parse(userString));
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      setIsLogged(false);
-      setUser(null);
-    }
+    const auth = getValidAuth();
+    setIsLogged(auth.isLogged);
+    setUser(auth.user);
   }, []);
 
   const handleDashboard = () => {

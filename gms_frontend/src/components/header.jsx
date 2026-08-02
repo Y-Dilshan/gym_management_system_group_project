@@ -3,6 +3,8 @@ import { FaCartShopping } from "react-icons/fa6";
 import { FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { useState, useEffect } from "react";
 
+import { getValidAuth, clearAuth } from "../utils/auth.js";
+
 export default function Header() {
   const [showOption, setShowOption] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -24,19 +26,9 @@ export default function Header() {
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userString = localStorage.getItem("user");
-    if (token && userString) {
-      setIsLogged(true);
-      try {
-        setUser(JSON.parse(userString));
-      } catch (e) {
-        console.error(e);
-      }
-    } else {
-      setIsLogged(false);
-      setUser(null);
-    }
+    const auth = getValidAuth();
+    setIsLogged(auth.isLogged);
+    setUser(auth.user);
 
     updateCartCount();
     window.addEventListener("storage", updateCartCount);
@@ -62,8 +54,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearAuth();
     setIsLogged(false);
     setUser(null);
     setShowOption(false);
