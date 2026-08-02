@@ -21,6 +21,8 @@ import { AiFillSchedule } from "react-icons/ai";
 import { SiRevenuecat } from "react-icons/si";
 import { IoIosSettings } from "react-icons/io";
 
+import { API_BASE_URL as API } from "../utils/api.js";
+
 export default function AdminDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -37,8 +39,6 @@ export default function AdminDashboard() {
   });
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token");

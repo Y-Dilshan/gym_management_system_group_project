@@ -3,6 +3,7 @@ import Footer from "../components/footer.jsx";
 import { FaCalendarCheck } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { API_BASE_URL as API } from "../utils/api.js";
 
 const categories = [
   { label: "All", value: "all" },
@@ -20,8 +21,6 @@ export default function TrainersPage() {
 
   ///////////////
   const [trainers, setTrainers] = useState([]);
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   const getTrainerImage = (path) => {
     if (!path) return "/trainer1.jpg";

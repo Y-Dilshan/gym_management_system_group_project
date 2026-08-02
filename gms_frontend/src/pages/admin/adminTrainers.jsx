@@ -1,10 +1,9 @@
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { API_BASE_URL as API } from "../../utils/api.js";
 
 export default function AdminTrainers() {
   const [trainers, setTrainers] = useState([]);
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     loadTrainers();

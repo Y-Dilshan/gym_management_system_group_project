@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GoArrowLeft } from "react-icons/go";
+import { API_BASE_URL as API } from "../utils/api.js";
 
 export default function ResetPassword() {
   const [searchParams] = useSearchParams();
@@ -27,7 +28,6 @@ export default function ResetPassword() {
     setLoading(true);
 
     try {
-      const API = import.meta.env.VITE_BACKEND_URL;
       const res = await axios.post(`${API}/users/reset-password`, {
         token,
         newPassword,

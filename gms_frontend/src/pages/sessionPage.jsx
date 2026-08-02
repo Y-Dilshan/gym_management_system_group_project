@@ -3,13 +3,12 @@ import Footer from "../components/footer";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL as API } from "../utils/api.js";
 
 export default function SessionsPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const trainer = location.state?.trainer;
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   const availableSlots = [
     "06:00 AM",
