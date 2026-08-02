@@ -46,12 +46,12 @@ export default function TrainerApplicationsPage() {
         },
         body: JSON.stringify({ password }),
       });
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
         toast.success(data.message || "Application approved successfully!");
         loadApplications();
       } else {
-        toast.error(data.error || "Failed to approve application");
+        toast.error(data.error || data.message || `Failed to approve (HTTP ${res.status})`);
       }
     } catch (err) {
       console.error(err);
