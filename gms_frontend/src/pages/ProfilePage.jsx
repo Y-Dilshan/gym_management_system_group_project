@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function ProfilePage() {
   const navigate = useNavigate();
@@ -14,8 +15,6 @@ export default function ProfilePage() {
   const [password, setPassword] = useState("");
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
     useEffect(() => {
     const token = localStorage.getItem("token");
@@ -62,12 +61,6 @@ export default function ProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-
-    // API URL validation
-    if (!API) {
-      toast.error("API URL not configured");
-      return;
-    }
 
     // User validation
     if (!user) {
@@ -121,7 +114,7 @@ profile_picture:
         return;
       }
 
-      const res = await fetch(`${API}/users/${userId}`, {
+      const res = await fetch(`${API_BASE_URL}/users/${userId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -165,7 +158,7 @@ profile_picture:
     if (path.startsWith("data:") || path.startsWith("http://") || path.startsWith("https://")) {
       return path;
     }
-    const baseUrl = (API || "").replace(/\/api\/?$/, "");
+    const baseUrl = API_BASE_URL.replace(/\/api\/?$/, "");
     const cleanPath = path.startsWith("/") ? path : `/${path}`;
     return `${baseUrl}${cleanPath}`;
   };
