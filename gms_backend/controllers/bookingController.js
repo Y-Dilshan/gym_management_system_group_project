@@ -23,6 +23,7 @@ const initBookingsTable = () => {
     db.query("ALTER TABLE bookings ADD COLUMN time_slot VARCHAR(50) NOT NULL", () => {});
     db.query("ALTER TABLE bookings ADD COLUMN status VARCHAR(20) DEFAULT 'PENDING'", () => {});
     db.query("ALTER TABLE bookings MODIFY COLUMN class_id INT DEFAULT NULL", () => {});
+    db.query("ALTER TABLE bookings DROP FOREIGN KEY fk_booking_member", () => {});
   });
 };
 initBookingsTable();
@@ -57,7 +58,23 @@ export const createBooking = (req, res) => {
       if (insertErr) {
         console.error("Error creating booking:", insertErr);
 
-        // Fallback: If class_id column rejects NULL or lacks default value, modify column and retry
+        // Fallback 1: If bad foreign key constraint fk_booking_member exists referencing non-existent members table
+        if (insertErr.code === "ER_NO_REFERENCED_ROW_2" || insertErr.message?.includes("foreign key constraint fails") || insertErr.message?.includes("fk_booking_member")) {
+          db.query("ALTER TABLE bookings DROP FOREIGN KEY fk_booking_member", () => {
+            db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (retryErr, retryResult) => {
+              if (retryErr) {
+                return res.status(500).json({ error: retryErr.message || "Failed to book session" });
+              }
+              return res.status(201).json({
+                message: "Booking requested successfully!",
+                booking_id: retryResult.insertId
+              });
+            });
+          });
+          return;
+        }
+
+        // Fallback 2: If class_id column rejects NULL or lacks default value, modify column and retry
         if (insertErr.code === "ER_NO_DEFAULT_FOR_FIELD" || insertErr.message?.includes("class_id")) {
           db.query("ALTER TABLE bookings MODIFY COLUMN class_id INT DEFAULT NULL", () => {
             db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (retryErr, retryResult) => {
