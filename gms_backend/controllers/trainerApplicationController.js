@@ -184,86 +184,94 @@ export const approveApplication = (req, res) => {
                     .json({ error: "Failed to create trainer account" });
                 }
 
-                const newUserId = userResult.insertId;
+                const expYears = app.experience_years ? parseInt(app.experience_years, 10) : 0;
+                const spec = app.specialization || "General Training";
+                const bioText = app.bio || "";
 
-                const trainerSql = `INSERT INTO trainers (user_id, specialization, bio, experience_years) VALUES (?, ?, ?, ?)`;
-                db.query(
-                  trainerSql,
-                  [newUserId, app.specialization, app.bio, app.experience_years],
-                  (trainerErr, trainerResult) => {
-                    if (trainerErr) {
-                      console.error(
-                        "Error creating trainer profile:",
-                        trainerErr,
-                      );
-
-                      db.query("DELETE FROM users WHERE user_id = ?", [newUserId]);
-                      return res
-                        .status(500)
-                        .json({ error: "Failed to create trainer profile" });
-                    }
-
-                    const newTrainerId = trainerResult.insertId;
-
-                    // Update users table with trainer_id
-                    db.query(
-                      "UPDATE users SET trainer_id = ? WHERE user_id = ?",
-                      [newTrainerId, newUserId],
-                      (updateUserErr) => {
-                        if (updateUserErr) {
-                          console.error("Error updating users trainer_id:", updateUserErr);
-                        }
+                const proceedWithApproval = (newTrainerId) => {
+                  // Update users table with trainer_id if column exists
+                  db.query(
+                    "UPDATE users SET trainer_id = ? WHERE user_id = ?",
+                    [newTrainerId, newUserId],
+                    (updateUserErr) => {
+                      if (updateUserErr) {
+                        console.error("Error updating users trainer_id:", updateUserErr);
                       }
-                    );
+                    }
+                  );
 
-                    db.query(
-                      `UPDATE trainer_applications 
-                       SET status = 'approved', reviewed_at = NOW() 
-                       WHERE application_id = ?`,
-                      [id],
-                      (updateErr) => {
-                        if (updateErr)
-                          console.error(
-                            "Error updating application status:",
-                            updateErr,
-                          );
-                      },
-                    );
+                  db.query(
+                    `UPDATE trainer_applications 
+                     SET status = 'approved', reviewed_at = NOW() 
+                     WHERE application_id = ?`,
+                    [id],
+                    (updateErr) => {
+                      if (updateErr)
+                        console.error("Error updating application status:", updateErr);
+                    }
+                  );
 
-                    // Send login credentials via email to trainer
-                    sendEmail({
-                      to: app.email,
-                      subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
-                      html: `
-                        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                          <h2 style="color: #D4AF37;">Congratulations ${app.full_name}!</h2>
-                          <p>Your application to join <strong>Power Zone Gym</strong> as a Personal Trainer has been <span style="color: green; font-weight: bold;">APPROVED</span>!</p>
-                          
-                          <p>Below are your temporary login credentials:</p>
-                          <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
-                            <p style="margin: 5px 0;"><strong>Email:</strong> ${app.email}</p>
-                            <p style="margin: 5px 0;"><strong>Temporary Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; font-size: 14px; border-radius: 4px;">${password}</code></p>
-                          </div>
-
-                          <p>Please log in to your account and change your password for security.</p>
-                          <br/>
-                          <p>Best regards,<br/><strong>Power Zone Gym Admin Team</strong></p>
+                  // Send login credentials via email to trainer
+                  sendEmail({
+                    to: app.email,
+                    subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
+                    html: `
+                      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                        <h2 style="color: #D4AF37;">Congratulations ${app.full_name}!</h2>
+                        <p>Your application to join <strong>Power Zone Gym</strong> as a Personal Trainer has been <span style="color: green; font-weight: bold;">APPROVED</span>!</p>
+                        
+                        <p>Below are your temporary login credentials:</p>
+                        <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
+                          <p style="margin: 5px 0;"><strong>Email:</strong> ${app.email}</p>
+                          <p style="margin: 5px 0;"><strong>Temporary Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; font-size: 14px; border-radius: 4px;">${password}</code></p>
                         </div>
-                      `,
-                    });
 
-                    res.status(201).json({
-                      message:
-                        "Application approved. Trainer account created successfully.",
-                      trainerId: trainerResult.insertId,
-                      userId: newUserId,
-                      credentials: {
-                        email: app.email,
-                        password: password,
-                      },
-                    });
+                        <p>Please log in to your account and change your password for security.</p>
+                        <br/>
+                        <p>Best regards,<br/><strong>Power Zone Gym Admin Team</strong></p>
+                      </div>
+                    `,
+                  });
 
-                  },
+                  res.status(201).json({
+                    message: "Application approved. Trainer account created successfully.",
+                    trainerId: newTrainerId,
+                    userId: newUserId,
+                    credentials: {
+                      email: app.email,
+                      password: password,
+                    },
+                  });
+                };
+
+                const trainerSql1 = `INSERT INTO trainers (user_id, specialization, bio, experience_years) VALUES (?, ?, ?, ?)`;
+                db.query(
+                  trainerSql1,
+                  [newUserId, spec, bioText, expYears],
+                  (trainerErr, trainerResult) => {
+                    if (!trainerErr) {
+                      proceedWithApproval(trainerResult.insertId);
+                    } else {
+                      console.error("Error creating trainer profile (query 1):", trainerErr);
+                      // Fallback query if profile_picture is required in trainers table
+                      const trainerSql2 = `INSERT INTO trainers (user_id, specialization, bio, experience_years, profile_picture) VALUES (?, ?, ?, ?, ?)`;
+                      db.query(
+                        trainerSql2,
+                        [newUserId, spec, bioText, expYears, "/default-trainer.png"],
+                        (fallbackErr, fallbackResult) => {
+                          if (!fallbackErr) {
+                            proceedWithApproval(fallbackResult.insertId);
+                          } else {
+                            console.error("Error creating trainer profile (query 2):", fallbackErr);
+                            db.query("DELETE FROM users WHERE user_id = ?", [newUserId]);
+                            return res.status(500).json({
+                              error: trainerErr.message || fallbackErr.message || "Failed to create trainer profile",
+                            });
+                          }
+                        }
+                      );
+                    }
+                  }
                 );
               },
             );
