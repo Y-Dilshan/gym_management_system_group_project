@@ -11,6 +11,7 @@ export default function Header() {
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [avatarError, setAvatarError] = useState(false);
 
   const navigate = useNavigate();
 
@@ -29,6 +30,7 @@ export default function Header() {
     const auth = getValidAuth();
     setIsLogged(auth.isLogged);
     setUser(auth.user);
+    setAvatarError(false);
   };
 
   useEffect(() => {
@@ -48,12 +50,14 @@ export default function Header() {
   }, []);
 
   const getAvatarSrc = (path) => {
-    if (!path) return null;
-    if (path.startsWith("data:") || path.startsWith("http://") || path.startsWith("https://")) {
-      return path;
+    if (!path || typeof path !== "string") return null;
+    const cleanStr = path.trim();
+    if (!cleanStr) return null;
+    if (cleanStr.startsWith("data:") || cleanStr.startsWith("http://") || cleanStr.startsWith("https://")) {
+      return cleanStr;
     }
     const baseUrl = (import.meta.env.VITE_API_URL || "https://gym-management-system-group-project.onrender.com").replace(/\/api\/?$/, "");
-    const cleanPath = path.startsWith("/") ? path : `/${path}`;
+    const cleanPath = cleanStr.startsWith("/") ? cleanStr : `/${cleanStr}`;
     return `${baseUrl}${cleanPath}`;
   };
 
@@ -148,15 +152,12 @@ export default function Header() {
           {isLogged ? (
             <div className="relative">
               <button onClick={() => setShowOption(!showOption)} className="cursor-pointer flex items-center"> 
-                {user?.profile_picture ? (
+                {user?.profile_picture && !avatarError && getAvatarSrc(user.profile_picture) ? (
                   <img
                     src={getAvatarSrc(user.profile_picture)}
                     alt={user?.full_name || "Profile"}
                     className="w-9 h-9 md:w-10 md:h-10 rounded-full object-cover border-2 border-[#d4a017] hover:scale-105 duration-300 shadow-md"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.style.display = "none";
-                    }}
+                    onError={() => setAvatarError(true)}
                   />
                 ) : (
                   <FaUserCircle className="text-3xl md:text-4xl text-white hover:text-[#d4a017] duration-300"/>
@@ -167,15 +168,12 @@ export default function Header() {
                   
                   {/* User Section */}
                   <div className="flex flex-col items-center py-4 border-b border-zinc-800 bg-zinc-950">
-                    {user?.profile_picture ? (
+                    {user?.profile_picture && !avatarError && getAvatarSrc(user.profile_picture) ? (
                       <img
                         src={getAvatarSrc(user.profile_picture)}
                         alt={user?.full_name || "Profile"}
                         className="w-14 h-14 rounded-full object-cover border-2 border-[#d4a017] shadow-lg"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.style.display = "none";
-                        }}
+                        onError={() => setAvatarError(true)}
                       />
                     ) : (
                       <FaUserCircle size={45} className="text-[#d4a017]" />
