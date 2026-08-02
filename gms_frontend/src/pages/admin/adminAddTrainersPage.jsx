@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL } from "../../utils/api.js";
 
 export default function AddTrainerPage() {
   const [trainer, setTrainer] = useState({
@@ -28,7 +29,7 @@ export default function AddTrainerPage() {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/users/admin/create`,
+        `${API_BASE_URL}/users/admin/create`,
         {
           full_name: trainer.full_name,
           email: trainer.email,

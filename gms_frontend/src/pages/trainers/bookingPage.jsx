@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { FaUserCircle, FaCalendarCheck, FaUsers, FaUserEdit, FaCheck, FaTimes } from "react-icons/fa";
 import Header from "../../components/header.jsx";
 import Footer from "../../components/footer.jsx";
+import { API_BASE_URL as API } from "../../utils/api.js";
 
 export default function TrainerDashboardPage() {
   const navigate = useNavigate();
@@ -22,8 +23,6 @@ export default function TrainerDashboardPage() {
     bio: "",
     experience_years: "",
   });
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const userString = localStorage.getItem("user");

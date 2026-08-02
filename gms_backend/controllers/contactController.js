@@ -56,7 +56,7 @@ export const replyContactMessage = async (req, res) => {
     return res.status(400).json({ error: "Email and reply text are required" });
   }
 
-  const sent = await sendEmail({
+  const result = await sendEmail({
     to: email,
     subject: "Reply from Power Zone Gym Support",
     html: `
@@ -73,10 +73,13 @@ export const replyContactMessage = async (req, res) => {
     `,
   });
 
-  if (sent) {
+  const isSuccess = result === true || result?.success === true;
+
+  if (isSuccess) {
     res.status(200).json({ message: "Reply email sent successfully!" });
   } else {
-    res.status(500).json({ error: "Failed to send reply email." });
+    const errMsg = result?.error || "Failed to send reply email.";
+    res.status(500).json({ error: errMsg });
   }
 };
 

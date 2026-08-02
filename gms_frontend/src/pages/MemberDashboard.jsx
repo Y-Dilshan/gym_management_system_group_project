@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import { FaUserCircle, FaCalendarAlt, FaAppleAlt } from "react-icons/fa";
 import { FaCartShopping, FaDumbbell } from "react-icons/fa6";
 import gymImage from "../assets/hero.png";
+import { API_BASE_URL as API } from "../utils/api.js";
 
 export default function MemberDashboard() {
   const navigate = useNavigate();
@@ -20,8 +21,6 @@ export default function MemberDashboard() {
   const [rescheduleId, setRescheduleId] = useState(null);
   const [newDate, setNewDate] = useState("");
   const [newSlot, setNewSlot] = useState("08:00 AM");
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   const timeSlots = [
     "06:00 AM", "07:00 AM", "08:00 AM", "09:00 AM", "10:00 AM", "11:00 AM", 

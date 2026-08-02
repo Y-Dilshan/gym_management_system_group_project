@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { API_BASE_URL as API } from "../../utils/api.js";
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
@@ -19,8 +20,6 @@ export default function AdminUsersPage() {
     bio: "",
     experience_years: "",
   });
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   const loadUsers = async () => {
     try {

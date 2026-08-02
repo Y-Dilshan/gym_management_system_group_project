@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL as API } from "../../utils/api.js";
 
 export default function AdminSchedules() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     loadAllBookings();

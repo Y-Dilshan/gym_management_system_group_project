@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL as API } from "../../utils/api.js";
 import {
   FaDollarSign,
   FaChartLine,
@@ -16,8 +17,6 @@ export default function AdminRevenuePage() {
   });
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     loadRevenueDetails();

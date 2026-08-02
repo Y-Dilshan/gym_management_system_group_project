@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { GoArrowLeft } from "react-icons/go";
+import { API_BASE_URL as API } from "../utils/api.js";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -18,7 +19,6 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const API = import.meta.env.VITE_BACKEND_URL;
       const res = await axios.post(`${API}/users/forgot-password`, { email });
       setMessage(res.data.message);
     } catch (err) {
