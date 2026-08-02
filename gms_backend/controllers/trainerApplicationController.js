@@ -188,7 +188,7 @@ export const approveApplication = (req, res) => {
                 const spec = app.specialization || "General Training";
                 const bioText = app.bio || "";
 
-                const proceedWithApproval = (newTrainerId) => {
+                const proceedWithApproval = async (newTrainerId) => {
                   // Update users table with trainer_id if column exists
                   db.query(
                     "UPDATE users SET trainer_id = ? WHERE user_id = ?",
@@ -212,7 +212,7 @@ export const approveApplication = (req, res) => {
                   );
 
                   // Send login credentials via email to trainer
-                  sendEmail({
+                  const emailSent = await sendEmail({
                     to: app.email,
                     subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
                     html: `
@@ -234,7 +234,9 @@ export const approveApplication = (req, res) => {
                   });
 
                   res.status(201).json({
-                    message: "Application approved. Trainer account created successfully.",
+                    message: emailSent
+                      ? "Application approved. Trainer account created and credentials email sent successfully!"
+                      : "Application approved & trainer account created (Credentials email failed to send, check Render server logs).",
                     trainerId: newTrainerId,
                     userId: newUserId,
                     credentials: {
