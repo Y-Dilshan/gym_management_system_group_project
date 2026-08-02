@@ -1,12 +1,29 @@
 import nodemailer from "nodemailer";
 
-export const getTransporter = () => {
-  const user = (process.env.EMAIL_USER || "").trim().replace(/^["']|["']$/g, "");
-  const pass = (process.env.EMAIL_PASS || "").replace(/\s+/g, "").replace(/^["']|["']$/g, "");
+const getCredentials = () => {
+  const user = (
+    process.env.EMAIL_USER ||
+    process.env.email_user ||
+    process.env.MAIL_USER ||
+    process.env.GMAIL_USER ||
+    process.env.SENDER_EMAIL ||
+    "powerzonefitnesssupport@gmail.com"
+  ).trim().replace(/^["']|["']$/g, "");
 
-  if (!user || !pass) {
-    console.warn("⚠️ EMAIL_USER or EMAIL_PASS environment variables are missing!");
-  }
+  const pass = (
+    process.env.EMAIL_PASS ||
+    process.env.email_pass ||
+    process.env.MAIL_PASS ||
+    process.env.GMAIL_PASS ||
+    process.env.EMAIL_PASSWORD ||
+    ""
+  ).replace(/\s+/g, "").replace(/^["']|["']$/g, "");
+
+  return { user, pass };
+};
+
+export const getTransporter = () => {
+  const { user, pass } = getCredentials();
 
   return nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -21,11 +38,10 @@ export const getTransporter = () => {
 
 export const sendEmail = async ({ to, subject, html }) => {
   try {
-    const user = (process.env.EMAIL_USER || "").trim().replace(/^["']|["']$/g, "");
-    const pass = (process.env.EMAIL_PASS || "").replace(/\s+/g, "").replace(/^["']|["']$/g, "");
+    const { user, pass } = getCredentials();
 
     if (!user || !pass) {
-      const errMsg = `EMAIL_USER or EMAIL_PASS environment variables are missing (EMAIL_USER set: ${!!user}, EMAIL_PASS set: ${!!pass})`;
+      const errMsg = `EMAIL_PASS environment variable is missing on server. Please check Render Environment settings for gym_management_system_group_project-3.`;
       console.error("❌ Email failed:", errMsg);
       return { success: false, error: errMsg };
     }
@@ -45,3 +61,4 @@ export const sendEmail = async ({ to, subject, html }) => {
     return { success: false, error: error.message };
   }
 };
+
