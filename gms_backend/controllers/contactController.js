@@ -1,6 +1,23 @@
 import db from "../config.js";
 import { sendEmail } from "../utils/mailer.js";
 
+// Ensure table exists on server start
+const initContactTable = () => {
+  const createTableSql = `
+    CREATE TABLE IF NOT EXISTS contact_messages (
+      message_id INT AUTO_INCREMENT PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      message TEXT NOT NULL,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+  db.query(createTableSql, (err) => {
+    if (err) console.error("Error creating contact_messages table:", err);
+  });
+};
+initContactTable();
+
 // 1. Submit a new contact message (User)
 export const createContactMessage = (req, res) => {
   const { name, email, message } = req.body;
