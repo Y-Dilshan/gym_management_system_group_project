@@ -152,8 +152,26 @@ export const createUserByAdmin = (req, res) => {
                 });
               }
 
+              // Send credentials email to trainer
+              sendEmail({
+                to: email,
+                subject: "Welcome to Power Zone Gym - Your Trainer Credentials",
+                html: `
+                  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                    <h2 style="color: #D4AF37;">Welcome ${full_name}!</h2>
+                    <p>An account has been created for you as a <strong>Personal Trainer</strong> at Power Zone Gym.</p>
+                    <p>Here are your account credentials:</p>
+                    <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
+                      <p style="margin: 5px 0;"><strong>Email:</strong> ${email}</p>
+                      <p style="margin: 5px 0;"><strong>Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; font-size: 14px; border-radius: 4px;">${password}</code></p>
+                    </div>
+                    <p>Log in to your account to get started.</p>
+                  </div>
+                `,
+              });
+
               return res.status(201).json({
-                message: "Trainer created successfully",
+                message: "Trainer created successfully and credentials email sent",
                 trainerId: trainerResult.insertId,
               });
             },
