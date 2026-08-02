@@ -14,8 +14,6 @@ export default function ProductByPage() {
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const API = import.meta.env.VITE_BACKEND_URL;
-
   useEffect(() => {
     loadproduct();
   }, [id]);

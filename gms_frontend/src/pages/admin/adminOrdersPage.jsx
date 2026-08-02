@@ -6,6 +6,7 @@ import {
   FaTruck,
   FaDollarSign,
 } from "react-icons/fa";
+import { API_BASE_URL } from "../../utils/api.js";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -17,12 +18,10 @@ export default function AdminOrdersPage() {
     revenue: 0,
   });
 
-  const API = import.meta.env.VITE_BACKEND_URL;
-
   const loadOrders = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/orders`, {
+      const res = await fetch(`${API_BASE_URL}/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -68,7 +67,7 @@ export default function AdminOrdersPage() {
   const handleUpdateStatus = async (id, upperStatus) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/orders/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/orders/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -97,7 +96,7 @@ export default function AdminOrdersPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/orders/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/orders/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

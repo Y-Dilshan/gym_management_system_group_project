@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -19,8 +20,6 @@ export default function PaymentPage() {
   const [done, setDone] = useState(false);
   const [confirmedOrderId, setConfirmedOrderId] = useState("");
   const [processing, setProcessing] = useState(false);
-
-  const API = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -80,7 +79,7 @@ export default function PaymentPage() {
         quantity: item.qty
       }));
 
-      const res = await fetch(`${API}/orders`, {
+      const res = await fetch(`${API_BASE_URL}/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
