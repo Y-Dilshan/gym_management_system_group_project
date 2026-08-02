@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { FaReply, FaPaperPlane } from "react-icons/fa";
+import { API_BASE_URL } from "../../utils/api.js";
 
 export default function AdminMessagesPage() {
   const [messages, setMessages] = useState([]);
@@ -10,15 +11,13 @@ export default function AdminMessagesPage() {
   const [replyText, setReplyText] = useState("");
   const [sending, setSending] = useState(false);
 
-  const API = import.meta.env.VITE_BACKEND_URL;
-
   useEffect(() => {
     fetchMessages();
   }, []);
 
   const fetchMessages = () => {
     axios
-      .get(`${API}/contact`)
+      .get(`${API_BASE_URL}/contact`)
       .then((res) => {
         setMessages(res.data);
         setLoading(false);
@@ -37,7 +36,7 @@ export default function AdminMessagesPage() {
 
     setSending(true);
     try {
-      const res = await axios.post(`${API}/contact/reply`, {
+      const res = await axios.post(`${API_BASE_URL}/contact/reply`, {
         email: msg.email,
         name: msg.name,
         originalMessage: msg.message,

@@ -1,6 +1,77 @@
 import db from "../config.js";
 import { sendEmail } from "../utils/mailer.js";
 
+// Helper to send order confirmation email
+const sendOrderConfirmationEmail = (orderId) => {
+  const query = `
+    SELECT o.order_id, o.order_date, o.total_amount, o.delivery_address,
+           u.email, u.full_name,
+           oi.quantity, oi.unit_price, p.product_name
+    FROM orders o
+    JOIN users u ON o.user_id = u.user_id
+    JOIN order_items oi ON o.order_id = oi.order_id
+    JOIN products p ON oi.product_id = p.product_id
+    WHERE o.order_id = ?
+  `;
+
+  db.query(query, [orderId], async (err, results) => {
+    if (err || !results || results.length === 0) {
+      console.error("Error fetching order details for confirmation email:", err);
+      return;
+    }
+
+    const first = results[0];
+    const itemsHtml = results
+      .map(
+        (item) => `
+        <tr>
+          <td style="padding: 8px; border-bottom: 1px solid #eee;">${item.product_name}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: center;">${item.quantity}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">Rs. ${Number(item.unit_price).toLocaleString()}</td>
+          <td style="padding: 8px; border-bottom: 1px solid #eee; text-align: right;">Rs. ${Number(item.quantity * item.unit_price).toLocaleString()}</td>
+        </tr>
+      `
+      )
+      .join("");
+
+    await sendEmail({
+      to: first.email,
+      subject: `🎉 Order Confirmation #${orderId} - Power Zone Gym`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #e0e0e0; border-radius: 10px;">
+          <h2 style="color: #D4AF37;">Thank You for Your Order, ${first.full_name}! 🏋️‍♂️</h2>
+          <p>We have successfully received your order <strong>#${orderId}</strong>.</p>
+          
+          <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
+            <p style="margin: 5px 0;"><strong>Order ID:</strong> #${orderId}</p>
+            <p style="margin: 5px 0;"><strong>Delivery Address:</strong> ${first.delivery_address || 'As specified'}</p>
+            <p style="margin: 5px 0;"><strong>Total Amount:</strong> <span style="color: #D4AF37; font-weight: bold;">Rs. ${Number(first.total_amount).toLocaleString()}</span></p>
+          </div>
+
+          <h3>Order Details</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <thead>
+              <tr style="background-color: #111; color: #D4AF37;">
+                <th style="padding: 8px; text-align: left;">Product</th>
+                <th style="padding: 8px; text-align: center;">Qty</th>
+                <th style="padding: 8px; text-align: right;">Price</th>
+                <th style="padding: 8px; text-align: right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+
+          <p>We are processing your order now. You will receive updates as your order status progresses!</p>
+          <br/>
+          <p>Best regards,<br/><strong>Power Zone Gym Team</strong></p>
+        </div>
+      `,
+    });
+  });
+};
+
 // Create Order (for members)
 export const createOrder = (req, res) => {
   const user_id = req.user.user_id;
@@ -66,6 +137,9 @@ export const createOrder = (req, res) => {
 
         Promise.all(itemInsertPromises)
           .then(() => {
+            // Automatically send order confirmation email to customer
+            sendOrderConfirmationEmail(orderId);
+
             res.json({
               message: "Order created successfully",
               order_id: orderId,
@@ -131,6 +205,9 @@ export const createOrder = (req, res) => {
               console.log(err);
               return res.status(500).json({ message: err.message });
             }
+
+            // Automatically send order confirmation email to customer
+            sendOrderConfirmationEmail(orderId);
 
             res.json({
               message: "Order created successfully",

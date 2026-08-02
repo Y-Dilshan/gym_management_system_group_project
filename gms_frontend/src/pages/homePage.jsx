@@ -11,6 +11,7 @@ import BMI from "../components/bmi.jsx";
 import { toast } from "react-hot-toast"; 
 
 import { getValidAuth, clearAuth } from "../utils/auth.js";
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function HomePage() {
   const navigate = useNavigate();
@@ -18,9 +19,9 @@ export default function HomePage() {
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
   const [contactEmail, setContactEmail] = useState("");
-const [contactName, setContactName] = useState("");
-const [contactMessage, setContactMessage] = useState("");
-const [contactLoading, setContactLoading] = useState(false);
+  const [contactName, setContactName] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
+  const [contactLoading, setContactLoading] = useState(false);
 
   useEffect(() => {
     const auth = getValidAuth();
@@ -77,8 +78,7 @@ const [contactLoading, setContactLoading] = useState(false);
 
     setContactLoading(true);
     try {
-      const API = import.meta.env.VITE_BACKEND_URL;
-      const res = await axios.post(`${API}/contact`, {
+      const res = await axios.post(`${API_BASE_URL}/contact`, {
         name: contactName,
         email: contactEmail,
         message: contactMessage,
