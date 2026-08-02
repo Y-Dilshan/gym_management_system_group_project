@@ -37,6 +37,22 @@ export default function AdminAddProduct() {
     });
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image file size must be under 5MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setForm((prev) => ({ ...prev, image_url: reader.result }));
+        toast.success("Image selected from device!");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const createProduct = async () => {
     const token = localStorage.getItem("token");
 
@@ -224,12 +240,6 @@ export default function AdminAddProduct() {
 //                 Clear Form{" "}
 //               </button>
 //             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
     <div className="min-h-screen bg-[#0A0A0A]">
       <Toaster position="top-right" />
 
@@ -280,11 +290,56 @@ export default function AdminAddProduct() {
             <input type="number" name="stock_quantity" value={form.stock_quantity} onChange={handleChange} placeholder="Available stock" className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none"/>
           </div>
 
-          {/* Image URL */}
-          <div className="lg:col-span-2">
-            <label className="text-gray-300 text-sm mb-2 block"> Product Image URL </label>
-            <input
-              type="text" name="image_url" value={form.image_url} onChange={handleChange} placeholder="https://image-url.com" className="w-full bg-[#1A1A1A] border border-[#333] rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none"/>
+          {/* Image Upload / File Selector */}
+          <div className="lg:col-span-2 space-y-2">
+            <label className="text-gray-300 text-sm block"> Product Image </label>
+            
+            <div className="grid md:grid-cols-2 gap-4 items-center">
+              {/* Select File from Device */}
+              <div className="bg-[#1A1A1A] border border-[#333] rounded-xl p-3">
+                <span className="block text-xs text-gray-400 mb-1.5 font-semibold">📁 Choose Image from Device</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#D4AF37] file:text-black hover:file:bg-[#b8962d] cursor-pointer"
+                />
+              </div>
+
+              {/* Paste Image URL */}
+              <div className="bg-[#1A1A1A] border border-[#333] rounded-xl p-3">
+                <span className="block text-xs text-gray-400 mb-1.5 font-semibold">🔗 Or Paste Image URL</span>
+                <input
+                  type="text"
+                  name="image_url"
+                  value={form.image_url.startsWith("data:") ? "[Device Image Loaded]" : form.image_url}
+                  onChange={handleChange}
+                  placeholder="https://image-url.com"
+                  className="w-full bg-[#111] border border-[#333] rounded-lg px-3 py-2 text-xs text-white focus:border-[#D4AF37] outline-none"
+                />
+              </div>
+            </div>
+
+            {/* Live Image Preview */}
+            {form.image_url && (
+              <div className="mt-3 flex items-center gap-4 bg-[#111] border border-[#D4AF37]/30 p-3 rounded-xl w-fit">
+                <img
+                  src={form.image_url}
+                  alt="Preview"
+                  className="w-16 h-16 object-contain rounded-lg border border-[#D4AF37]/50 bg-black p-1"
+                />
+                <div>
+                  <p className="text-xs text-gray-200 font-bold">Selected Image Preview</p>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, image_url: "" })}
+                    className="text-xs text-red-400 hover:underline mt-1 cursor-pointer block"
+                  >
+                    Remove Image
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -296,8 +351,8 @@ export default function AdminAddProduct() {
 
         {/* Buttons */}
         <div className="flex gap-4 mt-8">
-          <button onClick={createProduct} className="bg-[#D4AF37] text-black font-bold px-8 py-3 rounded-xl hover:scale-105 transition duration-300"> Add Product </button>
-          <button onClick={clearForm} className="border border-red-500 text-red-500 px-8 py-3 rounded-xl hover:bg-red-500 hover:text-white transition duration-300"> Clear Form </button>
+          <button onClick={createProduct} className="bg-[#D4AF37] text-black font-bold px-8 py-3 rounded-xl hover:scale-105 transition duration-300 cursor-pointer"> Add Product </button>
+          <button onClick={clearForm} className="border border-red-500 text-red-500 px-8 py-3 rounded-xl hover:bg-red-500 hover:text-white transition duration-300 cursor-pointer"> Clear Form </button>
         </div>
       </div>
     </div>
