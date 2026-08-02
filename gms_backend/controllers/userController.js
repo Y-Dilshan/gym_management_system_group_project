@@ -557,7 +557,8 @@ export const forgotPassword = (req, res) => {
     const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000).toISOString().slice(0, 19).replace("T", " ");
 
     const sendResetEmail = async () => {
-      const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+      const requestOrigin = req.headers.origin || (req.headers.referer ? new URL(req.headers.referer).origin : null);
+      const frontendUrl = process.env.FRONTEND_URL || requestOrigin || "https://gym-management-system-group-project-eight.vercel.app";
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
       const sent = await sendEmail({
