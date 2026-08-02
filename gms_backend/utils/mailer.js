@@ -48,7 +48,40 @@ export const sendEmail = async ({ to, subject, html }) => {
     return { success: false, error: errMsg };
   }
 
-  // 1. HTTP Resend API if RESEND_API_KEY is provided
+  // 1. Brevo HTTP API (Allows sending emails to ANY recipient address for FREE without domain verification)
+  const brevoKey = (process.env.BREVO_API_KEY || "").trim().replace(/^["']|["']$/g, "");
+  if (brevoKey) {
+    try {
+      const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          "api-key": brevoKey,
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({
+          sender: { name: "Power Zone Gym", email: user },
+          to: [{ email: to }],
+          subject,
+          htmlContent: html
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        console.log(`✅ Email sent via Brevo HTTP API to ${to}`);
+        return { success: true, info: data };
+      } else {
+        const errorMsg = data.message || JSON.stringify(data);
+        console.error(`❌ Brevo API error (${res.status}):`, errorMsg);
+        return { success: false, error: `Brevo API Error: ${errorMsg}` };
+      }
+    } catch (e) {
+      console.error("❌ Brevo API Exception:", e.message);
+      return { success: false, error: `Brevo API Exception: ${e.message}` };
+    }
+  }
+
+  // 2. HTTP Resend API if RESEND_API_KEY is provided
   const resendApiKey = (process.env.RESEND_API_KEY || "").trim().replace(/^["']|["']$/g, "");
   if (resendApiKey) {
     try {
