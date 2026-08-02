@@ -552,18 +552,11 @@ export const forgotPassword = (req, res) => {
       return res.status(404).json({ error: "User with this email does not exist." });
     }
 
-    // Generate secure token & expiry (15 minutes)
+    // Generate secure token & expiry (15 minutes formatted for MySQL DATETIME)
     const resetToken = crypto.randomBytes(32).toString("hex");
-    const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000);
+    const resetTokenExpiry = new Date(Date.now() + 15 * 60 * 1000).toISOString().slice(0, 19).replace("T", " ");
 
-    // Update user with token and expiry
-    const updateSql = "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?";
-    db.query(updateSql, [resetToken, resetTokenExpiry, email], async (updateErr) => {
-      if (updateErr) {
-        console.error("Error updating reset token:", updateErr);
-        return res.status(500).json({ error: "Failed to save reset token" });
-      }
-
+    const sendResetEmail = async () => {
       const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
       const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
@@ -571,18 +564,54 @@ export const forgotPassword = (req, res) => {
         to: email,
         subject: "Password Reset Request",
         html: `
-          <h3>Password Reset Request</h3>
-          <p>You requested to reset your password. Click the link below to set a new password:</p>
-          <a href="${resetUrl}" target="_blank" style="padding: 10px 15px; background-color: #007bff; color: white; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
-          <p>This link is valid for 15 minutes.</p>
+          <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+            <h2 style="color: #D4AF37;">Power Zone Gym</h2>
+            <h3>Password Reset Request</h3>
+            <p>You requested to reset your password. Click the link below to set a new password:</p>
+            <p style="margin: 25px 0;">
+              <a href="${resetUrl}" target="_blank" style="padding: 12px 20px; background-color: #D4AF37; color: #000; font-weight: bold; text-decoration: none; border-radius: 8px; display: inline-block;">Reset Password</a>
+            </p>
+            <p style="font-size: 13px; color: #777;">This link is valid for 15 minutes. If you did not request this, please ignore this email.</p>
+          </div>
         `,
       });
 
       if (sent) {
-        res.status(200).json({ message: "Password reset link sent to your email!" });
+        return res.status(200).json({ message: "Password reset link sent to your email!" });
       } else {
-        res.status(500).json({ error: "Failed to send reset email." });
+        return res.status(500).json({ error: "Failed to send reset email." });
       }
+    };
+
+    // Update user with token and expiry
+    const updateSql = "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?";
+    db.query(updateSql, [resetToken, resetTokenExpiry, email], async (updateErr) => {
+      if (updateErr) {
+        console.error("Error updating reset token:", updateErr);
+
+        // If columns are missing in production database, auto-add them and retry
+        if (updateErr.code === "ER_BAD_FIELD_ERROR" || updateErr.message?.includes("Unknown column")) {
+          const alterSql = "ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL, ADD COLUMN reset_token_expiry DATETIME DEFAULT NULL";
+          db.query(alterSql, (alterErr) => {
+            if (alterErr && !alterErr.message?.includes("Duplicate column")) {
+              console.error("Error altering users table:", alterErr);
+            }
+            // Retry update after adding columns
+            db.query(updateSql, [resetToken, resetTokenExpiry, email], async (retryErr) => {
+              if (retryErr) {
+                console.error("Error retrying update reset token:", retryErr);
+                return res.status(500).json({ error: retryErr.message || "Failed to save reset token" });
+              }
+              await sendResetEmail();
+            });
+          });
+          return;
+        }
+
+        return res.status(500).json({ error: updateErr.message || "Failed to save reset token" });
+      }
+
+      await sendResetEmail();
     });
   });
 };

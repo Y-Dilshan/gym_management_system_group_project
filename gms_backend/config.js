@@ -25,6 +25,10 @@ db.getConnection((err, connection) => {
         console.error('Database connection failed:', err.message);
     } else {
         console.log('Database connected successfully');
+        // Ensure schema columns exist on users table across all environments
+        connection.query("ALTER TABLE users ADD COLUMN trainer_id INT DEFAULT NULL", () => {});
+        connection.query("ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL", () => {});
+        connection.query("ALTER TABLE users ADD COLUMN reset_token_expiry DATETIME DEFAULT NULL", () => {});
         connection.release();
     }
 });
