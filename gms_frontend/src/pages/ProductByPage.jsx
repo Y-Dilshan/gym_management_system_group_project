@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 import { toast } from "react-hot-toast";
+import { API_BASE_URL } from "../utils/api.js";
 
 export default function ProductByPage() {
   const { id } = useParams();
@@ -21,7 +22,7 @@ export default function ProductByPage() {
 
   const loadproduct = async () => {
     try {
-      const res = await fetch(`${API}/products/${id}`);
+      const res = await fetch(`${API_BASE_URL}/products/${id}`);
       const data = await res.json();
       if (res.ok) {
         setProduct(data.product);
