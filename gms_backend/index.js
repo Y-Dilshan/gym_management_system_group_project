@@ -19,8 +19,8 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Middleware
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ← serves profile pictures
 // app.use("/uploads", express.static(path.join(process.cwd(), "uploads"))); // ← serves profile pictures
 

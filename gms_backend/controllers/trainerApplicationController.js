@@ -1,6 +1,6 @@
 import db from "../config.js";
 import bcrypt from "bcrypt";
-import nodemailer from "nodemailer";
+import { sendEmail } from "../utils/mailer.js";
 
 // Apply as a Trainer
 
@@ -231,16 +231,7 @@ export const approveApplication = (req, res) => {
                     );
 
                     // Send login credentials via email to trainer
-                    const transporter = nodemailer.createTransport({
-                      service: "Gmail",
-                      auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS,
-                      },
-                    });
-
-                    const mailOptions = {
-                      from: process.env.EMAIL_USER,
+                    sendEmail({
                       to: app.email,
                       subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
                       html: `
@@ -259,11 +250,6 @@ export const approveApplication = (req, res) => {
                           <p>Best regards,<br/><strong>Power Zone Gym Admin Team</strong></p>
                         </div>
                       `,
-                    };
-
-                    transporter.sendMail(mailOptions, (mailErr) => {
-                      if (mailErr) console.error("Error sending credentials email to trainer:", mailErr);
-                      else console.log("Credentials email sent successfully to trainer:", app.email);
                     });
 
                     res.status(201).json({
