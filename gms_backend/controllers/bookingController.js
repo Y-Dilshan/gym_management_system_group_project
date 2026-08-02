@@ -22,6 +22,7 @@ const initBookingsTable = () => {
     db.query("ALTER TABLE bookings ADD COLUMN booking_date DATE NOT NULL", () => {});
     db.query("ALTER TABLE bookings ADD COLUMN time_slot VARCHAR(50) NOT NULL", () => {});
     db.query("ALTER TABLE bookings ADD COLUMN status VARCHAR(20) DEFAULT 'PENDING'", () => {});
+    db.query("ALTER TABLE bookings MODIFY COLUMN class_id INT DEFAULT NULL", () => {});
   });
 };
 initBookingsTable();
@@ -50,11 +51,28 @@ export const createBooking = (req, res) => {
       return res.status(409).json({ error: "This time slot is already booked for the selected date" });
     }
 
-    // Insert booking
-    const insertSql = "INSERT INTO bookings (member_id, trainer_id, booking_date, time_slot, status) VALUES (?, ?, ?, ?, 'PENDING')";
+    // Insert booking (explicitly setting class_id to NULL for trainer session bookings)
+    const insertSql = "INSERT INTO bookings (member_id, trainer_id, class_id, booking_date, time_slot, status) VALUES (?, ?, NULL, ?, ?, 'PENDING')";
     db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (insertErr, result) => {
       if (insertErr) {
         console.error("Error creating booking:", insertErr);
+
+        // Fallback: If class_id column rejects NULL or lacks default value, modify column and retry
+        if (insertErr.code === "ER_NO_DEFAULT_FOR_FIELD" || insertErr.message?.includes("class_id")) {
+          db.query("ALTER TABLE bookings MODIFY COLUMN class_id INT DEFAULT NULL", () => {
+            db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (retryErr, retryResult) => {
+              if (retryErr) {
+                return res.status(500).json({ error: retryErr.message || "Failed to book session" });
+              }
+              return res.status(201).json({
+                message: "Booking requested successfully!",
+                booking_id: retryResult.insertId
+              });
+            });
+          });
+          return;
+        }
+
         return res.status(500).json({ error: insertErr.message || "Failed to book session" });
       }
 

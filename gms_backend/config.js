@@ -48,6 +48,7 @@ db.getConnection((err, connection) => {
             connection.query("ALTER TABLE bookings ADD COLUMN booking_date DATE NOT NULL", () => {});
             connection.query("ALTER TABLE bookings ADD COLUMN time_slot VARCHAR(50) NOT NULL", () => {});
             connection.query("ALTER TABLE bookings ADD COLUMN status VARCHAR(20) DEFAULT 'PENDING'", () => {});
+            connection.query("ALTER TABLE bookings MODIFY COLUMN class_id INT DEFAULT NULL", () => {});
         });
 
         connection.release();
