@@ -345,8 +345,46 @@ export const getUserById = (req, res) => {
 
 export const updateUser = (req, res) => {
   const { id } = req.params;
-  const { full_name, email, password, phone, role, status, profile_picture } =
-    req.body;
+  const { full_name, email, password, phone, role, status, profile_picture } = req.body;
+
+  const performUpdate = (hashedPassword = null) => {
+    let sql = "";
+    let params = [];
+
+    if (hashedPassword) {
+      sql = "UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
+      params = [full_name, email, hashedPassword, phone, role, status, profile_picture, id];
+    } else {
+      sql = "UPDATE users SET full_name = ?, email = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
+      params = [full_name, email, phone, role, status, profile_picture, id];
+    }
+
+    db.query(sql, params, (err, result) => {
+      if (err) {
+        console.error("Error updating user: ", err);
+        // Auto-fix if profile_picture is too long for VARCHAR(500)
+        if (err.code === "ER_DATA_TOO_LONG" || err.message?.includes("too long")) {
+          db.query("ALTER TABLE users MODIFY COLUMN profile_picture LONGTEXT", () => {
+            db.query(sql, params, (retryErr, retryResult) => {
+              if (retryErr) {
+                console.error("Error retrying update user:", retryErr);
+                return res.status(500).json({ error: retryErr.message || "Failed to update user" });
+              }
+              return res.status(200).json({ message: "User updated successfully" });
+            });
+          });
+          return;
+        }
+        return res.status(500).json({ error: err.message || "Failed to update user" });
+      }
+
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ error: "User not found" });
+      }
+
+      res.status(200).json({ message: "User updated successfully" });
+    });
+  };
 
   if (password) {
     bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
@@ -354,50 +392,10 @@ export const updateUser = (req, res) => {
         console.error("Error hashing password: ", err);
         return res.status(500).json({ error: "Failed to process password" });
       }
-
-      const sql =
-        "UPDATE users SET full_name = ?, email = ?, password = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
-      db.query(
-        sql,
-        [
-          full_name,
-          email,
-          hashedPassword,
-          phone,
-          role,
-          status,
-          profile_picture,
-          id,
-        ],
-        (err, result) => {
-          if (err) {
-            console.error("Error updating user: ", err);
-            res.status(500).json({ error: "Failed to update user" });
-          } else if (result.affectedRows === 0) {
-            res.status(404).json({ error: "User not found" });
-          } else {
-            res.status(200).json({ message: "User updated successfully" });
-          }
-        },
-      );
+      performUpdate(hashedPassword);
     });
   } else {
-    const sql =
-      "UPDATE users SET full_name = ?, email = ?, phone = ?, role = ?, status = ?, profile_picture = ? WHERE user_id = ?";
-    db.query(
-      sql,
-      [full_name, email, phone, role, status, profile_picture, id],
-      (err, result) => {
-        if (err) {
-          console.error("Error updating user: ", err);
-          res.status(500).json({ error: "Failed to update user" });
-        } else if (result.affectedRows === 0) {
-          res.status(404).json({ error: "User not found" });
-        } else {
-          res.status(200).json({ message: "User updated successfully" });
-        }
-      },
-    );
+    performUpdate();
   }
 };
 
