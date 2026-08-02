@@ -15,6 +15,13 @@ const initBookingsTable = () => {
   `;
   db.query(createTableSql, (err) => {
     if (err) console.error("Error creating bookings table:", err);
+
+    // Auto-ensure columns exist in case the table pre-existed with different columns
+    db.query("ALTER TABLE bookings ADD COLUMN trainer_id INT NOT NULL", () => {});
+    db.query("ALTER TABLE bookings ADD COLUMN member_id INT NOT NULL", () => {});
+    db.query("ALTER TABLE bookings ADD COLUMN booking_date DATE NOT NULL", () => {});
+    db.query("ALTER TABLE bookings ADD COLUMN time_slot VARCHAR(50) NOT NULL", () => {});
+    db.query("ALTER TABLE bookings ADD COLUMN status VARCHAR(20) DEFAULT 'PENDING'", () => {});
   });
 };
 initBookingsTable();
@@ -38,32 +45,58 @@ export const createBooking = (req, res) => {
 
   const formattedDate = typeof booking_date === "string" ? booking_date.split("T")[0] : booking_date;
 
+  const proceedBooking = (results) => {
+    if (results && results.length > 0) {
+      return res.status(409).json({ error: "This time slot is already booked for the selected date" });
+    }
+
+    // Insert booking
+    const insertSql = "INSERT INTO bookings (member_id, trainer_id, booking_date, time_slot, status) VALUES (?, ?, ?, ?, 'PENDING')";
+    db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (insertErr, result) => {
+      if (insertErr) {
+        console.error("Error creating booking:", insertErr);
+        return res.status(500).json({ error: insertErr.message || "Failed to book session" });
+      }
+
+      res.status(201).json({
+        message: "Booking requested successfully!",
+        booking_id: result.insertId
+      });
+    });
+  };
+
   const executeBooking = () => {
     // Check if slot already booked for this trainer on this date
-    const checkSql = "SELECT * FROM bookings WHERE trainer_id = ? AND booking_date = ? AND time_slot = ? AND status IN ('PENDING', 'ACCEPTED')";
+    const checkSql = "SELECT * FROM bookings WHERE trainer_id = ? AND DATE(booking_date) = ? AND time_slot = ? AND status IN ('PENDING', 'ACCEPTED')";
     db.query(checkSql, [trainer_id, formattedDate, time_slot], (err, results) => {
       if (err) {
         console.error("Error checking booking slot availability:", err);
+
+        // Auto-fix if trainer_id or other columns are missing on existing table
+        if (err.code === "ER_BAD_FIELD_ERROR" || err.message?.includes("Unknown column")) {
+          db.query("ALTER TABLE bookings ADD COLUMN trainer_id INT NOT NULL", () => {
+            db.query("ALTER TABLE bookings ADD COLUMN member_id INT NOT NULL", () => {
+              db.query("ALTER TABLE bookings ADD COLUMN booking_date DATE NOT NULL", () => {
+                db.query("ALTER TABLE bookings ADD COLUMN time_slot VARCHAR(50) NOT NULL", () => {
+                  db.query("ALTER TABLE bookings ADD COLUMN status VARCHAR(20) DEFAULT 'PENDING'", () => {
+                    db.query(checkSql, [trainer_id, formattedDate, time_slot], (retryErr, retryResults) => {
+                      if (retryErr) {
+                        return res.status(500).json({ error: retryErr.message || "Failed to verify slot availability" });
+                      }
+                      proceedBooking(retryResults);
+                    });
+                  });
+                });
+              });
+            });
+          });
+          return;
+        }
+
         return res.status(500).json({ error: err.message || "Failed to verify slot availability" });
       }
 
-      if (results && results.length > 0) {
-        return res.status(409).json({ error: "This time slot is already booked for the selected date" });
-      }
-
-      // Insert booking
-      const insertSql = "INSERT INTO bookings (member_id, trainer_id, booking_date, time_slot, status) VALUES (?, ?, ?, ?, 'PENDING')";
-      db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (insertErr, result) => {
-        if (insertErr) {
-          console.error("Error creating booking:", insertErr);
-          return res.status(500).json({ error: insertErr.message || "Failed to book session" });
-        }
-
-        res.status(201).json({
-          message: "Booking requested successfully!",
-          booking_id: result.insertId
-        });
-      });
+      proceedBooking(results);
     });
   };
 
@@ -286,7 +319,7 @@ export const getBookedSlots = (req, res) => {
 
   initBookingsTable();
 
-  const sql = "SELECT time_slot FROM bookings WHERE trainer_id = ? AND booking_date = ? AND status IN ('PENDING', 'ACCEPTED')";
+  const sql = "SELECT time_slot FROM bookings WHERE trainer_id = ? AND DATE(booking_date) = ? AND status IN ('PENDING', 'ACCEPTED')";
   db.query(sql, [trainer_id, formattedDate], (err, results) => {
     if (err) {
       console.error("Error fetching booked slots:", err);
