@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../../utils/api.js";
 
 export default function TrainerApplicationsPage() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API = import.meta.env.VITE_BACKEND_URL;
-
   const loadApplications = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/trainer-applications`, {
+      const res = await fetch(`${API_BASE_URL}/trainer-applications`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -39,7 +38,7 @@ export default function TrainerApplicationsPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/trainer-applications/${id}/approve`, {
+      const res = await fetch(`${API_BASE_URL}/trainer-applications/${id}/approve`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -64,7 +63,7 @@ export default function TrainerApplicationsPage() {
     const note = prompt("Reason for rejection (optional):");
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/trainer-applications/${id}/reject`, {
+      const res = await fetch(`${API_BASE_URL}/trainer-applications/${id}/reject`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
