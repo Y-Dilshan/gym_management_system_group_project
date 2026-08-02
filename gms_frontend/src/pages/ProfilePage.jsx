@@ -43,17 +43,41 @@ export default function ProfilePage() {
   }, [navigate]);
 
 
-  // Handle image file selection from local device
+  // Handle image file selection from local device with automatic compression
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be under 5MB");
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("File size must be under 10MB");
         return;
       }
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfilePicture(reader.result); // Base64 Data URL
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 400;
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          setProfilePicture(compressedBase64);
+        };
+        img.src = event.target.result;
       };
       reader.readAsDataURL(file);
     }
@@ -96,10 +120,7 @@ export default function ProfilePage() {
         phone: trimmedPhone,
         role: user.role,
         status: user.status,
-profile_picture:
-  profilePicture.trim() ||
-  user.profile_picture ||
-  `https://api.dicebear.com/7.x/adventurer/svg?seed=${trimmedEmail}`
+        profile_picture: profilePicture.trim() || user.profile_picture || `https://api.dicebear.com/7.x/adventurer/svg?seed=${trimmedEmail}`
       };
 
       if (trimmedPassword) {
@@ -135,6 +156,8 @@ profile_picture:
         localStorage.setItem("user", JSON.stringify(updatedUser));
         setUser(updatedUser);
         setPassword("");
+        window.dispatchEvent(new Event("user-updated"));
+        window.dispatchEvent(new Event("storage"));
       } else {
         let message = "Failed to update profile";
         try {
