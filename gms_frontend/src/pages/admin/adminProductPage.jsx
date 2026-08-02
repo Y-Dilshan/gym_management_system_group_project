@@ -1,16 +1,15 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
+import { API_BASE_URL } from "../../utils/api.js";
 
 export default function AdminProductPage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API = import.meta.env.VITE_BACKEND_URL;
-
   const loadProducts = async () => {
     try {
-      const res = await fetch(`${API}/products`);
+      const res = await fetch(`${API_BASE_URL}/products`);
       const data = await res.json();
       if (res.ok) {
         setProducts(data.products || []);
@@ -36,7 +35,7 @@ export default function AdminProductPage() {
 
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API}/products/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/products/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

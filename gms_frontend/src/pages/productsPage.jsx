@@ -3,6 +3,7 @@ import Footer from "../components/footer.jsx";
 import { IoMdCart } from "react-icons/io";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_BASE_URL } from "../utils/api.js";
 
 const categories = [
   { label: "All", value: "all" },
@@ -19,8 +20,6 @@ export default function ProductPage() {
   const [products, setProducts] = useState([]);
   const [logged, setLogged] = useState(false);
 
-  const API = import.meta.env.VITE_BACKEND_URL;
-
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -31,7 +30,7 @@ export default function ProductPage() {
 
   const loadProducts = async () => {
     try {
-      const res = await fetch(`${API}/products`);
+      const res = await fetch(`${API_BASE_URL}/products`);
       const data = await res.json();
 
       setProducts(data.products || []);
@@ -78,7 +77,7 @@ export default function ProductPage() {
   const filteredProducts =
     activeCategory === "all"
       ? products
-      : products.filter((p) => p.category === activeCategory);
+      : products.filter((p) => p.category?.toLowerCase() === activeCategory.toLowerCase());
 
   return (
     <div className="bg-[#050505] min-h-screen">
