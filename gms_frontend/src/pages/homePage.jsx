@@ -1,5 +1,5 @@
 import axios from "axios"; 
-import Header from "../components/header.jsx";
+import HomeHeader from "../components/homeHeader.jsx";
 import Footer from "../components/footer.jsx";
 import { useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -162,7 +162,7 @@ const [contactLoading, setContactLoading] = useState(false);
     <div className="bg-[#050505] min-h-screen">
       {/* navbar */}
       <div className="fixed top-0 left-0 w-full z-50">
-        <Header />
+        <HomeHeader />
       </div>
 
       {/*home*/}

@@ -8,7 +8,6 @@ import SignUpPage from "./pages/signUpPage.jsx";
 import ProductsPage from "./pages/productsPage.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import AdminAddProduct from "./pages/admin/adminAddProduct.jsx";
-
 import AdminOrdersPage from "./pages/admin/adminOrdersPage.jsx";
 import ApplyAsTrainer from "./pages/Applyastrainer.jsx";
 import TrainerApplicationsPage from "./pages/admin/TrainerApplicationsPage.jsx";
