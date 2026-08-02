@@ -48,17 +48,18 @@ export const sendEmail = async ({ to, subject, html }) => {
     return { success: false, error: errMsg };
   }
 
-  // 1. HTTP Resend API fallback if RESEND_API_KEY is provided
-  if (process.env.RESEND_API_KEY) {
+  // 1. HTTP Resend API if RESEND_API_KEY is provided
+  const resendApiKey = (process.env.RESEND_API_KEY || "").trim().replace(/^["']|["']$/g, "");
+  if (resendApiKey) {
     try {
       const res = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.RESEND_API_KEY}`,
+          "Authorization": `Bearer ${resendApiKey}`,
           "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          from: "Power Zone Gym <onboarding@resend.dev>",
+          from: "onboarding@resend.dev",
           to: [to],
           subject,
           html
@@ -68,9 +69,14 @@ export const sendEmail = async ({ to, subject, html }) => {
       if (res.ok) {
         console.log(`✅ Email sent via Resend HTTP API to ${to}`);
         return { success: true, info: data };
+      } else {
+        const errorMsg = data.message || data.error || JSON.stringify(data);
+        console.error(`❌ Resend API returned error (${res.status}):`, errorMsg);
+        return { success: false, error: `Resend API Error: ${errorMsg}` };
       }
     } catch (e) {
-      console.error("Resend API failed, falling back to SMTP:", e.message);
+      console.error("❌ Resend API Exception:", e.message);
+      return { success: false, error: `Resend API Exception: ${e.message}` };
     }
   }
 
