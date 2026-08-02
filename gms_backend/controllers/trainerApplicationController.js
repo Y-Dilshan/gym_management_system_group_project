@@ -158,13 +158,7 @@ export const approveApplication = (req, res) => {
               .status(500)
               .json({ error: "Failed to approve application" });
           }
-          if (emailResults.length > 0) {
-            return res
-              .status(409)
-              .json({ error: "A user with this email already exists" });
-          }
-
-          bcrypt.hash(password, 10, (hashErr, hashedPassword) => {
+          bcrypt.hash(password, 10, async (hashErr, hashedPassword) => {
             if (hashErr) {
               console.error("Error hashing password:", hashErr);
               return res
@@ -172,6 +166,65 @@ export const approveApplication = (req, res) => {
                 .json({ error: "Failed to process password" });
             }
 
+            const sendCredentialsEmail = async () => {
+              return await sendEmail({
+                to: app.email,
+                subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
+                html: `
+                  <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                    <h2 style="color: #D4AF37;">Congratulations ${app.full_name}!</h2>
+                    <p>Your application to join <strong>Power Zone Gym</strong> as a Personal Trainer has been <span style="color: green; font-weight: bold;">APPROVED</span>!</p>
+                    
+                    <p>Below are your temporary login credentials:</p>
+                    <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
+                      <p style="margin: 5px 0;"><strong>Email:</strong> ${app.email}</p>
+                      <p style="margin: 5px 0;"><strong>Temporary Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; font-size: 14px; border-radius: 4px;">${password}</code></p>
+                    </div>
+
+                    <p>Please log in to your account and change your password for security.</p>
+                    <br/>
+                    <p>Best regards,<br/><strong>Power Zone Gym Admin Team</strong></p>
+                  </div>
+                `,
+              });
+            };
+
+            const markApproved = () => {
+              db.query(
+                `UPDATE trainer_applications SET status = 'approved', reviewed_at = NOW() WHERE application_id = ?`,
+                [id]
+              );
+            };
+
+            // If user with this email already exists: update password to temporary password & send email!
+            if (emailResults.length > 0) {
+              const existingUserId = emailResults[0].user_id;
+
+              db.query(
+                `UPDATE users SET password = ?, role = 'TRAINER', status = 'ACTIVE' WHERE user_id = ?`,
+                [hashedPassword, existingUserId],
+                async (updateUserErr) => {
+                  if (updateUserErr) {
+                    console.error("Error updating existing user for trainer:", updateUserErr);
+                    return res.status(500).json({ error: "Failed to update existing user account" });
+                  }
+
+                  markApproved();
+                  const emailSent = await sendCredentialsEmail();
+
+                  return res.status(200).json({
+                    message: emailSent
+                      ? "Application approved and credentials email sent successfully!"
+                      : "Application approved & password updated. (Credentials email failed to send, check Render server logs).",
+                    userId: existingUserId,
+                    credentials: { email: app.email, password }
+                  });
+                }
+              );
+              return;
+            }
+
+            // Create NEW user
             const userSql = `INSERT INTO users (full_name, email, password, phone, role, status, created_at) VALUES (?, ?, ?, ?, 'TRAINER', 'ACTIVE', NOW())`;
             db.query(
               userSql,
@@ -184,12 +237,12 @@ export const approveApplication = (req, res) => {
                     .json({ error: "Failed to create trainer account" });
                 }
 
+                const newUserId = userResult.insertId;
                 const expYears = app.experience_years ? parseInt(app.experience_years, 10) : 0;
                 const spec = app.specialization || "General Training";
                 const bioText = app.bio || "";
 
                 const proceedWithApproval = async (newTrainerId) => {
-                  // Update users table with trainer_id if column exists
                   db.query(
                     "UPDATE users SET trainer_id = ? WHERE user_id = ?",
                     [newTrainerId, newUserId],
@@ -200,38 +253,8 @@ export const approveApplication = (req, res) => {
                     }
                   );
 
-                  db.query(
-                    `UPDATE trainer_applications 
-                     SET status = 'approved', reviewed_at = NOW() 
-                     WHERE application_id = ?`,
-                    [id],
-                    (updateErr) => {
-                      if (updateErr)
-                        console.error("Error updating application status:", updateErr);
-                    }
-                  );
-
-                  // Send login credentials via email to trainer
-                  const emailSent = await sendEmail({
-                    to: app.email,
-                    subject: "Welcome to Power Zone Gym - Your Trainer Account Credentials",
-                    html: `
-                      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-                        <h2 style="color: #D4AF37;">Congratulations ${app.full_name}!</h2>
-                        <p>Your application to join <strong>Power Zone Gym</strong> as a Personal Trainer has been <span style="color: green; font-weight: bold;">APPROVED</span>!</p>
-                        
-                        <p>Below are your temporary login credentials:</p>
-                        <div style="background: #f8f9fa; padding: 15px; border-left: 4px solid #D4AF37; margin: 20px 0; border-radius: 4px;">
-                          <p style="margin: 5px 0;"><strong>Email:</strong> ${app.email}</p>
-                          <p style="margin: 5px 0;"><strong>Temporary Password:</strong> <code style="background: #e9ecef; padding: 2px 6px; font-size: 14px; border-radius: 4px;">${password}</code></p>
-                        </div>
-
-                        <p>Please log in to your account and change your password for security.</p>
-                        <br/>
-                        <p>Best regards,<br/><strong>Power Zone Gym Admin Team</strong></p>
-                      </div>
-                    `,
-                  });
+                  markApproved();
+                  const emailSent = await sendCredentialsEmail();
 
                   res.status(201).json({
                     message: emailSent
@@ -255,7 +278,6 @@ export const approveApplication = (req, res) => {
                       proceedWithApproval(trainerResult.insertId);
                     } else {
                       console.error("Error creating trainer profile (query 1):", trainerErr);
-                      // Fallback query if profile_picture is required in trainers table
                       const trainerSql2 = `INSERT INTO trainers (user_id, specialization, bio, experience_years, profile_picture) VALUES (?, ?, ?, ?, ?)`;
                       db.query(
                         trainerSql2,
