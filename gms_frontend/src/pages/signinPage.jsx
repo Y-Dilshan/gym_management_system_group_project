@@ -127,7 +127,7 @@ export default function SigninPage() {
             Sign In
           </button>
           
-          <div className="w-full flex justify-center">
+          <div className="w-[400px] flex justify-center">
             <GoogleLogin
               onSuccess={async (credentialResponse) => {
                 try {
