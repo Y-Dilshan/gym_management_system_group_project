@@ -33,6 +33,15 @@ export default function HomeHeader() {
     }
   };
 
+  const handleLogout = () => {
+    clearAuth();
+    setIsLogged(false);
+    setUser(null);
+    setShowOption(false);
+    setMobileMenuOpen(false);
+    navigate("/");
+  };
+
   const handleNavClick = (sectionId) => {
     setMobileMenuOpen(false);
     if (window.location.pathname !== "/") {

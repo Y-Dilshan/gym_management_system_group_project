@@ -54,8 +54,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    clearAuth();
     setIsLogged(false);
     setUser(null);
     setShowOption(false);
