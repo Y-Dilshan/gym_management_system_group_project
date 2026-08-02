@@ -29,6 +29,27 @@ db.getConnection((err, connection) => {
         connection.query("ALTER TABLE users ADD COLUMN trainer_id INT DEFAULT NULL", () => {});
         connection.query("ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL", () => {});
         connection.query("ALTER TABLE users ADD COLUMN reset_token_expiry DATETIME DEFAULT NULL", () => {});
+
+        // Ensure bookings table schema columns exist across all environments
+        const createBookingsTableSql = `
+            CREATE TABLE IF NOT EXISTS bookings (
+                booking_id INT AUTO_INCREMENT PRIMARY KEY,
+                member_id INT NOT NULL,
+                trainer_id INT NOT NULL,
+                booking_date DATE NOT NULL,
+                time_slot VARCHAR(50) NOT NULL,
+                status VARCHAR(20) DEFAULT 'PENDING',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `;
+        connection.query(createBookingsTableSql, () => {
+            connection.query("ALTER TABLE bookings ADD COLUMN trainer_id INT NOT NULL", () => {});
+            connection.query("ALTER TABLE bookings ADD COLUMN member_id INT NOT NULL", () => {});
+            connection.query("ALTER TABLE bookings ADD COLUMN booking_date DATE NOT NULL", () => {});
+            connection.query("ALTER TABLE bookings ADD COLUMN time_slot VARCHAR(50) NOT NULL", () => {});
+            connection.query("ALTER TABLE bookings ADD COLUMN status VARCHAR(20) DEFAULT 'PENDING'", () => {});
+        });
+
         connection.release();
     }
 });
