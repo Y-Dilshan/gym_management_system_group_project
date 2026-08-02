@@ -10,7 +10,7 @@ const initBookingsTable = () => {
       booking_date DATE NOT NULL,
       time_slot VARCHAR(50) NOT NULL,
       status VARCHAR(20) DEFAULT 'PENDING',
-      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
   db.query(createTableSql, (err) => {
@@ -25,6 +25,10 @@ const isTrainer = (user) => user && user.role.toUpperCase() === "TRAINER";
 
 // 1. Create a Trainer Session Booking (Member only)
 export const createBooking = (req, res) => {
+  if (!req.user || !req.user.user_id) {
+    return res.status(401).json({ error: "Unauthorized. Please log in to book a session." });
+  }
+
   const member_id = req.user.user_id;
   const { trainer_id, booking_date, time_slot } = req.body;
 
@@ -34,32 +38,38 @@ export const createBooking = (req, res) => {
 
   const formattedDate = typeof booking_date === "string" ? booking_date.split("T")[0] : booking_date;
 
-  // Check if slot already booked for this trainer on this date
-  const checkSql = "SELECT * FROM bookings WHERE trainer_id = ? AND booking_date = ? AND time_slot = ? AND status IN ('PENDING', 'ACCEPTED')";
-  db.query(checkSql, [trainer_id, formattedDate, time_slot], (err, results) => {
-    if (err) {
-      console.error("Error checking booking slot availability:", err);
-      return res.status(500).json({ error: "Failed to verify slot availability" });
-    }
-
-    if (results && results.length > 0) {
-      return res.status(409).json({ error: "This time slot is already booked for the selected date" });
-    }
-
-    // Insert booking
-    const insertSql = "INSERT INTO bookings (member_id, trainer_id, booking_date, time_slot, status) VALUES (?, ?, ?, ?, 'PENDING')";
-    db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (insertErr, result) => {
-      if (insertErr) {
-        console.error("Error creating booking:", insertErr);
-        return res.status(500).json({ error: "Failed to book session" });
+  const executeBooking = () => {
+    // Check if slot already booked for this trainer on this date
+    const checkSql = "SELECT * FROM bookings WHERE trainer_id = ? AND booking_date = ? AND time_slot = ? AND status IN ('PENDING', 'ACCEPTED')";
+    db.query(checkSql, [trainer_id, formattedDate, time_slot], (err, results) => {
+      if (err) {
+        console.error("Error checking booking slot availability:", err);
+        return res.status(500).json({ error: err.message || "Failed to verify slot availability" });
       }
 
-      res.status(201).json({
-        message: "Booking requested successfully!",
-        booking_id: result.insertId
+      if (results && results.length > 0) {
+        return res.status(409).json({ error: "This time slot is already booked for the selected date" });
+      }
+
+      // Insert booking
+      const insertSql = "INSERT INTO bookings (member_id, trainer_id, booking_date, time_slot, status) VALUES (?, ?, ?, ?, 'PENDING')";
+      db.query(insertSql, [member_id, trainer_id, formattedDate, time_slot], (insertErr, result) => {
+        if (insertErr) {
+          console.error("Error creating booking:", insertErr);
+          return res.status(500).json({ error: insertErr.message || "Failed to book session" });
+        }
+
+        res.status(201).json({
+          message: "Booking requested successfully!",
+          booking_id: result.insertId
+        });
       });
     });
-  });
+  };
+
+  // Ensure table exists first if not already created
+  initBookingsTable();
+  executeBooking();
 };
 
 // 2. Get All Bookings (Admin only)
@@ -274,11 +284,14 @@ export const getBookedSlots = (req, res) => {
 
   const formattedDate = typeof date === "string" ? date.split("T")[0] : date;
 
+  initBookingsTable();
+
   const sql = "SELECT time_slot FROM bookings WHERE trainer_id = ? AND booking_date = ? AND status IN ('PENDING', 'ACCEPTED')";
   db.query(sql, [trainer_id, formattedDate], (err, results) => {
     if (err) {
       console.error("Error fetching booked slots:", err);
-      return res.status(500).json({ error: "Failed to check booked slots" });
+      // Return empty booked slots list so page loading doesn't crash
+      return res.status(200).json({ bookedSlots: [] });
     }
 
     const bookedSlots = (results || []).map(r => r.time_slot);
