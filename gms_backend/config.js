@@ -30,6 +30,7 @@ db.getConnection((err, connection) => {
         connection.query("ALTER TABLE users ADD COLUMN reset_token VARCHAR(255) DEFAULT NULL", () => {});
         connection.query("ALTER TABLE users ADD COLUMN reset_token_expiry DATETIME DEFAULT NULL", () => {});
         connection.query("ALTER TABLE users MODIFY COLUMN profile_picture LONGTEXT", () => {});
+        connection.query("ALTER TABLE products MODIFY COLUMN image_url LONGTEXT", () => {});
 
         // Ensure bookings table schema columns exist across all environments
         const createBookingsTableSql = `

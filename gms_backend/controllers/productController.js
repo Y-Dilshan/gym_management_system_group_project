@@ -32,20 +32,33 @@ export const createProduct = (req, res) => {
   }
 
   const sql = "INSERT INTO products (product_name, category, description, price, stock_quantity, image_url, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    db.query(
-    sql,
-    [product_name,category.toLowerCase(),description,price,stock_quantity,image_url,status || "active",],
-    (err, result) => {
-      if (err) {
-        console.error("Error creating product:", err);
-        return res.status(500).json({ message: "Failed to create product" });
+  const params = [product_name, category.toLowerCase(), description, price, stock_quantity, image_url, status || "active"];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      console.error("Error creating product:", err);
+      if (err.code === "ER_DATA_TOO_LONG" || err.message?.includes("too long")) {
+        db.query("ALTER TABLE products MODIFY COLUMN image_url LONGTEXT", () => {
+          db.query(sql, params, (retryErr, retryResult) => {
+            if (retryErr) {
+              console.error("Error retrying create product:", retryErr);
+              return res.status(500).json({ message: retryErr.message || "Failed to create product" });
+            }
+            return res.status(201).json({
+              message: "Product created successfully",
+              productId: retryResult.insertId,
+            });
+          });
+        });
+        return;
       }
-      return res.status(201).json({
-        message: "Product created successfully",
-        productId: result.insertId,
-      });
-    },
-  );
+      return res.status(500).json({ message: err.message || "Failed to create product" });
+    }
+    return res.status(201).json({
+      message: "Product created successfully",
+      productId: result.insertId,
+    });
+  });
 };
 
 export const getProducts = (req, res) => {
