@@ -9,8 +9,9 @@ const categories = [
   { label: "All", value: "all" },
   { label: "Strength", value: "strength" },
   { label: "Cardio", value: "cardio" },
-  { label: "Weight Loss", value: "weight-loss" },
+  { label: "Weight Loss", value: "weight loss" },
   { label: "Bodybuilding", value: "bodybuilding" },
+  { label: "CrossFit", value: "crossfit" },
   { label: "Yoga", value: "yoga" },
 ];
 
@@ -59,9 +60,11 @@ export default function TrainersPage() {
   const filteredTrainers =
     activeCategory === "all"
       ? trainers
-      : trainers.filter(
-          (trainer) => trainer.specialization?.toLowerCase() === activeCategory,
-        );
+      : trainers.filter((trainer) => {
+          const spec = (trainer.specialization || "").toLowerCase();
+          const targetCat = activeCategory.toLowerCase();
+          return spec.includes(targetCat) || targetCat.includes(spec);
+        });
 
   return (
     <div className="min-h-screen bg-black">
