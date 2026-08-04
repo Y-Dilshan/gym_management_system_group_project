@@ -5,7 +5,7 @@ import { FaCalendarAlt, FaClock, FaUser, FaDumbbell } from "react-icons/fa";
 import Header from "../components/header.jsx";
 import Footer from "../components/footer.jsx";
 
-const weeklyClasses = {
+const defaultWeeklyClasses = {
   Monday: [
     { id: 1, name: "Strength Training", time: "07:00 AM - 08:30 AM", trainer: "Mike Davidson", level: "Intermediate", capacity: "18/20", description: "Build overall strength with heavy barbell exercises." },
     { id: 2, name: "Cardio Conditioning", time: "09:30 AM - 10:30 AM", trainer: "Tom Richards", level: "Beginner", capacity: "12/25", description: "High heart rate fat burner and cardiovascular conditioning." },
@@ -42,7 +42,31 @@ const weeklyClasses = {
 export default function SchedulesPage() {
   const navigate = useNavigate();
   const [activeDay, setActiveDay] = useState("Monday");
+  const [weeklyClasses, setWeeklyClasses] = useState(() => {
+    const saved = localStorage.getItem("gym_workout_schedules");
+    if (saved) {
+      try { return JSON.parse(saved); } catch (e) {}
+    }
+    localStorage.setItem("gym_workout_schedules", JSON.stringify(defaultWeeklyClasses));
+    return defaultWeeklyClasses;
+  });
+
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+  useEffect(() => {
+    const handleSync = () => {
+      const saved = localStorage.getItem("gym_workout_schedules");
+      if (saved) {
+        try { setWeeklyClasses(JSON.parse(saved)); } catch (e) {}
+      }
+    };
+    window.addEventListener("storage", handleSync);
+    window.addEventListener("focus", handleSync);
+    return () => {
+      window.removeEventListener("storage", handleSync);
+      window.removeEventListener("focus", handleSync);
+    };
+  }, []);
 
   const handleClassBooking = (cls) => {
     const token = localStorage.getItem("token");
