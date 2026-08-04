@@ -40,14 +40,38 @@ export default function AdminAddProduct() {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image file size must be under 5MB");
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error("Image file size must be under 10MB");
         return;
       }
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setForm((prev) => ({ ...prev, image_url: reader.result }));
-        toast.success("Image selected from device!");
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          const maxDim = 500;
+          if (width > height) {
+            if (width > maxDim) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            }
+          } else {
+            if (height > maxDim) {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          const compressedBase64 = canvas.toDataURL("image/jpeg", 0.7);
+          setForm((prev) => ({ ...prev, image_url: compressedBase64 }));
+          toast.success("Image selected and compressed!");
+        };
+        img.src = event.target.result;
       };
       reader.readAsDataURL(file);
     }
