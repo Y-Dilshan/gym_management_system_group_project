@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { FaCalendarAlt, FaClock, FaUser, FaDumbbell } from "react-icons/fa";
