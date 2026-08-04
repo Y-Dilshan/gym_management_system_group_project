@@ -130,7 +130,7 @@ export default function AdminDashboard() {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed lg:static left-0 top-0 z-50 w-[280px] h-screen bg-[#050505] border-r border-[#2A2A2A] pl-6 pt-6 pr-6 flex flex-col justify-between shrink-0 transition-transform duration-300 ${
+      <aside className={`fixed lg:sticky top-0 left-0 z-50 w-[280px] h-screen bg-[#050505] border-r border-[#2A2A2A] pl-6 pt-6 pr-6 flex flex-col justify-between shrink-0 transition-transform duration-300 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`}>
         <div>
