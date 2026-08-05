@@ -32,6 +32,16 @@ db.getConnection((err, connection) => {
         connection.query("ALTER TABLE users MODIFY COLUMN profile_picture LONGTEXT", () => {});
         connection.query("ALTER TABLE products MODIFY COLUMN image_url LONGTEXT", () => {});
 
+        /////////////////////////////////////new ////////////////////////////
+// Auto-migrate OTP columns to TiDB Cloud on server startup
+connection.query("ALTER TABLE users ADD COLUMN otp_code VARCHAR(6) DEFAULT NULL", () => {});
+connection.query("ALTER TABLE users ADD COLUMN otp_expiry DATETIME DEFAULT NULL", () => {});
+connection.query("ALTER TABLE users ADD COLUMN is_verified TINYINT(1) DEFAULT 1", () => {
+    // Once column exists, update existing users to verified
+    connection.query("UPDATE users SET is_verified = 1 WHERE is_verified IS NULL OR is_verified = 1", () => {});
+});
+////////////////////////////new /////////////////////////////
+
         // Ensure bookings table schema columns exist across all environments
         const createBookingsTableSql = `
             CREATE TABLE IF NOT EXISTS bookings (

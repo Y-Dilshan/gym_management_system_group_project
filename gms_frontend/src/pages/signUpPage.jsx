@@ -20,7 +20,11 @@ export default function SignUpPage() {
   const [showGoogleModal, setShowGoogleModal] = useState(false);
   const [customGoogleEmail, setCustomGoogleEmail] = useState("");
   const [customGoogleName, setCustomGoogleName] = useState("");
-
+//////////////////////////new//////////////////
+const [showOtpModal, setShowOtpModal] = useState(false);
+const [otpCode, setOtpCode] = useState("");
+const [isVerifying, setIsVerifying] = useState(false);
+////////////////////////////new/////////////////
   const handleBack = () => {
     navigate("/");
   };
@@ -55,7 +59,33 @@ export default function SignUpPage() {
       toast.error(error.response?.data?.error || "Google login failed");
     }
   };
+//////////////////////////////old////////////////////////
+  // const handleRegister = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       `${API_BASE_URL}/users/register`,
+  //       {
+  //         full_name: fullName,
+  //         email: email,
+  //         password: password,
+  //         phone: phone,
+  //       },
+  //     );
 
+  //     toast.success("Your account created successfully!");
+  //     navigate("/signin");
+  //   } catch (error) {
+  //     console.log(error.response?.data);
+  //     toast.error(
+  //       error.response?.data?.message ||
+  //       error.response?.data?.error ||
+  //       "Registration failed"
+  //     );
+  //   }
+  // };
+  /////////////////////////////old//////////////////////////
+
+//////////////////////////////////new/////////////////////////
   const handleRegister = async () => {
     try {
       const response = await axios.post(
@@ -68,8 +98,8 @@ export default function SignUpPage() {
         },
       );
 
-      toast.success("Your account created successfully!");
-      navigate("/signin");
+      toast.success("Registration successful! Check your email for the OTP code.");
+      setShowOtpModal(true); // Open OTP Verification Popup
     } catch (error) {
       console.log(error.response?.data);
       toast.error(
@@ -79,6 +109,32 @@ export default function SignUpPage() {
       );
     }
   };
+
+  const handleVerifyOtp = async () => {
+    if (!otpCode || otpCode.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP code");
+      return;
+    }
+
+    try {
+      setIsVerifying(true);
+      const response = await axios.post(`${API_BASE_URL}/users/verify-otp`, {
+        email: email,
+        otp: otpCode,
+      });
+
+      toast.success(response.data.message || "Email verified successfully!");
+      setShowOtpModal(false);
+      navigate("/signin");
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.error || "Invalid or expired OTP");
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+/////////////////////////////////new/////////////////////////
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen">
@@ -340,6 +396,49 @@ export default function SignUpPage() {
           </div>
         </div>
       )}
+      {/* ////////////////////////////////////////new//////////////////////// */}
+            {/* OTP Verification Modal */}
+      {showOtpModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm">
+          <div className="bg-[#1e1e1e] text-white w-[90%] max-w-[400px] rounded-2xl shadow-2xl p-6 border border-[#D4AF37] flex flex-col justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-center text-[#D4AF37] mb-2">Verify Your Email</h2>
+              <p className="text-center text-xs text-zinc-300 mb-6">
+                We sent a 6-digit verification code to <br/>
+                <span className="font-bold text-[#D4AF37]">{email}</span>
+              </p>
+
+              <div className="space-y-4 mb-6">
+                <input
+                  type="text"
+                  maxLength={6}
+                  placeholder="Enter 6-digit OTP"
+                  value={otpCode}
+                  onChange={(e) => setOtpCode(e.target.value)}
+                  className="w-full text-center tracking-[8px] text-2xl font-bold py-3 border border-[#D4AF37] rounded-xl bg-black text-[#D4AF37] outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                />
+
+                <button
+                  onClick={handleVerifyOtp}
+                  disabled={isVerifying}
+                  className="w-full py-3 bg-[#D4AF37] hover:bg-[#b5942d] text-black rounded-xl text-sm font-bold transition cursor-pointer"
+                >
+                  {isVerifying ? "Verifying..." : "Verify Code & Sign In"}
+                </button>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setShowOtpModal(false)}
+              className="text-zinc-400 hover:text-white text-xs font-medium py-1 transition text-center"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ////////////////////////////////////////new//////////////////////// */}
     </div>
   );
 }
