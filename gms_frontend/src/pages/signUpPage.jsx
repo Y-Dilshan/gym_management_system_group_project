@@ -397,42 +397,69 @@ const [isVerifying, setIsVerifying] = useState(false);
         </div>
       )}
       {/* ////////////////////////////////////////new//////////////////////// */}
-            {/* OTP Verification Modal */}
+                  {/* Sleek Modern OTP Verification Modal */}
       {showOtpModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm">
-          <div className="bg-[#1e1e1e] text-white w-[90%] max-w-[400px] rounded-2xl shadow-2xl p-6 border border-[#D4AF37] flex flex-col justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-center text-[#D4AF37] mb-2">Verify Your Email</h2>
-              <p className="text-center text-xs text-zinc-300 mb-6">
-                We sent a 6-digit verification code to <br/>
-                <span className="font-bold text-[#D4AF37]">{email}</span>
-              </p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fadeIn">
+          <div className="bg-[#121212] text-white w-full max-w-[420px] rounded-3xl shadow-[0_0_50px_rgba(212,175,55,0.15)] p-8 border border-[#D4AF37]/30 relative flex flex-col items-center">
+            
+            {/* Top Icon Badge */}
+            <div className="w-16 h-16 rounded-2xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center mb-6 shadow-inner">
+              <svg className="w-8 h-8 text-[#D4AF37]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+              </svg>
+            </div>
 
-              <div className="space-y-4 mb-6">
+            {/* Title & Description */}
+            <h2 className="text-2xl font-bold text-white text-center mb-2 tracking-wide">
+              Security Verification
+            </h2>
+            <p className="text-center text-sm text-zinc-400 mb-6 leading-relaxed">
+              We emailed a 6-digit verification code to <br />
+              <span className="font-semibold text-[#D4AF37] break-all">{email}</span>
+            </p>
+
+            {/* Form Inputs */}
+            <div className="w-full space-y-5">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs uppercase font-bold tracking-wider text-zinc-400 text-center">
+                  Enter 6-Digit Code
+                </label>
                 <input
                   type="text"
                   maxLength={6}
-                  placeholder="Enter 6-digit OTP"
+                  placeholder="0 0 0 0 0 0"
                   value={otpCode}
                   onChange={(e) => setOtpCode(e.target.value)}
-                  className="w-full text-center tracking-[8px] text-2xl font-bold py-3 border border-[#D4AF37] rounded-xl bg-black text-[#D4AF37] outline-none focus:ring-2 focus:ring-[#D4AF37]"
+                  className="w-full text-center text-3xl font-extrabold tracking-[12px] py-3.5 px-4 border border-[#D4AF37]/40 rounded-2xl bg-black/60 text-[#D4AF37] placeholder:text-zinc-700 placeholder:tracking-normal placeholder:font-normal placeholder:text-base outline-none focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition shadow-inner"
                 />
-
-                <button
-                  onClick={handleVerifyOtp}
-                  disabled={isVerifying}
-                  className="w-full py-3 bg-[#D4AF37] hover:bg-[#b5942d] text-black rounded-xl text-sm font-bold transition cursor-pointer"
-                >
-                  {isVerifying ? "Verifying..." : "Verify Code & Sign In"}
-                </button>
               </div>
+
+              {/* Submit Button */}
+              <button
+                onClick={handleVerifyOtp}
+                disabled={isVerifying}
+                className="w-full py-4 bg-gradient-to-r from-[#D4AF37] to-[#E5B93E] hover:from-[#e0bc43] hover:to-[#d4af37] text-black font-bold text-base rounded-2xl transition duration-300 shadow-[0_4px_20px_rgba(212,175,55,0.3)] cursor-pointer disabled:opacity-50"
+              >
+                {isVerifying ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <svg className="animate-spin h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Verifying...
+                  </span>
+                ) : (
+                  "Verify & Complete Setup"
+                )}
+              </button>
             </div>
 
+            {/* Cancel Button */}
             <button
               onClick={() => setShowOtpModal(false)}
-              className="text-zinc-400 hover:text-white text-xs font-medium py-1 transition text-center"
+              className="mt-6 text-xs text-zinc-500 hover:text-zinc-300 transition font-medium tracking-wide"
             >
-              Cancel
+              Cancel & return
             </button>
           </div>
         </div>
