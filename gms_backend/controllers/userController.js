@@ -211,93 +211,261 @@ export const createUserByAdmin = (req, res) => {
   });
 });
 };
+//////////////////////////////////////////////////////////////////old///////////////
+// export const register = (req, res) => {
+//   const { full_name, email, password, phone } = req.body;
 
+//   if (!full_name || !email || !password) {
+//     return res.status(400).json({
+//       error: "Missing required fields",
+//     });
+//   }
+
+//   bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
+//     if (err) {
+//       return res.status(500).json({
+//         error: "Failed to process password",
+//       });
+//     }
+
+//     const sql = `INSERT INTO users (full_name, email, password, phone, role, status) VALUES (?, ?, ?, ?, 'MEMBER', 'ACTIVE')`;
+
+//     db.query(
+//       sql,
+//       [full_name, email, hashedPassword, phone],
+//       (err, result) => {
+//         if (err) {
+//           console.error(err);
+
+//           return res.status(500).json({
+//             error: "Failed to register user",
+//           });
+//         }
+
+//         return res.status(201).json({
+//           message: "Registration successful",
+//         });
+//       },
+//     );
+//   });
+// };
+//////////////////////////////////////////////////////////////////old///////////////
+
+
+///////////////////////////////////login/////////////////////////////
+//////////////////////////////////////////////////////////////////old///////////////
+
+// export const login = (req, res) => {
+//   const { email, password } = req.body;
+
+//   const sql = "SELECT * FROM users WHERE email = ?";
+
+//   db.query(sql, [email], (err, results) => {
+//     if (err) {
+//       console.error("Error fetching user:", err);
+//       return res.status(500).json({
+//         error: "Failed to fetch user",
+//       });
+//     }
+
+//     if (results.length === 0) {
+//       return res.status(401).json({
+//         error: "Invalid email or password",
+//       });
+//     }
+
+//     const user = results[0];
+
+//     bcrypt.compare(password, user.password, (err, isMatch) => {
+//       if (err) {
+//         console.error("Error comparing passwords:", err);
+//         return res.status(500).json({
+//           error: "Failed to process password",
+//         });
+//       }
+
+//       if (!isMatch) {
+//         return res.status(401).json({
+//           error: "Invalid email or password",
+//         });
+//       }
+//////////////////////////////////////////////////////////////////old///////////////
+
+
+      // Remove password from the user object before sending response
+      //////////////////////////////////////////////////////////////////old///////////////
+
+  //     const { password: hashedPassword, ...userWithoutPassword } = user;
+
+  //     const token = jwt.sign(
+  //       {
+  //         user_id: user.user_id,
+  //         role: user.role,
+  //       },
+  //       process.env.JWT_SECRET,
+  //       {
+  //         expiresIn: "1d",
+  //       }
+  //     );
+
+  //     return res.status(200).json({
+  //       message: "Login successful",
+  //       token,
+  //       user: userWithoutPassword,
+  //     });
+  //   });
+  // });
+  //////////////////////////////////////////////////////////////////old///////////////
+
+
+  /////////////////////////////////////new////////////////////////
+  // ==================== 1. REGISTER USER & SEND OTP ====================
 export const register = (req, res) => {
   const { full_name, email, password, phone } = req.body;
 
   if (!full_name || !email || !password) {
-    return res.status(400).json({
-      error: "Missing required fields",
-    });
+    return res.status(400).json({ error: "Missing required fields" });
   }
 
+  // Generate 6-digit OTP code and 10-minute expiry
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const otpExpiry = new Date(Date.now() + 10 * 60 * 1000).toISOString().slice(0, 19).replace("T", " ");
+
   bcrypt.hash(password, SALT_ROUNDS, (err, hashedPassword) => {
-    if (err) {
-      return res.status(500).json({
-        error: "Failed to process password",
-      });
-    }
+    if (err) return res.status(500).json({ error: "Failed to process password" });
 
-    const sql = `INSERT INTO users (full_name, email, password, phone, role, status) VALUES (?, ?, ?, ?, 'MEMBER', 'ACTIVE')`;
+    // Check if user exists
+    db.query("SELECT * FROM users WHERE email = ?", [email], (err, results) => {
+      if (err) return res.status(500).json({ error: "Database query failed" });
 
-    db.query(
-      sql,
-      [full_name, email, hashedPassword, phone],
-      (err, result) => {
-        if (err) {
-          console.error(err);
+      if (results && results.length > 0) {
+        const existingUser = results[0];
 
-          return res.status(500).json({
-            error: "Failed to register user",
-          });
+        // If user is already verified
+        if (existingUser.is_verified) {
+          return res.status(400).json({ error: "Email is already registered" });
         }
 
-        return res.status(201).json({
-          message: "Registration successful",
+        // If user registered earlier but did not verify OTP -> update OTP and resend
+        const updateSql = "UPDATE users SET otp_code = ?, otp_expiry = ?, password = ? WHERE email = ?";
+        db.query(updateSql, [otpCode, otpExpiry, hashedPassword, email], async (updErr) => {
+          if (updErr) return res.status(500).json({ error: "Failed to update OTP" });
+
+          await sendEmail({
+            to: email,
+            subject: "Verification Code - Power Zone Gym",
+            html: `
+              <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+                <h2 style="color: #D4AF37;">Power Zone Gym Verification</h2>
+                <p>Hello ${full_name || 'Member'},</p>
+                <p>Your OTP code to verify your email is:</p>
+                <div style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #D4AF37; margin: 20px 0;">
+                  ${otpCode}
+                </div>
+                <p>This code will expire in 10 minutes.</p>
+              </div>
+            `
+          });
+
+          return res.status(200).json({ message: "A new verification code was sent to your email.", email });
         });
-      },
-    );
+        return;
+      }
+
+      // Create new unverified user
+      const sql = `INSERT INTO users (full_name, email, password, phone, role, status, otp_code, otp_expiry, is_verified) 
+                   VALUES (?, ?, ?, ?, 'MEMBER', 'UNVERIFIED', ?, ?, 0)`;
+
+      db.query(sql, [full_name, email, hashedPassword, phone, otpCode, otpExpiry], async (insertErr) => {
+        if (insertErr) {
+          console.error(insertErr);
+          return res.status(500).json({ error: "Failed to register user" });
+        }
+
+        // Send Email OTP
+        await sendEmail({
+          to: email,
+          subject: "Verification Code - Power Zone Gym",
+          html: `
+            <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+              <h2 style="color: #D4AF37;">Welcome to Power Zone Gym!</h2>
+              <p>Your OTP code to verify your email is:</p>
+              <div style="font-size: 32px; font-weight: bold; letter-spacing: 6px; color: #D4AF37; margin: 20px 0;">
+                ${otpCode}
+              </div>
+              <p>This code will expire in 10 minutes.</p>
+            </div>
+          `
+        });
+
+        return res.status(201).json({
+          message: "Registration successful. Please enter the OTP code sent to your email.",
+          email: email
+        });
+      });
+    });
   });
 };
 
-///////////////////////////////////login/////////////////////////////
+// ==================== 2. VERIFY OTP CODE ====================
+export const verifyOTP = (req, res) => {
+  const { email, otp } = req.body;
+
+  if (!email || !otp) {
+    return res.status(400).json({ error: "Email and OTP code are required" });
+  }
+
+  const sql = "SELECT * FROM users WHERE email = ? AND otp_code = ? AND otp_expiry > NOW()";
+  db.query(sql, [email, otp], (err, results) => {
+    if (err) return res.status(500).json({ error: "Database error" });
+
+    if (results.length === 0) {
+      return res.status(400).json({ error: "Invalid or expired OTP code" });
+    }
+
+    const user = results[0];
+
+    // Activate user profile & clear OTP fields
+    const updateSql = "UPDATE users SET is_verified = 1, status = 'ACTIVE', otp_code = NULL, otp_expiry = NULL WHERE user_id = ?";
+    db.query(updateSql, [user.user_id], (updateErr) => {
+      if (updateErr) return res.status(500).json({ error: "Failed to verify user" });
+
+      return res.status(200).json({ message: "Email verified successfully! You can now log in." });
+    });
+  });
+};
+
+// ==================== 3. LOGIN SAFEGUARD ====================
 export const login = (req, res) => {
   const { email, password } = req.body;
 
   const sql = "SELECT * FROM users WHERE email = ?";
 
   db.query(sql, [email], (err, results) => {
-    if (err) {
-      console.error("Error fetching user:", err);
-      return res.status(500).json({
-        error: "Failed to fetch user",
-      });
-    }
-
-    if (results.length === 0) {
-      return res.status(401).json({
-        error: "Invalid email or password",
-      });
+    if (err || results.length === 0) {
+      return res.status(401).json({ error: "Invalid email or password" });
     }
 
     const user = results[0];
 
     bcrypt.compare(password, user.password, (err, isMatch) => {
-      if (err) {
-        console.error("Error comparing passwords:", err);
-        return res.status(500).json({
-          error: "Failed to process password",
+      if (err || !isMatch) {
+        return res.status(401).json({ error: "Invalid email or password" });
+      }
+
+      // SAFEGUARD: Only block if user is explicitly NOT verified (0) and NOT an Admin
+      if (user.role !== 'ADMIN' && (user.is_verified === 0 || user.is_verified === false)) {
+        return res.status(403).json({
+          error: "Please verify your email address with the OTP sent to your inbox before logging in."
         });
       }
 
-      if (!isMatch) {
-        return res.status(401).json({
-          error: "Invalid email or password",
-        });
-      }
-
-      // Remove password from the user object before sending response
       const { password: hashedPassword, ...userWithoutPassword } = user;
 
       const token = jwt.sign(
-        {
-          user_id: user.user_id,
-          role: user.role,
-        },
+        { user_id: user.user_id, role: user.role },
         process.env.JWT_SECRET,
-        {
-          expiresIn: "1d",
-        }
+        { expiresIn: "1d" }
       );
 
       return res.status(200).json({
@@ -308,6 +476,10 @@ export const login = (req, res) => {
     });
   });
 };
+
+    /////////////////////////////////////new//////////////////////////
+
+// };     //////////////old///////////
 
 export const getUsers = (req, res) => {
   const sql = "SELECT * FROM users";
