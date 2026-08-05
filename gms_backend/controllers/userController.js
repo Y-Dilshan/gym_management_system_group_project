@@ -374,7 +374,8 @@ export const register = (req, res) => {
 
       // Create new unverified user
       const sql = `INSERT INTO users (full_name, email, password, phone, role, status, otp_code, otp_expiry, is_verified) 
-                   VALUES (?, ?, ?, ?, 'MEMBER', 'UNVERIFIED', ?, ?, 0)`;
+             VALUES (?, ?, ?, ?, 'MEMBER', 'ACTIVE', ?, ?, 0)`;
+
 
       db.query(sql, [full_name, email, hashedPassword, phone, otpCode, otpExpiry], async (insertErr) => {
         if (insertErr) {
