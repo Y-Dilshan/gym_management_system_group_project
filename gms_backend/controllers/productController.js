@@ -150,6 +150,30 @@ export const updateProduct = (req, res) => {
   });
 };
 
+// export const deleteProduct = (req, res) => {
+//   const user = req.user;
+
+//   if (!isAdmin(user)) {
+//     return res.status(403).json({ message: "Only admins can delete products" });
+//   }
+
+//   const id = req.params.id;
+
+//   if (!id || isNaN(id)) {
+//     return res.status(400).json({ message: "Invalid product ID" });
+//   }
+
+//   const sql = "DELETE FROM products WHERE product_id = ?";
+//   db.query(sql, [id], (err, results) => {
+//     if (err) {
+//       console.error("Error deleting product:", err);
+//       return res.status(500).json({ message: "Failed to delete product" });
+//     } else if (results.affectedRows === 0) {
+//       return res.status(404).json({ message: "Product not found" });
+//     }
+//     return res.status(200).json({ message: "Product deleted successfully" });
+//   });
+// };
 export const deleteProduct = (req, res) => {
   const user = req.user;
 
@@ -163,14 +187,33 @@ export const deleteProduct = (req, res) => {
     return res.status(400).json({ message: "Invalid product ID" });
   }
 
-  const sql = "DELETE FROM products WHERE product_id = ?";
-  db.query(sql, [id], (err, results) => {
+  // Attempt hard delete first
+  const deleteSql = "DELETE FROM products WHERE product_id = ?";
+  db.query(deleteSql, [id], (err, results) => {
     if (err) {
       console.error("Error deleting product:", err);
-      return res.status(500).json({ message: "Failed to delete product" });
-    } else if (results.affectedRows === 0) {
+
+      // If product is linked to customer orders (Foreign key error ER_ROW_IS_REFERENCED_2),
+      // perform a Soft Delete (mark status as 'inactive') instead of failing.
+      if (err.code === "ER_ROW_IS_REFERENCED_2" || err.message?.includes("foreign key constraint")) {
+        const softDeleteSql = "UPDATE products SET status = 'inactive' WHERE product_id = ?";
+        db.query(softDeleteSql, [id], (softErr) => {
+          if (softErr) {
+            return res.status(500).json({ message: "Failed to deactivate product" });
+          }
+          return res.status(200).json({ message: "Product deactivated (marked inactive due to existing order history)" });
+        });
+        return;
+      }
+
+      return res.status(500).json({ message: err.message || "Failed to delete product" });
+    }
+
+    if (results.affectedRows === 0) {
       return res.status(404).json({ message: "Product not found" });
     }
+
     return res.status(200).json({ message: "Product deleted successfully" });
   });
 };
+
