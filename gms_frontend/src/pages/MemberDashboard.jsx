@@ -215,7 +215,7 @@ export default function MemberDashboard() {
         
         {/* Logo */}
         <div className="px-6 pt-7 pb-6 border-b border-yellow-500/10 flex justify-between items-center">
-          <div className="flex items-center gap-3">
+          <div onClick={() => navigate("/")} className="flex items-center gap-3 cursor-pointer">
             <img src="/logo.png" alt="Power Zone" className="w-10 h-10 md:w-12 md:h-12" />
             <div>
               <h1 className="text-[18px] md:text-[20px] font-bold leading-none">
@@ -315,6 +315,7 @@ export default function MemberDashboard() {
               ☰
             </button>
             <div className="hidden sm:flex gap-6 font-semibold text-zinc-400 text-sm md:text-base">
+              <span onClick={() => navigate("/")} className="hover:text-white cursor-pointer">Home</span>
               <span onClick={() => setActiveView("dashboard")} className={`cursor-pointer ${activeView === "dashboard" ? "text-yellow-400" : "hover:text-white"}`}>Dashboard</span>
               {user?.role?.toUpperCase() !== "TRAINER" && (
                 <>

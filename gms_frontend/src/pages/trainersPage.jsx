@@ -107,7 +107,7 @@ export default function TrainersPage() {
           {filteredTrainers.map((trainer) => (
             <div
               key={trainer.trainer_id}
-              className="bg-zinc-900 rounded-2xl overflow-hidden border border-[#D4AF37]/20"
+              className="bg-zinc-900 rounded-2xl overflow-hidden border border-[#D4AF37]/20 flex flex-col h-full"
             >
               <div className="h-64 md:h-72 lg:h-80 overflow-hidden">
                 <img
@@ -121,7 +121,7 @@ export default function TrainersPage() {
                 />
               </div>
 
-              <div className="p-6">
+              <div className="p-6 flex-1 flex flex-col">
                 <h2 className="text- md:text-2xlxl font-bold text-white mb-2">
                   {" "}
                   {trainer.full_name}{" "}
@@ -143,7 +143,7 @@ export default function TrainersPage() {
                 </p>
                 <button 
                   onClick={() => navigate("/sessions", { state: { trainer } })}
-                  className="w-full mt-6 bg-[#D4AF37] hover:bg-[#b8962d] text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
+                  className="w-full mt-auto pt-3 bg-[#D4AF37] hover:bg-[#b8962d] text-black font-bold py-3 rounded-xl flex items-center justify-center gap-2 transition duration-200 cursor-pointer"
                 >
                   <FaCalendarCheck /> Book Session
                 </button>
