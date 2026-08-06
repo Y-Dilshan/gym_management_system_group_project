@@ -397,7 +397,7 @@ const [isVerifying, setIsVerifying] = useState(false);
         </div>
       )}
       {/* ////////////////////////////////////////new//////////////////////// */}
-                  {/* Sleek Modern OTP Verification Modal */}
+                  {/*OTP Verification */}
       {showOtpModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4 animate-fadeIn">
           <div className="bg-[#121212] text-white w-full max-w-[420px] rounded-3xl shadow-[0_0_50px_rgba(212,175,55,0.15)] p-8 border border-[#D4AF37]/30 relative flex flex-col items-center">
